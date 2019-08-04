@@ -1,0 +1,23 @@
+# graphql schema
+
+type Query{
+    user(id: String!): User
+    store(id: String!): Store
+}
+
+
+type Mutation{
+    store(id:String!): Store
+}
+
+
+type Store{
+    id: String!
+    name: String!
+    userid: String!
+}
+
+type User{
+    id: String!
+    username: String!
+}
