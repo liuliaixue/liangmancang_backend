@@ -7,17 +7,181 @@ type Query{
 
 
 type Mutation{
-    store(id:String!): Store
+    updateUserInfo(
+        idCard: String!
+        bankCard: String!
+    ): User
+    updateUserStatus(
+        status: Int!
+    ):  User
+
+
+     # create a store and bind to the creator
+    bindStore(
+        name: String!
+        website: String
+        wangwang: String
+        address: String
+        contactPhone: String
+        storeScreenShotImage: String
+    ): Store
 }
 
+#用户
+type User{
+    id: String!
+    # remained, an increasing number 
+    idnumber: Int
+    username: String!
 
+    qq: String
+
+    idCard: String
+    bankCard: String
+    # 0 default, 1 ok, 2 need update, 3 freeze
+    status: Int
+    created: Int
+    updated: Int
+
+    bill: Bill
+
+}
+
+# 用户余额
+type Bill{
+    id: String
+    userid: String
+    # unit is cent
+    commissionRemain: Int
+    commissionWithdraw: Int
+    principalRemain:Int
+    principalWithdraw: Int
+
+    created: Int
+    updated: Int
+}
+# 充值记录,变更记录
+type BillRecord {
+    toUserid: String
+    fromUserid: String
+    amount: Int
+    # 0 default 正常充值, 1 Promotion 推广金, 2 任务佣金锁定, 3 任务佣金退还, 4 提现
+    type: Int
+    created: Int
+    updated: Int
+}
+# 店铺信息
 type Store{
     id: String!
     name: String!
     userid: String!
+
+    # 类型 淘宝,京东,拼多多
+    type: String
+    website: String
+    # 旺旺名称
+    wangwang: String
+    storeScreenShotImage:String
+
+    # provice_city_area_detail
+    address: String
+    contactPhone: String
+    # 0 default, 1 ok, 2 checked need update
+    status: Int
+
+    created: Int
+    updated: Int
 }
 
-type User{
+# 任务
+type Task{
     id: String!
-    username: String!
+    idnumber: Int
+    orderNumber: String
+
+    commission: Int
+    platformServiceFee: Int
+    platformCommission: Int
+
+    # 0 default, 1 ok, 2 need update or appeal
+    status:Int
+
+    storeid: String
+    userid: String
+
+    created: Int
+    updated: Int
+
+}
+# 签到
+type CheckIn{
+    id: String
+    userid: String
+    create: Int
+    update: Int
+}
+
+
+# 提现
+type Withdraw{
+    id: String
+    userid: String
+    amount: Int
+    # 0 default, 1 ok, 2 reject
+    status:Int
+    reason: String
+    mark: String
+    created: Int
+    updated: Int
+}
+
+type RejectReason{
+    id:String
+    content: String
+}
+
+# appeal
+type appeal{
+    id: String
+    userid:String
+    taskid:String
+    created: Int
+    updated: Int
+    # 撤销订单 todo: 什么是撤销订单?
+    cancelOrder: String
+    # 0 default open, 1 closed
+    status: Int
+
+}
+type appealMessage{
+    id: String
+    appealid: String
+    
+    userid:String
+    content:String
+    created: Int
+    updated: Int
+}
+# 佣金计算规则
+type commissionRule {
+    id: String
+
+    buyerPercentage: Float
+    platformPercentage: Float
+
+    storePromotion: Float
+    buyerPromotion: Float
+
+    created: Int
+    updated: Int
+
+    keyword:Int
+    image: Int
+    userArea: Int
+    userAge: Int
+    userGender:Int
+    userLevel: Int
+    userAntCreditPay: Int
+    userCollect:Int
+    
 }
