@@ -1,38 +1,57 @@
 # graphql schema
 
 type Query{
-    user(id: String!): User
-    store(id: String!): Store
+    user(_id: String!): User
+    store(_id: String!): Store
+    #storeList(start: Int, limit:Int): [Store]
 }
 
 
 type Mutation{
     updateUserInfo(
+        qq: String
         idCard: String!
         bankCard: String!
     ): User
     updateUserStatus(
+        _id: String!
         status: Int!
     ):  User
+    userList(skip: Int, limit:Int): UserList
 
-
-     # create a store and bind to the creator
+    # create a store and bind to the creator
     bindStore(
         name: String!
         website: String
         wangwang: String
+        storeScreenShotImage: String
         address: String
         contactPhone: String
-        storeScreenShotImage: String
     ): Store
+
+    updateStoreInfo(
+        _id: String!
+        name: String!
+        website: String
+        wangwang: String
+        storeScreenShotImage:String
+        address: String
+        contactPhone: String
+    ):Store
+    updateStoreStatus(
+        status: Int!
+    ):Store
+
+    
 }
 
 #用户
 type User{
-    id: String!
+    _id: String!
     # remained, an increasing number 
-    idnumber: Int
+    #id: Int
     username: String!
+    mobileNumber: String
 
     qq: String
 
@@ -47,9 +66,15 @@ type User{
 
 }
 
+
+type UserList{
+    list: [User],
+    total: Int
+}
+
 # 用户余额
 type Bill{
-    id: String
+    _id: String
     userid: String
     # unit is cent
     commissionRemain: Int
@@ -72,7 +97,7 @@ type BillRecord {
 }
 # 店铺信息
 type Store{
-    id: String!
+    _id: String!
     name: String!
     userid: String!
 
@@ -95,8 +120,8 @@ type Store{
 
 # 任务
 type Task{
-    id: String!
-    idnumber: Int
+    _id: String!
+    id: Int
     orderNumber: String
 
     commission: Int
@@ -115,7 +140,7 @@ type Task{
 }
 # 签到
 type CheckIn{
-    id: String
+    _id: String
     userid: String
     create: Int
     update: Int
@@ -124,7 +149,7 @@ type CheckIn{
 
 # 提现
 type Withdraw{
-    id: String
+    _id: String
     userid: String
     amount: Int
     # 0 default, 1 ok, 2 reject
@@ -136,13 +161,13 @@ type Withdraw{
 }
 
 type RejectReason{
-    id:String
+    _id:String
     content: String
 }
 
 # appeal
 type appeal{
-    id: String
+    _id: String
     userid:String
     taskid:String
     created: Int
@@ -154,7 +179,7 @@ type appeal{
 
 }
 type appealMessage{
-    id: String
+    _id: String
     appealid: String
     
     userid:String
@@ -164,7 +189,7 @@ type appealMessage{
 }
 # 佣金计算规则
 type commissionRule {
-    id: String
+    _id: String
 
     buyerPercentage: Float
     platformPercentage: Float
@@ -182,6 +207,6 @@ type commissionRule {
     userGender:Int
     userLevel: Int
     userAntCreditPay: Int
-    userCollect:Int
+    userCollection:Int
     
 }

@@ -1,13 +1,11 @@
 const path = require('path');
 const express = require('express');
 const httpError = require('http-errors');
-const logger = require('morgan');
+// const logger = require('morgan');
+require('../tools/logger')
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
-// const compress = require('compression');
-// const methodOverride = require('method-override');
 const cors = require('cors');
-// const helmet = require('helmet');
 
 var graphqlHTTP = require('express-graphql');
 var { buildSchema } = require('graphql'); 
@@ -24,9 +22,11 @@ const config = require('./config');
 
 const app = express();
 
-if (config.env === 'development') {
-    app.use(logger('dev'));
-}
+
+// todo add logger for router
+// if (config.env === 'development') {
+//     app.use(logger('dev'));
+// }
 
 // Choose what fronten framework to serve the dist from
 var distDir = '../../dist/';

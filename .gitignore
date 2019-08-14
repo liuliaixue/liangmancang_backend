@@ -4,3 +4,9 @@ package-lock.json
 node_modules
 dist
 .vscode
+
+#alan's doc
+doc 
+
+#logs
+log
