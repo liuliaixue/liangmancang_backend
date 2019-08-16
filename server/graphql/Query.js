@@ -1,4 +1,5 @@
 const userCtrl = require('../controllers/user.controller');
+const storeCtrl = require('../controllers/store.controller')
 
 
 module.exports = {
@@ -10,5 +11,12 @@ module.exports = {
 
         return user
     },
+    store: async (_id, req) => {
+        logger.info({ _from: 'store', _id })
+
+        const store = await storeCtrl.findById({ _id: _id })
+
+        return store
+    }
 
 }

@@ -19,7 +19,7 @@ const userSchema = Joi.object({
 
 
 async function insert(user) {
-    const user = await Joi.validate(user, userSchema, { abortEarly: false });
+    user = await Joi.validate(user, userSchema, { abortEarly: false });
     const check = await User.findOne({ username: user.username })
     if (check) {
         throw new Error('username existed')

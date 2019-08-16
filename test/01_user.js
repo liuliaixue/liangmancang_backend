@@ -4,15 +4,15 @@ const assert = require('assert')
 const client = require('./_client')
 
 describe('User', function () {
-    // it('register', async () => {
-    //     const res = await client.post('/api/auth/register', {
-    //         username: '18817570743',
-    //         password: '123456',
+    it('register', async () => {
+        const res = await client.post('/api/auth/register', {
+            username: '18817570743',
+            password: '123456',
 
-    //         mobileNumber: '18817570743',
-    //     })
-    //     assert(res.data.user.username === '18817570743')
-    // });
+            mobileNumber: '18817570743',
+        })
+        assert(res.data.user.username === '18817570743')
+    });
 
     // it('register fail with same username', async () => {
     //     let res = await client.post('/api/auth/register', {

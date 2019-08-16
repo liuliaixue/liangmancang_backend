@@ -7,28 +7,6 @@ const config = require('./config');
 
 const jwt = require('jsonwebtoken');
 
-
-
-// const jwtLogin = new JwtStrategy({
-//     jwtFromRequest: (req, ) => {
-//         console.log(req)
-//         return req.header['X-lmc-token'] || null
-//     },
-//     secretOrKey: config.jwtSecret
-// }, async (payload, done) => {
-//     let user = await User.findById(payload._id);
-//     if (!user) {
-//         return done(null, false);
-//     }
-//     user = user.toObject();
-//     delete user.hashedPassword;
-//     done(null, user);
-// });
-
-// passport.use(jwtLogin);
-// module.exports = passport;
-
-
 const verifyUser = async (req, res, next) => {
     try {
         const token = req.headers['x-lmc-token']
@@ -36,7 +14,12 @@ const verifyUser = async (req, res, next) => {
             throw new Error('please login first')
         }
         const decoded = jwt.verify(token, config.jwtSecret);
+
         let user = await User.findById(decoded._id);
+        if (!user) {
+            throw new Error('invalid user')
+        }
+
         req.user = user
         next()
     } catch (e) {

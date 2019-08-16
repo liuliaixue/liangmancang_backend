@@ -1,9 +1,16 @@
 const axios = require('axios');
+const fs = require('fs')
+const path = require('path')
+const token = fs.readFileSync(
+    path.join(__dirname, '_token'),
+    "utf8"
+)
 
 const instance = axios.create({
     baseURL: 'http://localhost:4040',
+    // baseURL: 'http://101.132.64.25:60000',
     timeout: 2000,
-    headers: { 'x-lmc-token': 'eyJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6W10sIl9pZCI6IjVkNDQxMDBhNWM2NTljNjUzODg1NTAyOCIsInVzZXJuYW1lIjoiMTg4MTc1NzA3NDMiLCJoYXNoZWRQYXNzd29yZCI6IiQyYiQxMCRSa3FmY2dTLnNEUmRJeDZ6RUk2RVRlVjVlSGptZWdTRVdKdDN6ZndkSi5JcXpKd2FEZ25yaSIsImNyZWF0ZWRBdCI6IjIwMTktMDgtMDJUMTA6Mjc6MjIuOTUzWiJ9.MrCpAa07Ng3DeN7hadiF2HETaYCXHLXvi98SoO4dZpk' }
+    headers: { 'x-lmc-token': token }
 });
 
 module.exports = {

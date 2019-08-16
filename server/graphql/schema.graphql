@@ -3,7 +3,6 @@
 type Query{
     user(_id: String!): User
     store(_id: String!): Store
-    #storeList(start: Int, limit:Int): [Store]
 }
 
 
@@ -39,8 +38,10 @@ type Mutation{
         contactPhone: String
     ):Store
     updateStoreStatus(
+        _id: String!
         status: Int!
     ):Store
+    storeList(skip: Int, limit:Int): StoreList
 
     
 }
@@ -72,6 +73,34 @@ type UserList{
     total: Int
 }
 
+# 店铺信息
+type Store{
+    _id: String!
+    name: String!
+    userid: String
+
+    # 类型 淘宝,京东,拼多多
+    type: String
+    website: String
+    # 旺旺名称
+    wangwang: String
+    storeScreenShotImage:String
+
+    # provice_city_area_detail
+    address: String
+    contactPhone: String
+    # 0 default, 1 ok, 2 checked need update
+    status: Int
+
+    created: Int
+    updated: Int
+}
+
+type StoreList{
+    list: [Store],
+    total: Int
+}
+
 # 用户余额
 type Bill{
     _id: String
@@ -92,28 +121,6 @@ type BillRecord {
     amount: Int
     # 0 default 正常充值, 1 Promotion 推广金, 2 任务佣金锁定, 3 任务佣金退还, 4 提现
     type: Int
-    created: Int
-    updated: Int
-}
-# 店铺信息
-type Store{
-    _id: String!
-    name: String!
-    userid: String!
-
-    # 类型 淘宝,京东,拼多多
-    type: String
-    website: String
-    # 旺旺名称
-    wangwang: String
-    storeScreenShotImage:String
-
-    # provice_city_area_detail
-    address: String
-    contactPhone: String
-    # 0 default, 1 ok, 2 checked need update
-    status: Int
-
     created: Int
     updated: Int
 }
