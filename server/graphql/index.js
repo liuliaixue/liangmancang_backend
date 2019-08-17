@@ -4,6 +4,7 @@ const user = require('./user.js')
 const store = require('./store.js')
 
 const billRecord = require('./billRecord')
+const task = require('./task')
 
 
 const safeMerge = (...objList) => {
@@ -22,8 +23,9 @@ const safeMerge = (...objList) => {
 
 module.exports = safeMerge(
     Query,
-    
+
     user,
     store,
-    billRecord
+    billRecord,
+    task,
 )

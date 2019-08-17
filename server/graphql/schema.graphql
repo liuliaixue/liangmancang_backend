@@ -57,7 +57,7 @@ type Mutation{
     billRecordCheck(
         _id: String!
     ): BillRecord
-    createOrUpdateTask(
+    createTask(
         _id:String
         orderNumber: String
 
@@ -68,7 +68,7 @@ type Mutation{
         amount: Int
         goodsPriceShowed: Float
         specification: String
-        freeShipping: Boolean
+        isFreeShipping: Boolean
 
         howToFindTask: String
 
@@ -82,8 +82,14 @@ type Mutation{
 
         extraCommission: Float
         extraImages:[String]
-        remakrk:String
+        remark:String
+
+        storeid: String
     ): Task
+    
+    startTask(
+        _id:String
+    ) :Task
     udpateTaskStatus(
         _id:String
         status: Int!
@@ -184,6 +190,7 @@ type BillRecord {
 # 任务
 type Task{
     _id: String!
+    parent: String
     orderNumber: String
 
     goodsName: String
@@ -193,14 +200,14 @@ type Task{
     amount: Int
     goodsPriceShowed: Float
     specification: String
-    freeShipping: Boolean
+    isFreeShipping: Boolean
 
     howToFindTask: String
 
 
     startTime: Float
     endTime: Float
-    amout: Int
+    total: Int
 
     commission: Float
     platformServiceFee: Float
@@ -208,13 +215,14 @@ type Task{
 
     extraCommission: Float
     extraImages:[String]
-    remakrk:String
+    remark:String
 
-    # 0 default, 1 ok, 2 need update or appeal
+    # 0 default, 1  being assigned to worker, 2 in appeal 3 finished
     status:Int
 
     storeid: String
     userid: String
+    workerid: String
 
     createdAt: Float
     updatedAt: Float

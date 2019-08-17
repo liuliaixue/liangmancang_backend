@@ -5,13 +5,14 @@ const client = require('./_client')
 
 describe('User', function () {
     it('register', async () => {
-        const res = await client.post('/api/auth/register', {
-            username: '18817570743',
+        const user = {
+            username: '18817570747',
             password: '123456',
 
             mobileNumber: '18817570743',
-        })
-        assert(res.data.user.username === '18817570743')
+        }
+        const res = await client.post('/api/auth/register', user)
+        assert(res.data.user.username === user.username)
     });
 
     // it('register fail with same username', async () => {
@@ -27,10 +28,10 @@ describe('User', function () {
 
     it('login', async () => {
         const res = await client.post('/api/auth/login', {
-            username: '18817570743',
+            username: '18817570747',
             password: '123456',
         })
-        assert(res.data.user.username === '18817570743')
+        assert(res.data.user.username === '18817570747')
         console.log(res.data.token)
 
     })
