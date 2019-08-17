@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const Int32 = require('mongoose-int32')
 
 const StoreSchema = new mongoose.Schema({
     name: {
@@ -39,12 +40,12 @@ const StoreSchema = new mongoose.Schema({
 
 
     createdAt: {
-        type: Date,
-        default: Date.now
+        type: Number,
+        default: 0
     },
     updatedAt: {
-        type: Date,
-        default: Date.now
+        type: Number,
+        default: 0
     },
 
 

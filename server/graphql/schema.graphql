@@ -3,6 +3,8 @@
 type Query{
     user(_id: String!): User
     store(_id: String!): Store
+    bill(userid: String): Bill
+    billRecord(_id: String!): BillRecord
 }
 
 
@@ -43,6 +45,52 @@ type Mutation{
     ):Store
     storeList(skip: Int, limit:Int): StoreList
 
+    billRecord(
+        toUserid: String!
+        amount: Float!
+        # 0 default, normal charge 正常充值, 1 Promotion 推广金,
+        # 2 任务佣金锁定, 3 任务佣金退还, 4 任务佣金发放
+        # 5 提现
+        type: Int!
+
+    ): BillRecord
+    billRecordCheck(
+        _id: String!
+    ): BillRecord
+    createOrUpdateTask(
+        _id:String
+        orderNumber: String
+
+        goodsName: String
+        goodsLink: String
+        goodsImage: String
+        goodsPrice: Float
+        amount: Int
+        goodsPriceShowed: Float
+        specification: String
+        freeShipping: Boolean
+
+        howToFindTask: String
+
+        startTime: Float
+        endTime: Float
+        amout: Int
+
+        commission: Float
+        platformServiceFee: Float
+        platformCommission: Float
+
+        extraCommission: Float
+        extraImages:[String]
+        remakrk:String
+    ): Task
+    udpateTaskStatus(
+        _id:String
+        status: Int!
+    ):Task
+
+    
+
     
 }
 
@@ -60,8 +108,8 @@ type User{
     bankCard: String
     # 0 default, 1 ok, 2 need update, 3 freeze
     status: Int
-    created: Int
-    updated: Int
+    createdAt: Float
+    updatedAt: Float
 
     bill: Bill
 
@@ -92,8 +140,8 @@ type Store{
     # 0 default, 1 ok, 2 checked need update
     status: Int
 
-    created: Int
-    updated: Int
+    createdAt: Float
+    updatedAt: Float
 }
 
 type StoreList{
@@ -106,34 +154,61 @@ type Bill{
     _id: String
     userid: String
     # unit is cent
-    commissionRemain: Int
-    commissionWithdraw: Int
-    principalRemain:Int
-    principalWithdraw: Int
+    total: Float
+    remained: Float
+    freeze: Float
+    withdraw: Float
 
-    created: Int
-    updated: Int
+
+    createdAt: Float
+    updatedAt: Float
 }
 # 充值记录,变更记录
 type BillRecord {
+    _id: String
+    userid: String
     toUserid: String
-    fromUserid: String
-    amount: Int
-    # 0 default 正常充值, 1 Promotion 推广金, 2 任务佣金锁定, 3 任务佣金退还, 4 提现
-    type: Int
-    created: Int
-    updated: Int
+    amount: Float
+    # 0 default, normal charge 正常充值, 1 Promotion 推广金,
+    # 2 任务佣金锁定, 3 任务佣金退还, 4 任务佣金发放
+    # 5 提现
+    type: Float
+    # 0 default and waiting for check, 1 checked
+
+    status: Int
+
+    createdAt: Float
+    updatedAt: Float
 }
 
 # 任务
 type Task{
     _id: String!
-    id: Int
     orderNumber: String
 
-    commission: Int
-    platformServiceFee: Int
-    platformCommission: Int
+    goodsName: String
+    goodsLink: String
+    goodsImage: String
+    goodsPrice: Float
+    amount: Int
+    goodsPriceShowed: Float
+    specification: String
+    freeShipping: Boolean
+
+    howToFindTask: String
+
+
+    startTime: Float
+    endTime: Float
+    amout: Int
+
+    commission: Float
+    platformServiceFee: Float
+    platformCommission: Float
+
+    extraCommission: Float
+    extraImages:[String]
+    remakrk:String
 
     # 0 default, 1 ok, 2 need update or appeal
     status:Int
@@ -141,8 +216,8 @@ type Task{
     storeid: String
     userid: String
 
-    created: Int
-    updated: Int
+    createdAt: Float
+    updatedAt: Float
 
 }
 # 签到
@@ -163,8 +238,8 @@ type Withdraw{
     status:Int
     reason: String
     mark: String
-    created: Int
-    updated: Int
+    createdAt: Float
+    updatedAt: Float
 }
 
 type RejectReason{
@@ -177,8 +252,8 @@ type appeal{
     _id: String
     userid:String
     taskid:String
-    created: Int
-    updated: Int
+    createdAt: Float
+    updatedAt: Float
     # 撤销订单 todo: 什么是撤销订单?
     cancelOrder: String
     # 0 default open, 1 closed
@@ -191,8 +266,8 @@ type appealMessage{
     
     userid:String
     content:String
-    created: Int
-    updated: Int
+    createdAt: Float
+    updatedAt: Float
 }
 # 佣金计算规则
 type commissionRule {
@@ -204,8 +279,8 @@ type commissionRule {
     storePromotion: Float
     buyerPromotion: Float
 
-    created: Int
-    updated: Int
+    createdAt: Float
+    updatedAt: Float
 
     keyword:Int
     image: Int

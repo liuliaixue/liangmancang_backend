@@ -18,6 +18,9 @@ const storeSchema = Joi.object({
 
     status: Joi.number(),
 
+    createdAt: Joi.number(),
+    updatedAt: Joi.number(),
+
 
 })
 
@@ -28,6 +31,9 @@ const insert = async (store) => {
     if (check) {
         throw new Error('name existed')
     }
+    const now = new Date();
+    store.createdAt = now.getTime()
+    store.updatedAt = now.getTime()
     return await new Store(store).save();
 
 }
@@ -50,7 +56,12 @@ const findById = async ({ _id }) => {
 }
 
 const updateInfo = async (_id, updateObj) => {
-    const check = await Store.findByIdAndUpdate(_id, { $set: updateObj }, { new: true })
+    const check = await Store.findByIdAndUpdate(_id, {
+        $set: {
+            ...updateObj,
+            updatedAt: new Date().getTime()
+        }
+    }, { new: true })
 
     if (!check) {
         throw new Error('incorrect _id')
@@ -60,7 +71,12 @@ const updateInfo = async (_id, updateObj) => {
 }
 
 const updateStatus = async (_id, status) => {
-    const check = await Store.findByIdAndUpdate(_id, { $set: { status } }, { new: true })
+    const check = await Store.findByIdAndUpdate(_id, {
+        $set: {
+            status,
+            updatedAt: new Date().getTime()
+        }
+    }, { new: true })
 
     if (!check) {
         throw new Error('incorrect _id')

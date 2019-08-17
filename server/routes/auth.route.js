@@ -14,6 +14,10 @@ router.get('/me', passport.verifyUser, getCurrentUser);
 
 
 async function register(req, res, next) {
+    logger.info({ _from: "/register", ...req.body })
+
+
+
     let user = await userCtrl.insert(req.body);
     user = user.toObject();
     delete user.hashedPassword;
@@ -22,6 +26,8 @@ async function register(req, res, next) {
 }
 
 async function login(req, res) {
+    logger.info({ _from: "/login", ...req.body })
+
     let user = await userCtrl.findOne(req.body);
     let token = authCtrl.generateToken(user);
     res.json({ user, token });

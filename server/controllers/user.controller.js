@@ -1,6 +1,7 @@
 const bcrypt = require('bcrypt');
 const Joi = require('joi');
 const User = require('../models/user.model');
+const Bill = require('../models/bill.model')
 
 const userSchema = Joi.object({
     username: Joi.string().required(),
@@ -14,6 +15,9 @@ const userSchema = Joi.object({
     bankCard: Joi.string(),
     status: Joi.number(),
 
+    createdAt: Joi.number(),
+    updatedAt: Joi.number(),
+
 })
 
 
@@ -26,7 +30,24 @@ async function insert(user) {
     }
     user.hashedPassword = bcrypt.hashSync(user.password, 10);
     delete user.password;
-    return await new User(user).save();
+    const now = new Date();
+    user.createdAt = now.getTime()
+    user.updatedAt = now.getTime()
+    const savedUser = await new User(user).save();
+
+
+    const billObj = {
+        userid: savedUser._id,
+        total: 0,
+        remained: 0,
+        freeze: 0,
+        withdraw: 0,
+        createdAt: now.getTime(),
+        updatedAt: now.getTime(),
+    }
+    const bill = await new Bill(billObj).save()
+
+    return savedUser
 }
 const find = async (query = { skip: 0, limit: 10 }) => {
     const { skip, limit } = query
@@ -65,7 +86,14 @@ const findById = async ({ _id }) => {
 }
 
 const updateInfo = async (_id, updateObj) => {
-    const check = await User.findByIdAndUpdate(_id, { $set: updateObj }, { new: true })
+    const now = new Date();
+    const check = await User.findByIdAndUpdate(_id,
+        {
+            $set: {
+                ...updateObj,
+                updatedAt: now.getTime()
+            }
+        }, { new: true })
 
     if (!check) {
         throw new Error('incorrect _id')
@@ -75,7 +103,8 @@ const updateInfo = async (_id, updateObj) => {
 }
 
 const updateStatus = async (_id, status) => {
-    const check = await User.findByIdAndUpdate(_id, { $set: { status } }, { new: true })
+    const now = new Date();
+    const check = await User.findByIdAndUpdate(_id, { $set: { status, updatedAt: now.getTime() } }, { new: true })
 
     if (!check) {
         throw new Error('incorrect _id')

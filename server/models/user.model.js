@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+// const Int32 = require('mongoose-int32')
 
 const UserSchema = new mongoose.Schema({
 
@@ -41,12 +42,12 @@ const UserSchema = new mongoose.Schema({
 
 
     createdAt: {
-        type: Date,
-        default: Date.now
+        type: Number,
+        default: 0
     },
     updatedAt: {
-        type: Date,
-        default: Date.now
+        type: Number,
+        default: 0
     },
 
     roles: [{
