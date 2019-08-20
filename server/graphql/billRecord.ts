@@ -1,56 +1,42 @@
-const billRecordCtrl = require('../controllers/billRecord.controller');
+import { IReq } from '../config/passport';
+import logger from '../tools/logger';
 
-const { Type, Status } = require('../models/billRecord.model')
+import billRecordCtrl from '../controllers/billRecord.controller'
 
-// const Type = {
-//     DEFAULT: 0,
-//     PROMOTION: 1,
-//     TASK_LOCK: 2,
-//     TASK_REFUNK: 3,
-//     TASK_PAYMENT: 4,
-//     REFUND: 5
+import { Type, Status } from '../models/billRecord.model'
+// import acl from './acl'
 
 
-// }
-// const Status = {
-//     DEFAULT: 0,
-//     CHECKED: 1
-// }
+export default {
+  billRecord: async (obj: any, req: IReq) => {
+    logger.info({ _from: 'billRecord', _by: req.user.id, ...obj })
 
-// const { Type, Status } = billRecordCtrl
-
-module.exports = {
-    billRecord: async (obj, req) => {
-        logger.info({ _from: 'billRecord', _by: req.user.id, ...obj })
-
-        const { type } = obj
-        const userid = req.user.id
-        switch (type) {
-            case Type.DEFAULT:
-                const record = await billRecordCtrl.insert({ ...obj, status: 0, userid })
-                return record
-            case Type.WITHDRAW:
-                throw "unsupported"
-                return
-            default:
-                throw new Error('invalid type')
-        }
-
-    },
-
-    billRecordCheck: async (obj, req) => {
-        logger.info({ _from: 'updateBillRecordStatus', _by: req.user.id, ...obj })
-
-        const { _id } = obj
-        if (!_id) {
-            throw new Error("invalid _id")
-        }
-
-        const record = await billRecordCtrl.check({ _id })
-
+    const { type } = obj
+    const userid = req.user.id
+    switch (type) {
+      case Type.DEFAULT:
+        const record = await billRecordCtrl.insert({ ...obj, status: 0, userid })
         return record
-
-
-
+      case Type.WITHDRAW:
+        throw "unsupported"
+        return
+      default:
+        throw new Error('invalid type')
     }
+
+  },
+
+  billRecordCheck: async (obj: any, req: IReq) => {
+    logger.info({ _from: 'updateBillRecordStatus', _by: req.user.id, ...obj })
+
+    const { _id } = obj
+    if (!_id) {
+      throw new Error("invalid _id")
+    }
+
+    const record = await billRecordCtrl.check({ _id, status: obj.status })
+
+    return record
+
+  }
 }

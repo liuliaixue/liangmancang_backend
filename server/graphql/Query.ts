@@ -1,22 +1,25 @@
-const userCtrl = require('../controllers/user.controller');
-const storeCtrl = require('../controllers/store.controller')
+import { IReq } from '../config/passport';
+import logger from '../tools/logger';
 
 
-module.exports = {
-    // todo remove test
-    user: async (_id, req) => {
-        logger.info({ _from: 'user', _by: req.user.id, _id })
+import userCtrl from '../controllers/user.controller'
+import storeCtrl from '../controllers/store.controller'
 
-        const user = await userCtrl.findById({ _id: _id })
+export default {
+  // todo remove test
+  user: async (_id: string, req: IReq) => {
+    logger.info({ _from: 'user', _by: req.user.id, _id })
 
-        return user
-    },
-    store: async (_id, req) => {
-        logger.info({ _from: 'store', _by: req.user.id, _id })
+    const user = await userCtrl.findById({ _id: _id })
 
-        const store = await storeCtrl.findById({ _id: _id })
+    return user
+  },
+  store: async (_id: string, req: IReq) => {
+    logger.info({ _from: 'store', _by: req.user.id, _id })
 
-        return store
-    }
+    const store = await storeCtrl.findById({ _id: _id })
+
+    return store
+  }
 
 }

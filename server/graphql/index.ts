@@ -1,33 +1,32 @@
+import Query from './Query'
+import user from './user'
+import store from './store'
+import billRecord from './billRecord'
+import task from './task'
+import rule from './rule'
 
-const Query = require('./Query.js')
-const user = require('./user.js')
-const store = require('./store.js')
-
-const billRecord = require('./billRecord')
-const task = require('./task')
-
-const rule = require('./rule')
-
-
-const safeMerge = (...objList) => {
-    var merged = {}
-
-    for (let obj of objList) {
-        Object.keys(obj).forEach(key => {
-            if (merged[key]) {
-                throw new Error('merge obj with repeated key')
-            }
-            merged[key] = obj[key]
-        })
-    }
-    return merged
+interface IGraphqlObj {
+  [key: string]: object
 }
 
-module.exports = safeMerge(
-    Query,
+const safeMerge = (objList: any) => {
+  var merged: IGraphqlObj = {}
 
-    user,
-    store,
-    billRecord,
-    task,
-)
+  for (let obj of objList) {
+    Object.keys(obj).forEach((key: string) => {
+      if (merged[key]) {
+        throw new Error('merge obj with repeated key')
+      }
+      merged[key] = obj[key]
+    })
+  }
+  return merged
+}
+
+export default safeMerge([
+  Query,
+  user,
+  store,
+  billRecord,
+  task
+])

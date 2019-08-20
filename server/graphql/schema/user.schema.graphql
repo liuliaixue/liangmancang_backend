@@ -1,0 +1,31 @@
+#用户
+type User{
+    _id: String!
+    # remained, an increasing number 
+    #id: Int
+    username: String!
+    mobileNumber: String
+
+    qq: String
+
+    idCard: String
+    bankCard: String
+    # 0 default, 1 ok, 2 need update, 3 freeze
+    status: UserStatus
+    createdAt: Float
+    updatedAt: Float
+
+    bill: Bill
+
+}
+type UserList{
+    list: [User],
+    total: Int
+}
+
+enum UserStatus{
+  DEFAULT 
+  OK 
+  BAD 
+  FREEZE
+}

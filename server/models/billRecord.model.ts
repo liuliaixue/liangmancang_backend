@@ -1,66 +1,81 @@
-const mongoose = require('mongoose');
-// const Int32 = require('mongoose-int32')
 
-const BillRecordSchema = new mongoose.Schema({
+import { Schema, Model, model, Document } from 'mongoose';
 
-    userid: {
-        type: String,
-        required: true,
-    },
-    toUserid: {
-        type: String,
-        required: true,
-    },
-    amount: {
-        type: Number,
-        required: true
-    },
+export interface IBillRecord extends Document {
+  // _id?: mongoose.Types.ObjectId
+  // id?: string
 
-    type: {
-        type: Number,
-        required: false
-    },
-    status: {
-        type: Number,
-        required: false
-    },
+  userid: string
+  toUserid: string
+  amount: number
+  type: Type
+  status: Status
+  createdAt: number
+  updatedAt: number
+}
+
+const BillRecordSchema: Schema = new Schema({
+
+  userid: {
+    type: String,
+    required: true,
+  },
+  toUserid: {
+    type: String,
+    required: true,
+  },
+  amount: {
+    type: Number,
+    required: true
+  },
+
+  type: {
+    type: Number,
+    required: false
+  },
+  status: {
+    type: Number,
+    required: false
+  },
 
 
-    createdAt: {
-        type: Number,
-        default: 0
-    },
-    updatedAt: {
-        type: Number,
-        default: 0
-    },
-    resultRecordid: {
-        type: String
-    }
+  createdAt: {
+    type: Number,
+    default: 0
+  },
+  updatedAt: {
+    type: Number,
+    default: 0
+  },
+  resultRecordid: {
+    type: String
+  }
 
 
 }, {
-        versionKey: false
-    });
+    versionKey: false
+  });
 
 
-module.exports = mongoose.model('BillRecord', BillRecordSchema);
 
-
-const Type = {
-    DEFAULT: 0,
-    PROMOTION: 1,
-    TASK_LOCK: 2,
-    TASK_REFUNK: 3,
-    TASK_PAYMENT: 4,
-    WITHDRAW: 5
+enum Type {
+  DEFAULT,
+  PROMOTION,
+  TASK_LOCK,
+  TASK_REFUNK,
+  TASK_PAYMENT,
+  WITHDRAW
 
 
 }
-const Status = {
-    DEFAULT: 0,
-    CHECKED: 1
+enum Status {
+  DEFAULT,
+  CHECKED
 }
 
-module.exports.Type = Type
-module.exports.Status = Status
+const BillRecord: Model<IBillRecord> = model('BillRecord', BillRecordSchema);
+
+export default BillRecord;
+export { Type, Status };
+
+

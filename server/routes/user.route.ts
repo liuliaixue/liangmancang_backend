@@ -1,16 +1,20 @@
-const express = require('express');
-const asyncHandler = require('express-async-handler');
-const userCtrl = require('../controllers/user.controller');
+import express = require('express');
+import asyncHandler from 'express-async-handler'
+import userCtrl from '../controllers/user.controller'
+
+
 
 const router = express.Router();
-module.exports = router;
 
 
 router.route('/')
   .post(asyncHandler(insert));
 
 
-async function insert(req, res) {
+async function insert(req: express.Request, res: express.Response) {
   let user = await userCtrl.insert(req.body);
   res.json(user);
 }
+
+
+export default router

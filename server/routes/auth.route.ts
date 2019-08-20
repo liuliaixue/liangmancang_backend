@@ -1,38 +1,44 @@
-const express = require('express');
-const asyncHandler = require('express-async-handler')
-const userCtrl = require('../controllers/user.controller');
-const authCtrl = require('../controllers/auth.controller');
-const config = require('../config/config');
-const passport = require('../config/passport')
+
+import express from 'express'
+import asyncHandler from "express-async-handler"
+import userCtrl from '../controllers/user.controller'
+import authCtrl from '../controllers/auth.controller'
+import config from '../config/config'
+import passport, { IReq } from '../config/passport'
+import logger from '../tools/logger';
+
+
 
 const router = express.Router();
-module.exports = router;
+
 
 router.post('/register', asyncHandler(register), login);
 router.post('/login', login);
 router.get('/me', passport.verifyUser, getCurrentUser);
 
 
-async function register(req, res, next) {
-    logger.info({ _from: "/register", ...req.body })
+async function register(req: any, res: express.Response, next: express.NextFunction) {
+  logger.info({ _from: "/register", ...req.body })
 
 
 
-    let user = await userCtrl.insert(req.body);
-    user = user.toObject();
-    delete user.hashedPassword;
-    req.user = user;
-    next()
+  let user = await userCtrl.insert(req.body);
+  user = user.toObject();
+  delete user.hashedPassword;
+  req.user = user;
+  next()
 }
 
-async function login(req, res) {
-    logger.info({ _from: "/login", ...req.body })
+async function login(req: any, res: express.Response) {
+  logger.info({ _from: "/login", ...req.body })
 
-    let user = await userCtrl.findOne(req.body);
-    let token = authCtrl.generateToken(user);
-    res.json({ user, token });
+  let user = await userCtrl.findOne(req.body);
+  let token = authCtrl.generateToken(user);
+  res.json({ user, token });
 }
 
-function getCurrentUser(req, res) {
-    res.json({ user: req.user })
+function getCurrentUser(req: any, res: express.Response) {
+  res.json({ user: req.user })
 }
+
+export default router

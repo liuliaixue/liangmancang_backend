@@ -1,43 +1,49 @@
 
-const Joi = require('joi');
-const BillRecord = require('../models/billRecord.model');
-const { Type, Status } = require('../models/billRecord.model')
+import Joi from 'joi'
+import BillRecord, { Type, Status, IBillRecord } from '../models/billRecord.model'
+import Bill from '../models/bill.model'
 
-const Bill = require('../models/bill.model')
 
 const billRecordSchema = Joi.object({
-    userid: Joi.string().required(),
-    toUserid: Joi.string().required(),
+  userid: Joi.string().required(),
+  toUserid: Joi.string().required(),
 
-    amount: Joi.number(),
-    type: Joi.number(),
+  amount: Joi.number(),
+  type: Joi.number(),
 
-    status: Joi.number(),
+  status: Joi.number(),
 
-    createdAt: Joi.number(),
-    updatedAt: Joi.number(),
+  createdAt: Joi.number(),
+  updatedAt: Joi.number(),
 
-    resultRecordid: Joi.string(),
+  resultRecordid: Joi.string(),
 
 })
 
 
 
-async function insert(billRecord) {
-    billRecord = await Joi.validate(billRecord, billRecordSchema, { abortEarly: false });
+async function insert(billRecord: IBillRecord) {
+  billRecord = await Joi.validate(billRecord, billRecordSchema, { abortEarly: false });
 
-    const now = new Date();
-    billRecord.createdAt = now.getTime()
-    billRecord.updatedAt = now.getTime()
-    return await new BillRecord(billRecord).save();
+  const now = new Date();
+  billRecord.createdAt = now.getTime()
+  billRecord.updatedAt = now.getTime()
+  return await new BillRecord(billRecord).save();
 }
-const find = async (query = { skip: 0, limit: 10, }) => {
-    const { skip, limit, types = [0], status = 1 } = query
-    const filter = { $in: { type: types } }
-    const billRecordList = await BillRecord.find(filter).skip(skip).limit(limit)
-    const billRecordTotal = await BillRecord.count(filter)
 
-    return { list: billRecordList, total: billRecordTotal }
+export interface IBillRecordQuery {
+  skip: number,
+  limit: number,
+  types: [number]
+  status: Status
+}
+const find = async (query: IBillRecordQuery = { skip: 0, limit: 10, types: [0], status: 0 }) => {
+  const { skip, limit, types, status } = query
+  const filter = { $in: { type: types } }
+  const billRecordList = await BillRecord.find(filter).skip(skip).limit(limit)
+  const billRecordTotal = await BillRecord.count(filter)
+
+  return { list: billRecordList, total: billRecordTotal }
 }
 
 
@@ -52,62 +58,80 @@ const find = async (query = { skip: 0, limit: 10, }) => {
 //     return check._doc
 // }
 
-const check = async ({ _id, status }) => {
-    const check = await BillRecord.findById(_id)
+export interface IBillRecordCheck {
+  _id: string
+  status: Status
+}
+const check = async ({ _id, status }: IBillRecordCheck) => {
+  // const bill = 
 
-    const billRecord = await BillRecord.findById(_id)
-    if (!billRecord) {
-        throw Error("invalid bill record")
-    }
-    if (billRecord.status === Status.CHECKED) {
-        throw new Error('checked billRecord')
-    }
-    switch (check._doc.type) {
-        case Type.DEFAULT: {
+  const billRecord = await BillRecord.findById(_id)
+  if (!billRecord) {
+    throw new Error("invalid bill record")
+  }
+  if (billRecord.status === Status.CHECKED) {
+    throw new Error('checked billRecord')
+  }
 
-            const now = new Date();
+  switch (billRecord.type) {
+    case Type.DEFAULT: {
 
-            const updatedBillRecord = await BillRecord.findByIdAndUpdate(_id, { $set: { status: Status.CHECKED, updatedAt: now.getTime() } }, { new: true })
-            const bill = await Bill.findOne({ userid: updatedBillRecord.userid })
-            // update bill
-            await Bill.findByIdAndUpdate(bill._id,
-                {
-                    $set: {
-                        total: bill.total + updatedBillRecord.amount,
-                        remained: bill.remained + updatedBillRecord.amount,
-                        updatedAt: now.getTime()
-                    }
-                }, { new: true })
+      const now = new Date();
 
-            return updatedBillRecord
+      const updatedBillRecord = await BillRecord.findByIdAndUpdate(_id, {
+        $set:
+        {
+          status: Status.CHECKED,
+          updatedAt: now.getTime()
         }
-        case Type.WITHDRAW: {
-            const now = new Date();
+      }, { new: true })
+      if (!updatedBillRecord) {
+        throw new Error('invalid billRecord')
+      }
+      const bill = await Bill.findOne({ userid: updatedBillRecord.toUserid })
+      if (!bill) {
+        throw new Error('invalid bill')
+      }
+      // update bill
+      await Bill.findByIdAndUpdate(bill._id,
+        {
+          $set: {
+            total: bill.total + updatedBillRecord.amount,
+            remained: bill.remained + updatedBillRecord.amount,
+            updatedAt: now.getTime()
+          }
+        }, { new: true })
 
-            const updatedBillRecord = await BillRecord.findByIdAndUpdate(_id, { $set: { status, updatedAt: now.getTime() } }, { new: true })
-            const bill = await Bill.findOne({ userid: updatedBillRecord.userid })
-            const updatedBill = await Bill.findByIdAndUpdate(bill._id,
-                {
-                    $set: {
-                        remained: updatedBill.remained - updatedBillRecord.amount,
-                        withdraw: updatedBill.withdraw - updatedBillRecord.amount,
-                        updatedAt: now.getTime()
-                    }
-                }, { new: true })
-
-            return updatedBillRecord
-        }
-        default:
-            throw "invalid operation"
+      return updatedBillRecord
     }
+    case Type.WITHDRAW: {
+      const now = new Date();
+
+      const updatedBillRecord = await BillRecord.findByIdAndUpdate(_id, { $set: { status, updatedAt: now.getTime() } }, { new: true })
+      if (!updatedBillRecord) {
+        throw new Error('invalid billRecord')
+      }
+      const bill = await Bill.findOne({ userid: updatedBillRecord.toUserid })
+      if (!bill) {
+        throw new Error('invalid bill')
+      }
+      const updatedBill = await Bill.findByIdAndUpdate(bill._id,
+        {
+          $set: {
+            remained: bill.remained - updatedBillRecord.amount,
+            withdraw: bill.withdraw - updatedBillRecord.amount,
+            updatedAt: now.getTime()
+          }
+        }, { new: true })
+
+      return updatedBillRecord
+    }
+    default:
+      throw "invalid operation"
+  }
 
 }
 
 
-module.exports = {
-    insert,
-    find,
-    // updateStatus,
-    check
-}
 
+export default { insert, find, check }

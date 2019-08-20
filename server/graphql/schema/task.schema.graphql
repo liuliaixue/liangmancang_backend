@@ -1,0 +1,54 @@
+
+
+# 任务
+type Task{
+    _id: String!
+    parent: String
+    orderNumber: String
+
+    goodsName: String
+    goodsLink: String
+    goodsImage: String
+    goodsPrice: Float
+    amount: Int
+    goodsPriceShowed: Float
+    specification: String
+    isFreeShipping: Boolean
+
+    howToFindTask: String
+
+
+    startTime: Float
+    endTime: Float
+    total: Int
+
+    commission: Float
+    platformServiceFee: Float
+    platformCommission: Float
+
+    extraCommission: Float
+    extraImages:[String]
+    remark:String
+
+    status:TaskStatus
+
+    storeid: String
+    userid: String
+    workerid: String
+
+    createdAt: Float
+    updatedAt: Float
+
+}
+
+
+# 0 default, 
+# 1 being assigned to worker, 
+# 2 in appeal 
+# 3 finished
+enum TaskStatus{
+    DEFAULT
+    ASSIGNED
+    APPEAL
+    FINISHED
+}

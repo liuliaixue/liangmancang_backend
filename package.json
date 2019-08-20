@@ -5,6 +5,8 @@
   "main": "server",
   "scripts": {
     "start": "node server",
+    "gen": "node server/graphql/schema/generate.js",
+    "build": "tsc --build tsconfig.json && cp server/graphql/schema.graphql dist/graphql/schema.graphql",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
@@ -14,6 +16,8 @@
   "author": "Liu",
   "license": "ISC",
   "dependencies": {
+    "@types/dotenv": "^6.1.1",
+    "@types/joi": "^14.3.3",
     "axios": "^0.19.0",
     "bcrypt": "^3.0.6",
     "body-parser": "^1.19.0",
@@ -31,6 +35,14 @@
     "winston": "^3.2.1"
   },
   "devDependencies": {
+    "@types/bcrypt": "^3.0.0",
+    "@types/cookie-parser": "^1.4.2",
+    "@types/cors": "^2.8.6",
+    "@types/express": "^4.17.1",
+    "@types/graphql": "^14.2.3",
+    "@types/http-errors": "^1.6.2",
+    "@types/jsonwebtoken": "^8.3.3",
+    "@types/mongoose": "^5.5.13",
     "graphql-request": "^1.8.2",
     "ts-node": "^8.3.0"
   }

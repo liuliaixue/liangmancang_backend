@@ -1,0 +1,17 @@
+#
+
+
+# 用户余额
+type Bill{
+    _id: String
+    userid: String
+    # unit is cent
+    total: Float
+    remained: Float
+    freeze: Float
+    withdraw: Float
+
+
+    createdAt: Float
+    updatedAt: Float
+}

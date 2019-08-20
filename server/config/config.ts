@@ -1,7 +1,8 @@
-const Joi = require('joi');
+import Joi from 'joi'
+import dotenv from 'dotenv'
 
 // require and configure dotenv, will load vars in .env in PROCESS.ENV
-require('dotenv').config();
+dotenv.config();
 
 // define validation for all the env vars
 const envVarsSchema = Joi.object({
@@ -34,7 +35,7 @@ const config = {
   env: envVars.NODE_ENV,
   port: envVars.SERVER_PORT,
   mongooseDebug: envVars.MONGOOSE_DEBUG,
-  jwtSecret: envVars.JWT_SECRET,
+  jwtSecret: envVars.JWT_SECRET as string,
   frontend: envVars.MEAN_FRONTEND || 'angular',
   mongo: {
     host: envVars.MONGO_HOST,
@@ -42,4 +43,5 @@ const config = {
   }
 };
 
-module.exports = config;
+
+export default config

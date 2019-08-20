@@ -1,20 +1,13 @@
-const jwt = require('jsonwebtoken');
-const config = require('../config/config');
 
 
-module.exports = {
-    generateToken
+import jwt from "jsonwebtoken"
+import config from '../config/config'
+import { IUser } from '../models/user.model';
+
+
+
+function generateToken(user: IUser) {
+  const payload = JSON.stringify(user);
+  return jwt.sign(payload, config.jwtSecret);
 }
-
-
-function generateToken(user) {
-    const payload = JSON.stringify(user);
-    return jwt.sign(payload, config.jwtSecret);
-}
-
-
-// function verifyToken(token) {
-//     const decoded = jwt.verify(token, config.jwtSecret);
-//     return decoded
-
-// }
+export default { generateToken }

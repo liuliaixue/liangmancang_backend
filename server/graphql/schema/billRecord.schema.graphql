@@ -1,0 +1,32 @@
+# 充值记录,变更记录
+type BillRecord {
+    _id: String
+    userid: String
+    toUserid: String
+    amount: Float
+    # 0 default, normal charge 正常充值, 1 Promotion 推广金,
+    # 2 任务佣金锁定, 3 任务佣金退还, 4 任务佣金发放
+    # 5 提现
+    type: Float
+    # 0 default and waiting for check, 1 checked
+
+    status: Int
+
+    createdAt: Float
+    updatedAt: Float
+}
+
+enum BillRecordType {
+  DEFAULT 
+  PROMOTION 
+  TASK_LOCK 
+  TASK_REFUND 
+  TASK_PAYMENT 
+  WITHDRAW 
+}
+
+enum BillRecordStatus{
+  DEFAULT 
+  CHECKED
+
+}
