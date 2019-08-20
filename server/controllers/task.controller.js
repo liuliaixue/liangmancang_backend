@@ -1,6 +1,10 @@
 
 const Joi = require('joi');
 const Task = require('../models/task.model');
+const { Status } = Task
+const ruleCtrl = require('./rule.controller')
+const BillRecord = require('../models/billRecord.model')
+const Bill = require('../models/bill.model')
 
 const taskSchema = Joi.object({
     parent: Joi.string(),
@@ -56,6 +60,17 @@ const insert = async (task) => {
     return await new Task(task).save();
 
 }
+
+// const createTask = async (task) => {
+//     task = await Joi.validate(task, taskSchema, { abortEarly: false });
+
+//     const now = new Date();
+//     task.createdAt = now.getTime()
+//     task.updatedAt = now.getTime()
+//     return await new Task(task).save();
+// }
+
+
 const find = async (query = { skip: 0, limit: 10 }) => {
     const { skip, limit, parent, status } = query
     // todo filter by parent
@@ -97,7 +112,13 @@ const updateStatus = async (_id, status) => {
 
 const updateWorker = async (_id, workerid) => {
     const now = new Date();
-    const check = await Task.findByIdAndUpdate(_id, { $set: { workerid, updatedAt: now.getTime() } }, { new: true })
+    const check = await Task.findByIdAndUpdate(_id, {
+        $set: {
+            workerid,
+            status: Status.ASSIGNED,
+            updatedAt: now.getTime()
+        }
+    }, { new: true })
 
     if (!check) {
         throw new Error('incorrect _id')
@@ -106,13 +127,31 @@ const updateWorker = async (_id, workerid) => {
     return check._doc
 }
 
+const finish = async (_id) => {
+
+    const check = await Task.findById(_id)
+    if (!check) {
+        throw new Error('incorrect _id')
+    }
+    // todo finish bill 
+    const rule = await ruleCtrl.getCurrentRule()
+    // const { userid } = {}
+
+}
+
+const undo = async (_id) => {
+
+}
 
 module.exports = {
     insert,
+    // createTask,
     find,
     // findOne,
     // findById,
     updateInfo,
     updateStatus,
     updateWorker,
+    finish
+
 }

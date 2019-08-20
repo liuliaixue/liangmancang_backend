@@ -7,7 +7,7 @@ const requireAdmin = () => { }
 module.exports = {
 
     updateUserInfo: async (obj, req) => {
-        logger.info({ _from: 'updateUserInfo',_by: req.user.id,  ...obj })
+        logger.info({ _from: 'updateUserInfo', _by: req.user.id, ...obj })
 
 
         const _id = req.user.id
@@ -24,7 +24,7 @@ module.exports = {
         return updateUser
     },
     userList: async (obj, req) => {
-        logger.info({ _from: 'userList',_by: req.user.id,  ...obj })
+        logger.info({ _from: 'userList', _by: req.user.id, ...obj })
 
 
         const userListObj = await userCtrl.find(obj)

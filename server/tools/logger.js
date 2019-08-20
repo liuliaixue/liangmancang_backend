@@ -26,8 +26,7 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 const info = (obj) => {
-    // todo add __from
-    obj.date = new Date()
+    obj._date = new Date()
     logger.info(JSON.stringify(obj))
 }
 

@@ -6,6 +6,8 @@ const store = require('./store.js')
 const billRecord = require('./billRecord')
 const task = require('./task')
 
+const rule = require('./rule')
+
 
 const safeMerge = (...objList) => {
     var merged = {}

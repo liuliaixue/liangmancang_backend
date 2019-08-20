@@ -93,11 +93,18 @@ const TaskSchema = new mongoose.Schema({
         type: Number,
         default: 0
     },
-
-
 }, {
         versionKey: false
     });
 
 
+const Status = {
+    DEFAULT: 0,
+    ASSIGNED: 1,
+    APPEAL: 2,
+    FINISHED: 3,
+}
+
 module.exports = mongoose.model('Task', TaskSchema);
+
+module.exports.Status = Status

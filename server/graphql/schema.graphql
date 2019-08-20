@@ -87,13 +87,15 @@ type Mutation{
         storeid: String
     ): Task
     
-    startTask(
-        _id:String
-    ) :Task
+    # startTask(
+    #     _id:String!
+    # ) :Task
     udpateTaskStatus(
-        _id:String
+        _id:String!
         status: Int!
     ):Task
+
+    undoTask(_id:String!): Task
 
     
 
@@ -217,8 +219,7 @@ type Task{
     extraImages:[String]
     remark:String
 
-    # 0 default, 1  being assigned to worker, 2 in appeal 3 finished
-    status:Int
+    status:TaskStatus
 
     storeid: String
     userid: String
@@ -227,6 +228,18 @@ type Task{
     createdAt: Float
     updatedAt: Float
 
+}
+
+
+# 0 default, 
+# 1 being assigned to worker, 
+# 2 in appeal 
+# 3 finished
+enum TaskStatus{
+    DEFAULT
+    ASSIGNED
+    APPEAL
+    FINISHED
 }
 # 签到
 type CheckIn{

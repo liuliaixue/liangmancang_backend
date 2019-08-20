@@ -21,14 +21,14 @@ module.exports = {
     },
 
     updateStoreStatus: async (obj, req) => {
-        logger.info({ _from: 'updateStoreStatus',_by: req.user.id,  ...obj })
+        logger.info({ _from: 'updateStoreStatus', _by: req.user.id, ...obj })
 
         const { _id = 0, status = 0 } = obj
         const updateStore = await storeCtrl.updateStatus(_id, status)
         return updateStore
     },
     storeList: async (obj, req) => {
-        logger.info({ _from: 'updateStoreStatus', ...obj })
+        logger.info({ _from: 'updateStoreStatus', _by: req.user.id, ...obj })
 
 
         const storeListObj = await storeCtrl.find(obj)
