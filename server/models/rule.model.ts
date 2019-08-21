@@ -16,8 +16,8 @@ export interface IRule extends Document {
   userAntCreditPay: number,
   userCollection: number,
 
-  createdAt: number
-  updatedAt: number
+  createdAt: number,
+  updatedAt: number,
 
 }
 

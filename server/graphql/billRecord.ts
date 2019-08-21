@@ -9,17 +9,22 @@ import { Type, Status } from '../models/billRecord.model'
 
 export default {
   createBillRecord: async (obj: any, req: IReq) => {
-    logger.info({ _from: 'billRecord', _by: req.user.id, ...obj })
+    logger.info({ _from: 'createBillRecord', _by: req.user.id, ...obj })
 
     const { type } = obj
     const userid = req.user.id
     switch (type) {
-      case Type.DEFAULT:
-        const record = await billRecordCtrl.insert({ ...obj, status: 0, userid })
+      case Type.DEFAULT: {
+        const record = await billRecordCtrl.insert({ ...obj, status: Status.DEFAULT, userid })
         return record
-      case Type.WITHDRAW:
-        throw "unsupported"
-        return
+
+      }
+      case Type.WITHDRAW: {
+        const record = await billRecordCtrl.insert({ ...obj, status: Status.DEFAULT, userid })
+        return record
+
+      }
+
       default:
         throw new Error('invalid type')
     }
@@ -27,7 +32,7 @@ export default {
   },
 
   checkBillRecord: async (obj: any, req: IReq) => {
-    logger.info({ _from: 'updateBillRecordStatus', _by: req.user.id, ...obj })
+    logger.info({ _from: 'checkBillRecord', _by: req.user.id, ...obj })
 
     const { _id } = obj
     if (!_id) {

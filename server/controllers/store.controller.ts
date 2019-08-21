@@ -16,7 +16,7 @@ const storeSchema = Joi.object({
   address: Joi.string(),
   contactPhone: Joi.string(),
 
-  status: Joi.number(),
+  status: Joi.string(),
 
   createdAt: Joi.number(),
   updatedAt: Joi.number(),

@@ -10,3 +10,6 @@ doc
 
 #logs
 log
+
+# generated files
+server/graphql/schema.graphql

@@ -9,9 +9,9 @@ const billRecordSchema = Joi.object({
   toUserid: Joi.string().required(),
 
   amount: Joi.number(),
-  type: Joi.number(),
+  type: Joi.string(),
 
-  status: Joi.number(),
+  status: Joi.string(),
 
   createdAt: Joi.number(),
   updatedAt: Joi.number(),
@@ -23,6 +23,7 @@ const billRecordSchema = Joi.object({
 
 
 async function insert(billRecord: IBillRecord) {
+  // todo verify toUserid
   billRecord = await Joi.validate(billRecord, billRecordSchema, { abortEarly: false });
 
   const now = new Date();
@@ -37,7 +38,7 @@ export interface IBillRecordQuery {
   types: [number]
   status: Status
 }
-const find = async (query: IBillRecordQuery = { skip: 0, limit: 10, types: [0], status: 0 }) => {
+const find = async (query: IBillRecordQuery = { skip: 0, limit: 10, types: [0], status: Status.DEFAULT }) => {
   const { skip, limit, types, status } = query
   const filter = { $in: { type: types } }
   const billRecordList = await BillRecord.find(filter).skip(skip).limit(limit)

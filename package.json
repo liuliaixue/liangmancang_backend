@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node server",
     "gen": "node server/graphql/schema/generate.js && cp server/graphql/schema.graphql dist/graphql/schema.graphql",
-    "build": "tsc --build tsconfig.json && cp server/graphql/schema.graphql dist/graphql/schema.graphql",
+    "build": "tsc --build tsconfig.json",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [

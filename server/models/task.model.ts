@@ -1,11 +1,11 @@
 import { Schema, Model, model, Document } from 'mongoose';
 
 enum Status {
-  DEFAULT,
-  ASSIGNED,
-  APPEAL,
-  FINISHED,
-  ABORT,
+  DEFAULT = "DEFAULT",
+  ASSIGNED = "ASSIGNED",
+  APPEAL = "APPEAL",
+  FINISHED = "FINISHED",
+  ABORT = "ABORT",
 }
 export interface ITask extends Document {
   parent: string
@@ -116,7 +116,8 @@ const TaskSchema = new Schema({
 
 
   status: {
-    type: Number,
+    type: String,
+    required: true
   },
 
   storeid: {

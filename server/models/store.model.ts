@@ -15,9 +15,9 @@ export interface IStore extends Document {
 }
 
 enum Status {
-  DEFAULT,
-  OK,
-  BAD
+  DEFAULT = "DEFAULT",
+  OK = "OK",
+  BAD = "BAD",
 }
 
 const StoreSchema = new Schema({
@@ -54,7 +54,8 @@ const StoreSchema = new Schema({
   },
 
   status: {
-    type: Number,
+    type: String,
+    required: true
   },
 
 

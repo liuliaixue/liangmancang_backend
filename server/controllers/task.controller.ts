@@ -37,7 +37,7 @@ const taskSchema = Joi.object({
 
 
   storeid: Joi.string(),
-  userid: Joi.string().required(),
+  userid: Joi.string(),
   workerid: Joi.string(),
 
 
@@ -79,14 +79,7 @@ const createTask = async (task: ITask) => {
   if (!Number.isInteger(amount)) {
     throw new Error('server error')
   }
-  const lockRecordObj = {
-    userid: task.userid,
-    amount: amount,
-    type: BillRecordType.TASK_LOCK,
-    status: BillRecordStatus.DEFAULT,
-    createdAt: now.getTime(),
-    updatedAt: now.getTime()
-  }
+
   const bill = await Bill.findOne({ userid: task.userid })
   if (!bill) {
     throw new Error('user bill info not found')
@@ -104,11 +97,20 @@ const createTask = async (task: ITask) => {
         updatedAt: now.getTime()
       }
     }, { new: true })
+  const lockRecordObj = {
+    userid: task.userid,
+    amount: amount,
+    type: BillRecordType.TASK_LOCK,
+    status: BillRecordStatus.DEFAULT,
+    createdAt: now.getTime(),
+    updatedAt: now.getTime()
+  }
   const lockTaskBillRecord = await new BillRecord(lockRecordObj).save()
 
 
   task.createdAt = now.getTime()
   task.updatedAt = now.getTime()
+  task.status = Status.DEFAULT
   return await new Task(task).save();
 }
 

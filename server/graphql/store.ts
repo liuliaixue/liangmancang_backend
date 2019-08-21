@@ -2,6 +2,7 @@ import { IReq } from '../config/passport';
 
 import storeCtrl from '../controllers/store.controller'
 import logger from '../tools/logger';
+import { Status } from '../models/store.model';
 
 
 
@@ -11,7 +12,7 @@ export default {
   bindStore: async (obj: any, req: IReq) => {
     logger.info({ _from: 'bindStore', _by: req.user.id, ...obj })
 
-    let store = await storeCtrl.insert({ ...obj, userid: req.user.id })
+    let store = await storeCtrl.insert({ ...obj, status: Status.DEFAULT, userid: req.user.id })
     return store
   },
 

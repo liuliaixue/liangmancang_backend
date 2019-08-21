@@ -1,11 +1,12 @@
 import { Schema, Model, model, Document } from 'mongoose';
-
+import { IBill } from './bill.model';
+import { string, number } from 'joi';
 
 enum Status {
-  DEFAULT,
-  OK,
-  BAD,
-  FREEZE
+  DEFAULT = "DEFAULT",
+  OK = "OK",
+  BAD = "BAD",
+  FREEZE = "FREEZE"
 }
 
 
@@ -17,11 +18,12 @@ export interface IUser extends Document {
   qq: string
   idCard: string
   bankCard: string
-
   roles: [string]
   status: Status
   createdAt: number
   updatedAt: number
+
+  bill: IBill
 
 }
 
@@ -60,8 +62,8 @@ const UserSchema: Schema = new Schema({
     required: false
   },
   status: {
-    type: Number,
-    required: false
+    type: String,
+    required: false,
   },
 
 

@@ -22,7 +22,7 @@ const BillRecordSchema: Schema = new Schema({
   },
   toUserid: {
     type: String,
-    required: true,
+    required: false,
   },
   amount: {
     type: Number,
@@ -30,12 +30,12 @@ const BillRecordSchema: Schema = new Schema({
   },
 
   type: {
-    type: Number,
-    required: false
+    type: String,
+    required: true
   },
   status: {
-    type: Number,
-    required: false
+    type: String,
+    required: true
   },
 
 
@@ -59,18 +59,18 @@ const BillRecordSchema: Schema = new Schema({
 
 
 enum Type {
-  DEFAULT,
-  PROMOTION,
-  TASK_LOCK,
-  TASK_REFUNK,
-  TASK_PAYMENT,
-  WITHDRAW
+  DEFAULT = "DEFAULT",
+  PROMOTION = "PROMOTION",
+  TASK_LOCK = "TASK_LOCK",
+  TASK_REFUNK = "TASK_REFUNK",
+  TASK_PAYMENT = "TASK_PAYMENT",
+  WITHDRAW = "WITHDRAW"
 
 
 }
 enum Status {
-  DEFAULT,
-  CHECKED,
+  DEFAULT = "DEFAULT",
+  CHECKED = "CHECKED",
 }
 
 const BillRecord: Model<IBillRecord> = model('BillRecord', BillRecordSchema);

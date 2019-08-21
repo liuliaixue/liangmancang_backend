@@ -4,35 +4,32 @@ const assert = require('assert')
 const client = require('./_client')
 
 describe('User', function () {
-    it('register', async () => {
-        const user = {
-            username: '18817570747',
-            password: '123456',
+  it('register', async () => {
+    const user = config.user
+    const res = await client.post('/api/auth/register', user)
+    console.log(res.data)
+    assert(res.data.user.username === user.username)
+  });
 
-            mobileNumber: '18817570743',
-        }
-        const res = await client.post('/api/auth/register', user)
-        assert(res.data.user.username === user.username)
-    });
+  // it('register fail with same username', async () => {
+  //     let res = await client.post('/api/auth/register', {
+  //         username: '18817570743',
+  //         password: '123456',
 
-    // it('register fail with same username', async () => {
-    //     let res = await client.post('/api/auth/register', {
-    //         username: '18817570743',
-    //         password: '123456',
+  //         mobileNumber: '18817570743',
+  //     });
+  //     assert(res.status === 500)
 
-    //         mobileNumber: '18817570743',
-    //     });
-    //     assert(res.status === 500)
+  // });
 
-    // });
+  it('login', async () => {
+    const res = await client.post('/api/auth/login', config.user)
+    assert(res.data.user.username === config.user.username)
+    console.log(res.data.token)
+    var fs = require('fs')
+    const path = require('path')
+    fs.writeFileSync(path.join(__dirname, '_token'), res.data.token)
 
-    it('login', async () => {
-        const res = await client.post('/api/auth/login', {
-            username: '18817570747',
-            password: '123456',
-        })
-        assert(res.data.user.username === '18817570747')
-        console.log(res.data.token)
-
-    })
+    // fs.writeFileSync(path.join(__dirname, '_token'), res.data.token)
+  })
 });

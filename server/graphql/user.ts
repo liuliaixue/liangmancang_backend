@@ -3,6 +3,8 @@
 import userCtrl from '../controllers/user.controller'
 import logger from '../tools/logger';
 import { IReq } from '../config/passport';
+import billRecordController from '../controllers/billRecord.controller';
+import billCtrl from '../controllers/bill.controller'
 
 export default {
 
@@ -12,6 +14,8 @@ export default {
 
     const _id = req.user.id
     const updatedUser = await userCtrl.updateInfo(_id, obj)
+    const bill = await billCtrl.findOne({ userid: updatedUser._id })
+    updatedUser.bill = bill
     return updatedUser
   },
 
@@ -24,7 +28,7 @@ export default {
     return updateUser
   },
   userList: async (obj: any, req: IReq) => {
-    
+
     logger.info({ _from: 'userList', _by: req.user.id, ...obj })
 
 

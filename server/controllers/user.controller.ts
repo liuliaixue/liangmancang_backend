@@ -15,7 +15,7 @@ const userSchema = Joi.object({
   qq: Joi.string(),
   idCard: Joi.string(),
   bankCard: Joi.string(),
-  status: Joi.number(),
+  status: Joi.string(),
 
   createdAt: Joi.number(),
   updatedAt: Joi.number(),
@@ -109,6 +109,9 @@ const updateInfo = async (_id: string, updateObj: IUser) => {
 }
 
 const updateStatus = async (_id: string, status: Status) => {
+  if (status === Status.DEFAULT) {
+    throw new Error('invalid status')
+  }
   const now = new Date();
   const check = await User.findByIdAndUpdate(_id, { $set: { status, updatedAt: now.getTime() } }, { new: true })
 
