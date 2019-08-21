@@ -1,6 +1,9 @@
 import Joi from 'joi'
 import Task, { Status, ITask } from '../models/task.model'
 import ruleCtrl from './rule.controller'
+import { IRule } from '../models/rule.model';
+import BillRecord, { IBillRecord, Status as BillRecordStatus, Type as BillRecordType } from '../models/billRecord.model';
+import Bill from '../models/bill.model';
 
 
 const taskSchema = Joi.object({
@@ -11,17 +14,18 @@ const taskSchema = Joi.object({
   goodsLink: Joi.string(),
   goodsImage: Joi.string(),
   goodsPrice: Joi.number(),
-  amount: Joi.number(),
+  goodsTotal: Joi.number(),
   goodsPriceShowed: Joi.number(),
-  specification: Joi.string(),
+  goodsSpecification: Joi.string(),
   isFreeShipping: Joi.bool(),
 
-  howToFindTask: Joi.string(),
+  howToFindGoods: Joi.string(),
 
 
   startTime: Joi.number(),
   endTime: Joi.number(),
-  amout: Joi.number(),
+  total: Joi.number(),
+
 
   commission: Joi.number(),
   platformServiceFee: Joi.number(),
@@ -38,7 +42,7 @@ const taskSchema = Joi.object({
 
 
   // # 0 default, 1  being assigned to worker, 2 in appeal 3 finished
-  status: Joi.number(),
+  status: Joi.string(),
 
   createdAt: Joi.number(),
   updatedAt: Joi.number(),
@@ -58,14 +62,55 @@ const insert = async (task: ITask) => {
 
 }
 
-// const createTask = async (task) => {
-//     task = await Joi.validate(task, taskSchema, { abortEarly: false });
+const createTask = async (task: ITask) => {
+  task = await Joi.validate(task, taskSchema, { abortEarly: false });
+  const now = new Date()
 
-//     const now = new Date();
-//     task.createdAt = now.getTime()
-//     task.updatedAt = now.getTime()
-//     return await new Task(task).save();
-// }
+  //todo bill lock bill
+  const rule = await ruleCtrl.getCurrentRule()
+  if (!rule) {
+    throw new Error('unable to got rule')
+  }
+  if (!Number.isInteger(task.total) || !Number.isInteger(task.extraCommission)) {
+    throw new Error(`total is ${task.total}`)
+  }
+
+  const amount = (ruleCtrl.gerCurrentRuleAmount(rule) + task.extraCommission) * task.total
+  if (!Number.isInteger(amount)) {
+    throw new Error('server error')
+  }
+  const lockRecordObj = {
+    userid: task.userid,
+    amount: amount,
+    type: BillRecordType.TASK_LOCK,
+    status: BillRecordStatus.DEFAULT,
+    createdAt: now.getTime(),
+    updatedAt: now.getTime()
+  }
+  const bill = await Bill.findOne({ userid: task.userid })
+  if (!bill) {
+    throw new Error('user bill info not found')
+  }
+  if (bill.remained < amount) {
+    throw new Error('余额不足')
+  }
+
+  // lock bill and add billRecord
+  const updatedBill = await Bill.findByIdAndUpdate(bill._id,
+    {
+      $set: {
+        remained: bill.remained - amount,
+        freeze: bill.freeze + amount,
+        updatedAt: now.getTime()
+      }
+    }, { new: true })
+  const lockTaskBillRecord = await new BillRecord(lockRecordObj).save()
+
+
+  task.createdAt = now.getTime()
+  task.updatedAt = now.getTime()
+  return await new Task(task).save();
+}
 
 export interface ITaskQuery {
   skip: number,
@@ -103,7 +148,11 @@ const updateInfo = async (_id: string, updateObj: ITask) => {
 
 const updateStatus = async (_id: string, status: Status) => {
   const now = new Date();
-  const check = await Task.findByIdAndUpdate(_id, { $set: { status, updatedAt: now.getTime() } }, { new: true })
+  const check = await Task.findByIdAndUpdate(_id, {
+    $set: {
+      status, updatedAt: now.getTime()
+    }
+  }, { new: true })
 
   if (!check) {
     throw new Error('incorrect _id')
@@ -135,24 +184,63 @@ const finish = async (_id: string) => {
   if (!check) {
     throw new Error('incorrect _id')
   }
+  if (check.status === Status.FINISHED) {
+    throw new Error('the task is already finished')
+  }
+  if (check.status === Status.DEFAULT) {
+
+  }
+
+
+  const now = new Date()
+  const updatedTask = await Task.findByIdAndUpdate(_id, {
+    $set: {
+      status: Status.FINISHED,
+      updatedAt: now.getTime()
+    }
+  }, { new: true })
+
+
+  return updatedTask
+
   // todo finish bill 
-  const rule = await ruleCtrl.getCurrentRule()
+  // const rule = await ruleCtrl.getCurrentRule()
   // const { userid } = {}
 
 }
 
 const undo = async (_id: string) => {
 
+  const check = await Task.findById(_id)
+  if (!check) {
+    throw new Error('incorrect _id')
+  }
+  if (check.status == Status.DEFAULT) {
+    throw new Error('incorrent task status')
+  }
+
+  const now = new Date()
+  const updatedTask = await Task.findByIdAndUpdate(_id, {
+    $set: {
+      status: Status.ABORT,
+      updatedAt: now.getTime()
+    }
+  }, { new: true })
+
+
+  return updatedTask
+  // todo finish bill 
 }
 export default {
   insert,
-  // createTask,
+  createTask,
   find,
   // findOne,
   // findById,
   updateInfo,
   updateStatus,
   updateWorker,
-  finish
+  finish,
+  undo
 
 }

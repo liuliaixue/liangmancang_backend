@@ -1,5 +1,3 @@
-
-
 # 任务
 type Task{
     _id: String!
@@ -10,12 +8,12 @@ type Task{
     goodsLink: String
     goodsImage: String
     goodsPrice: Float
-    amount: Int
+    goodsTotal: Int
     goodsPriceShowed: Float
-    specification: String
+    goodsSpecification: String
     isFreeShipping: Boolean
 
-    howToFindTask: String
+    howToFindGoods: String
 
 
     startTime: Float
@@ -47,8 +45,9 @@ type Task{
 # 2 in appeal 
 # 3 finished
 enum TaskStatus{
-    DEFAULT
+    DEFAULT 
     ASSIGNED
     APPEAL
     FINISHED
+    ABORT
 }

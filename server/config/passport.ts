@@ -18,7 +18,7 @@ const verifyUser = async function (req: any, res: express.Response, next: expres
     }
     const decoded: any = jwt.verify(token, config.jwtSecret);
 
-    let user = await User.findById(decoded.id);
+    let user = await User.findById(decoded._id);
     if (!user) {
       throw new Error('invalid user')
     }

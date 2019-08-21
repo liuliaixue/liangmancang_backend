@@ -1,12 +1,12 @@
 
 import { Schema, Model, model, Document } from 'mongoose';
 
-export interface IBillRecord extends Document {
+interface IBillRecord extends Document {
   // _id?: mongoose.Types.ObjectId
   // id?: string
 
   userid: string
-  toUserid: string
+  toUserid?: string
   amount: number
   type: Type
   status: Status
@@ -70,12 +70,12 @@ enum Type {
 }
 enum Status {
   DEFAULT,
-  CHECKED
+  CHECKED,
 }
 
 const BillRecord: Model<IBillRecord> = model('BillRecord', BillRecordSchema);
 
 export default BillRecord;
-export { Type, Status };
+export { Type, Status, IBillRecord };
 
 

@@ -1,6 +1,4 @@
 # graphql schema
-
-
 type Query{
     user(_id: String!): User
     store(_id: String!): Store
@@ -59,23 +57,23 @@ type Mutation{
         _id: String!
     ): BillRecord
     createTask(
-        _id:String
+        # _id:String
         orderNumber: String
 
         goodsName: String
         goodsLink: String
         goodsImage: String
         goodsPrice: Float
-        amount: Int
+        goodsTotal: Int
         goodsPriceShowed: Float
-        specification: String
+        goodsSpecification: String
         isFreeShipping: Boolean
 
-        howToFindTask: String
+        howToFindGoods: String
 
         startTime: Float
         endTime: Float
-        amout: Int
+        total: Int
 
         commission: Float
         platformServiceFee: Float
@@ -91,16 +89,13 @@ type Mutation{
     # startTask(
     #     _id:String!
     # ) :Task
-    udpateTaskStatus(
+    updateTaskStatus(
         _id:String!
         status: Int!
     ):Task
 
     undoTask(_id:String!): Task
 
-    
-
-    
 }
 
 
@@ -127,6 +122,7 @@ type Withdraw{
     updatedAt: Float
 }
 
+#
 type RejectReason{
     _id:String
     content: String
@@ -177,3 +173,4 @@ type commissionRule {
     userCollection:Int
     
 }
+

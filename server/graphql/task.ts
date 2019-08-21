@@ -6,11 +6,13 @@ import taskCtrl from '../controllers/task.controller'
 import { Status } from '../models/task.model'
 
 export default {
+  // 创建父亲任务, 后台在worker中创建子任务
   createTask: async (obj: any, req: IReq) => {
-    logger.info({ _from: 'createOrUpdateTask', _by: req.user.id, ...obj })
+    logger.info({ _from: 'createTask', _by: req.user.id, ...obj })
 
 
-    const task = await taskCtrl.insert({ ...obj, userid: req.user.id })
+    // const task = await taskCtrl.insert({ ...obj, userid: req.user.id })
+    const task = await taskCtrl.createTask({ ...obj, userid: req.user.id });
 
     return task
 
@@ -69,5 +71,13 @@ export default {
     }
 
   },
+
+  undoTask: async (obj: any, req: IReq) => {
+    logger.info({ _from: 'undoTask', _by: req.user.id, ...obj })
+
+    const updatedTask = await taskCtrl.undo(obj._id)
+    return updatedTask
+
+  }
 
 }

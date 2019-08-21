@@ -1,6 +1,4 @@
 # graphql schema
-
-
 type Query{
     user(_id: String!): User
     store(_id: String!): Store
@@ -59,23 +57,23 @@ type Mutation{
         _id: String!
     ): BillRecord
     createTask(
-        _id:String
+        # _id:String
         orderNumber: String
 
         goodsName: String
         goodsLink: String
         goodsImage: String
         goodsPrice: Float
-        amount: Int
+        goodsTotal: Int
         goodsPriceShowed: Float
-        specification: String
+        goodsSpecification: String
         isFreeShipping: Boolean
 
-        howToFindTask: String
+        howToFindGoods: String
 
         startTime: Float
         endTime: Float
-        amout: Int
+        total: Int
 
         commission: Float
         platformServiceFee: Float
@@ -91,16 +89,13 @@ type Mutation{
     # startTask(
     #     _id:String!
     # ) :Task
-    udpateTaskStatus(
+    updateTaskStatus(
         _id:String!
         status: Int!
     ):Task
 
     undoTask(_id:String!): Task
 
-    
-
-    
 }
 
 
@@ -176,7 +171,9 @@ type commissionRule {
     userAntCreditPay: Int
     userCollection:Int
     
-}#
+}
+
+#
 
 
 # 用户余额
@@ -224,7 +221,8 @@ enum BillRecordStatus{
   DEFAULT 
   CHECKED
 
-}# 店铺信息
+}
+# 店铺信息
 type Store{
     _id: String!
     name: String!
@@ -257,7 +255,6 @@ type StoreList{
     list: [Store],
     total: Int
 }
-
 # 任务
 type Task{
     _id: String!
@@ -268,12 +265,12 @@ type Task{
     goodsLink: String
     goodsImage: String
     goodsPrice: Float
-    amount: Int
+    goodsTotal: Int
     goodsPriceShowed: Float
-    specification: String
+    goodsSpecification: String
     isFreeShipping: Boolean
 
-    howToFindTask: String
+    howToFindGoods: String
 
 
     startTime: Float
@@ -304,12 +301,15 @@ type Task{
 # 1 being assigned to worker, 
 # 2 in appeal 
 # 3 finished
+# 4 abort 放弃
 enum TaskStatus{
-    DEFAULT
+    DEFAULT 
     ASSIGNED
     APPEAL
     FINISHED
-}#用户
+    ABORT
+}
+#用户
 type User{
     _id: String!
     # remained, an increasing number 

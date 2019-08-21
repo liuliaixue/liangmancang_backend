@@ -5,6 +5,7 @@ enum Status {
   ASSIGNED,
   APPEAL,
   FINISHED,
+  ABORT,
 }
 export interface ITask extends Document {
   parent: string
@@ -14,11 +15,11 @@ export interface ITask extends Document {
   goodsLink: string
   goodsImage: string
   goodsPrice: number
-  amount: number
+  goodsTotal: number
   goodsPriceShowed: number
-  specification: string
+  goodsSpecification: string
   isFreeShipping: boolean
-  howToFindTask: string
+  howToFindGoods: string
 
   startTime: number
   endTime: number
@@ -65,19 +66,19 @@ const TaskSchema = new Schema({
   goodsPrice: {
     type: Number,
   },
-  amount: {
+  goodsTotal: {
     type: Number,
   },
   goodsPriceShowed: {
     type: Number,
   },
-  specification: {
+  goodsSpecification: {
     type: String,
   },
   isFreeShipping: {
     type: Boolean,
   },
-  howToFindTask: {
+  howToFindGoods: {
     type: String,
   },
 
