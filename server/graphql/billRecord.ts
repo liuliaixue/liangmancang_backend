@@ -8,7 +8,7 @@ import { Type, Status } from '../models/billRecord.model'
 
 
 export default {
-  billRecord: async (obj: any, req: IReq) => {
+  createBillRecord: async (obj: any, req: IReq) => {
     logger.info({ _from: 'billRecord', _by: req.user.id, ...obj })
 
     const { type } = obj
@@ -26,7 +26,7 @@ export default {
 
   },
 
-  billRecordCheck: async (obj: any, req: IReq) => {
+  checkBillRecord: async (obj: any, req: IReq) => {
     logger.info({ _from: 'updateBillRecordStatus', _by: req.user.id, ...obj })
 
     const { _id } = obj
