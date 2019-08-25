@@ -13,3 +13,7 @@ log
 
 # generated files
 server/graphql/schema.graphql
+
+
+# server package
+*.tar

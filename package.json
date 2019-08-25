@@ -4,14 +4,15 @@
   "description": "",
   "main": "server",
   "scripts": {
-    "start": "node server",
+    "start": "npm run gen && node dist/index",
     "gen": "node server/graphql/schema/generate.js && cp server/graphql/schema.graphql dist/graphql/schema.graphql",
     "build": "tsc --build tsconfig.json",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
     "liangmancang",
-    "粮满仓"
+    "粮满仓",
+    "typescript"
   ],
   "author": "Liu",
   "license": "ISC",
