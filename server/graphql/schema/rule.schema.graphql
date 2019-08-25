@@ -1,0 +1,24 @@
+# 佣金计算规则
+
+type Rule {
+    _id: String!
+
+    buyerPercentage: Float
+    platformPercentage: Float
+
+    storePromotion: Float
+    buyerPromotion: Float
+
+    createdAt: Float
+    updatedAt: Float
+
+    keyword:Int
+    image: Int
+    userArea: Int
+    userAge: Int
+    userGender:Int
+    userLevel: Int
+    userAntCreditPay: Int
+    userCollection:Int
+    
+}

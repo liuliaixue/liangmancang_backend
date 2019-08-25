@@ -7,12 +7,12 @@ import { Status } from '../models/task.model'
 
 export default {
   // 创建父亲任务, 后台在worker中创建子任务
-  createTask: async (obj: any, req: IReq) => {
-    logger.info({ _from: 'createTask', _by: req.user.id, ...obj })
+  newTask: async (obj: any, req: IReq) => {
+    logger.info({ _from: 'newTask', _by: req.user.id, ...obj })
 
 
     // const task = await taskCtrl.insert({ ...obj, userid: req.user.id })
-    const task = await taskCtrl.createTask({ ...obj, userid: req.user.id });
+    const task = await taskCtrl.newTask({ ...obj, userid: req.user.id });
 
     return task
 
@@ -66,18 +66,18 @@ export default {
         const updatedTask = await taskCtrl.finish(obj._id)
         return updatedTask
       }
+
+      case Status.ABORT: {
+
+        const updatedTask = await taskCtrl.abort(obj._id)
+        return updatedTask
+
+
+      }
       default:
         throw new Error('invalid status, only APPEAL and FINISHED are allowed')
     }
 
   },
-
-  undoTask: async (obj: any, req: IReq) => {
-    logger.info({ _from: 'undoTask', _by: req.user.id, ...obj })
-
-    const updatedTask = await taskCtrl.undo(obj._id)
-    return updatedTask
-
-  }
 
 }

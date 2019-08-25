@@ -1,9 +1,7 @@
-#
-
-
 # 用户余额
+
 type Bill{
-    _id: String
+    _id: String!
     userid: String
     # unit is cent
     total: Float

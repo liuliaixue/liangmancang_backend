@@ -1,4 +1,5 @@
 #用户
+
 type User{
     _id: String!
     # remained, an increasing number 
@@ -28,4 +29,16 @@ enum UserStatus{
   OK 
   BAD 
   FREEZE
+}
+
+
+## todo userRole
+enum UserRole{
+  Admin      # platform User
+  Admin_Root # super user 
+  Admin_Cus  # CustomerService
+  Admin_Fin  # Finance
+  Store
+  Buyer
+  Default
 }

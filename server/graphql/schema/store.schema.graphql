@@ -1,4 +1,5 @@
 # 店铺信息
+
 type Store{
     _id: String!
     name: String!

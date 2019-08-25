@@ -1,0 +1,11 @@
+# 拒绝理由
+
+type Reason{
+    _id:String!
+    content: String!
+}
+
+type ReasonList{
+  list:[Reason],
+  total: Int
+}

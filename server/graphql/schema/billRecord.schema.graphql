@@ -1,6 +1,7 @@
 # 充值记录,变更记录
+
 type BillRecord {
-    _id: String
+    _id: String!
     userid: String
     toUserid: String
     amount: Float
@@ -28,4 +29,9 @@ enum BillRecordType {
 enum BillRecordStatus{
   DEFAULT 
   CHECKED
+}
+
+type BillRecordList{
+  list:[BillRecord],
+  total: Int
 }

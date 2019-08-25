@@ -62,7 +62,7 @@ const insert = async (task: ITask) => {
 
 }
 
-const createTask = async (task: ITask) => {
+const newTask = async (task: ITask) => {
   task = await Joi.validate(task, taskSchema, { abortEarly: false });
   const now = new Date()
 
@@ -211,7 +211,7 @@ const finish = async (_id: string) => {
 
 }
 
-const undo = async (_id: string) => {
+const abort = async (_id: string) => {
 
   const check = await Task.findById(_id)
   if (!check) {
@@ -235,7 +235,7 @@ const undo = async (_id: string) => {
 }
 export default {
   insert,
-  createTask,
+  newTask,
   find,
   // findOne,
   // findById,
@@ -243,6 +243,6 @@ export default {
   updateStatus,
   updateWorker,
   finish,
-  undo
+  abort
 
 }

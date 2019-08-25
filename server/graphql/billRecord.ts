@@ -8,8 +8,8 @@ import { Type, Status } from '../models/billRecord.model'
 
 
 export default {
-  createBillRecord: async (obj: any, req: IReq) => {
-    logger.info({ _from: 'createBillRecord', _by: req.user.id, ...obj })
+  newBillRecord: async (obj: any, req: IReq) => {
+    logger.info({ _from: 'newBillRecord', _by: req.user.id, ...obj })
 
     const { type } = obj
     const userid = req.user.id

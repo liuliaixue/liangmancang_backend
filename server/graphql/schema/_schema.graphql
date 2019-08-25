@@ -4,6 +4,13 @@ type Query{
     store(_id: String!): Store
     bill(userid: String): Bill
     billRecord(_id: String!): BillRecord
+    task(_id: String!):Task
+
+    checkIn(_id:String):CheckIn
+    reson(_id:String):Reason
+    message(_id:String):Message
+    rule(_id:String):Rule
+    
 }
 
 
@@ -44,7 +51,7 @@ type Mutation{
     ):Store
     storeList(skip: Int, limit:Int): StoreList
 
-    createBillRecord(
+    newBillRecord(
         toUserid: String!
         amount: Float!
         # 0 default, normal charge 正常充值, 1 Promotion 推广金,
@@ -56,7 +63,7 @@ type Mutation{
     checkBillRecord(
         _id: String!
     ): BillRecord
-    createTask(
+    newTask(
         # _id:String
         orderNumber: String
 
@@ -94,83 +101,7 @@ type Mutation{
         status: TaskStatus
     ):Task
 
-    undoTask(_id:String!): Task
 
 }
 
-
-
-# 签到
-type CheckIn{
-    _id: String
-    userid: String
-    create: Int
-    update: Int
-}
-
-
-# 提现
-type Withdraw{
-    _id: String
-    userid: String
-    amount: Int
-    # 0 default, 1 ok, 2 reject
-    # status:Int
-    reason: String
-    mark: String
-    createdAt: Float
-    updatedAt: Float
-}
-
-#
-type RejectReason{
-    _id:String
-    content: String
-}
-
-# appeal
-type appeal{
-    _id: String
-    userid:String
-    taskid:String
-    createdAt: Float
-    updatedAt: Float
-    # 撤销订单 todo: 什么是撤销订单?
-    cancelOrder: String
-    # 0 default open, 1 closed
-    # status: Int
-
-}
-type appealMessage{
-    _id: String
-    appealid: String
-    
-    userid:String
-    content:String
-    createdAt: Float
-    updatedAt: Float
-}
-# 佣金计算规则
-type commissionRule {
-    _id: String
-
-    buyerPercentage: Float
-    platformPercentage: Float
-
-    storePromotion: Float
-    buyerPromotion: Float
-
-    createdAt: Float
-    updatedAt: Float
-
-    keyword:Int
-    image: Int
-    userArea: Int
-    userAge: Int
-    userGender:Int
-    userLevel: Int
-    userAntCreditPay: Int
-    userCollection:Int
-    
-}
 

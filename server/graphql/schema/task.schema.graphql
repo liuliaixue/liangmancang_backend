@@ -1,4 +1,5 @@
-# 任务
+# 任务 task
+
 type Task{
     _id: String!
     parent: String
@@ -50,4 +51,9 @@ enum TaskStatus{
     APPEAL
     FINISHED
     ABORT
+}
+
+type TaskList{
+    list: [Task],
+    total: Int
 }

@@ -1,0 +1,14 @@
+# 签到
+
+type CheckIn{
+    _id: String!
+    userid: String!
+    createdAt: Int
+    updatedAt: Int
+}
+
+
+type CheckInList{
+  list:[CheckIn]
+  total: Int
+}

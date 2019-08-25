@@ -5,9 +5,9 @@ const config = require('./_config')
 const assert = require('assert')
 
 describe('graphql task', () => {
-  it('createTask', async () => {
+  it('newTask', async () => {
     const query = `mutation {
-      createTask(
+      newTask(
         orderNumber: "______"
         goodsName: "______"
         goodsLink: "______"

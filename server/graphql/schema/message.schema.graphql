@@ -1,0 +1,16 @@
+# 申诉留言
+
+type Message{
+    _id: String!
+    content:String!
+    taskid: String
+
+    userid:String
+    createdAt:Float
+    updatedAt:Float
+}
+
+type MessageList{
+  list:[Message]
+  total: Int 
+}
