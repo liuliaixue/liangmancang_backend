@@ -1,7 +1,7 @@
 
 
 import bcrypt from 'bcrypt'
-import Joi, { string } from 'joi'
+import Joi from 'joi'
 import User, { IUser, Status } from '../models/user.model'
 import Bill from "../models/bill.model"
 
@@ -51,6 +51,8 @@ async function insert(user: IUser) {
 
   return savedUser
 }
+
+
 const find = async (query = { skip: 0, limit: 10 }) => {
   const { skip, limit } = query
   const userList = await User.find().skip(skip).limit(limit)

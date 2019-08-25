@@ -117,15 +117,31 @@ const newTask = async (task: ITask) => {
 export interface ITaskQuery {
   skip: number,
   limit: number,
-  parent: string
-  status: Status
+  userid?: string,
+  parent?: string,
+  status?: Status,
 }
-const find = async (query: ITaskQuery = { skip: 0, limit: 10, parent: '', status: Status.DEFAULT }) => {
-  const { skip, limit, parent, status } = query
+export interface ItaskFilter {
+  userid?: string,
+  parent?: string,
+  status?: Status,
+}
+const find = async (query: ITaskQuery = { skip: 0, limit: 10, }) => {
+  const { skip, limit, userid, parent, status } = query
   // todo filter by parent
-  // const filter = { parent }
-  const list = await Task.find().skip(skip).limit(limit)
-  const total = await Task.count({})
+  const filter: ItaskFilter = {}
+  if (userid) {
+    filter.userid = userid
+  }
+  if (parent) {
+    filter.parent = parent
+  }
+  if (status) {
+    filter.status = status
+  }
+
+  const list = await Task.find(filter).skip(skip).limit(limit)
+  const total = await Task.count(filter)
 
   return { list, total }
 }

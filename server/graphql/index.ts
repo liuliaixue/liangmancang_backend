@@ -4,6 +4,7 @@ import store from './store'
 import billRecord from './billRecord'
 import task from './task'
 import rule from './rule'
+import checkIn from './checkIn'
 
 interface IGraphqlObj {
   [key: string]: object
@@ -28,5 +29,7 @@ export default safeMerge([
   user,
   store,
   billRecord,
-  task
+  task,
+  rule,
+  checkIn,
 ])

@@ -19,18 +19,6 @@ export default {
 
 
   },
-  // updateTaskInfo: async () => {
-  //     logger.info({ _from: 'updateTaskInfo', _by: req.user.id, ...obj })
-
-  // },
-  // startTask: async (obj:any, req:IReq) => {
-  //     logger.info({ _from: 'startTask', _by: req.user.id, ...obj })
-
-  //     if (!obj._id) {
-  //         throw new Error('invalid _id')
-  //     }
-
-  // },
 
   updateTaskStatus: async (obj: any, req: IReq) => {
     logger.info({ _from: 'updateTaskStatus', _by: req.user.id, ...obj })
@@ -79,5 +67,15 @@ export default {
     }
 
   },
+
+  taskList: async (obj: any, req: IReq) => {
+    logger.info({ _from: 'taskList', _by: req.user.id, ...obj })
+
+    const userid = req.user.id
+
+    const taskListObj = await taskCtrl.find({ ...obj, userid })
+
+    return taskListObj
+  }
 
 }

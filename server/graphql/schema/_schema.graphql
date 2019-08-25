@@ -63,6 +63,13 @@ type Mutation{
     checkBillRecord(
         _id: String!
     ): BillRecord
+    billRecordList(
+      skip:Int!
+      limit:Int!
+      #status: BillRecordStatus # todo
+    ):BillRecordList
+
+    #task
     newTask(
         # _id:String
         orderNumber: String
@@ -100,6 +107,14 @@ type Mutation{
         _id:String!
         status: TaskStatus
     ):Task
+
+
+    taskList(
+      skip: Int!
+      limit:Int!
+      parent:String
+      status:TaskStatus
+    ):TaskList
 
 
 }

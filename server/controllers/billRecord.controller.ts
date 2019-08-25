@@ -33,14 +33,24 @@ async function insert(billRecord: IBillRecord) {
 }
 
 export interface IBillRecordQuery {
-  skip: number,
-  limit: number,
-  types: [number]
-  status: Status
+  skip: number
+  limit: number
+  types?: [number]
+  status?: Status
 }
-const find = async (query: IBillRecordQuery = { skip: 0, limit: 10, types: [0], status: Status.DEFAULT }) => {
+export interface IBillRecordFilter {
+  types?: [number]
+  status?: Status
+}
+const find = async (query: IBillRecordQuery = { skip: 0, limit: 10, }) => {
   const { skip, limit, types, status } = query
-  const filter = { $in: { type: types } }
+  // const filter = { $in: { type: types } }
+  const filter: IBillRecordFilter = {}
+  // if (types) filter.types = types
+  // todo filter
+  if (status) filter.status = status
+
+
   const billRecordList = await BillRecord.find(filter).skip(skip).limit(limit)
   const billRecordTotal = await BillRecord.count(filter)
 

@@ -78,4 +78,20 @@ describe('graphql task', () => {
 
   it("undoTask")
 
+  it("taskList", async () => {
+    const query = `mutation {
+        taskList(skip: 0, limit: 10, status: DEFAULT) {
+          list {
+            _id
+          }
+          total
+        }
+      }`
+
+
+    const res = await client(query, {})
+    assert(res.taskList.total >= 0)
+
+  })
+
 })

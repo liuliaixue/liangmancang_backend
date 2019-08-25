@@ -43,5 +43,16 @@ export default {
 
     return record
 
+  },
+
+  billRecordList: async (obj: any, req: IReq) => {
+    logger.info({ _from: 'billRecordList', _by: req.user.id, ...obj })
+
+
+    const userid = req.user.id
+
+    const billRecordListObj = await billRecordCtrl.find({ ...obj, userid })
+
+    return billRecordListObj
   }
 }
