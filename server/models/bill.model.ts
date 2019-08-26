@@ -1,7 +1,6 @@
 import { Schema, Model, model, Document } from 'mongoose';
 
 export interface IBill extends Document {
-  userid: string
   total: number
   remained: number
   freeze: number
@@ -12,11 +11,7 @@ export interface IBill extends Document {
 
 const BillSchema: Schema = new Schema({
 
-  userid: {
-    type: String,
-    required: true,
-    unique: true,
-  },
+
   total: {
     type: Number,
     required: true,

@@ -1,7 +1,8 @@
 module.exports = {
+  token: "",
+
   user: {
-    _id: "5d5d48447a8a4d345dedaa8a",
-    username: '18917570711',
+    username: `U${Date.now()}`,
     password: '123456',
 
     mobileNumber: '18817570743',

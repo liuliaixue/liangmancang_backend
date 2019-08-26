@@ -13,6 +13,7 @@ log
 
 # generated files
 server/graphql/schema.graphql
+test/_token
 
 
 # server package

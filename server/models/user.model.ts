@@ -1,6 +1,7 @@
 import { Schema, Model, model, Document } from 'mongoose';
 import { IBill } from './bill.model';
 import { string, number } from 'joi';
+import ID from './id.model';
 
 enum Status {
   DEFAULT = "DEFAULT",
@@ -22,6 +23,9 @@ export interface IUser extends Document {
   status: Status
   createdAt: number
   updatedAt: number
+  billid: string
+  code: number
+  inviter: string
 
   bill: IBill
 
@@ -49,6 +53,14 @@ const UserSchema: Schema = new Schema({
     type: String,
     required: false
   },
+  code: {
+    type: String,
+    required: false
+  },
+  inviter: {
+    type: String,
+    required: false
+  },
   qq: {
     type: String,
     required: false
@@ -64,6 +76,10 @@ const UserSchema: Schema = new Schema({
   status: {
     type: String,
     required: false,
+  },
+  billid: {
+    type: String,
+    required: true,
   },
 
 
@@ -83,6 +99,17 @@ const UserSchema: Schema = new Schema({
     versionKey: false
   });
 
+
+UserSchema.pre<IUser>('save', async function (next) {
+
+  if (!this.code) {
+    const id = await ID.findOneAndUpdate({ name: "User" }, {
+      $inc: { value: 1 }
+    }, { upsert: true, new: true })
+    this.code = id.value
+  }
+  next()
+})
 
 const User: Model<IUser> = model('User', UserSchema);
 

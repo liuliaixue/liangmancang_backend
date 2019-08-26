@@ -6,6 +6,8 @@ type User{
     #id: Int
     username: String!
     mobileNumber: String
+    code :Int
+    inviter: String
 
     qq: String
 
@@ -16,6 +18,7 @@ type User{
     createdAt: Float
     updatedAt: Float
 
+    billid:String
     bill: Bill
 
 }

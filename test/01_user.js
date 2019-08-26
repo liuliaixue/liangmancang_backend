@@ -1,7 +1,7 @@
 
 const config = require('./_config')
 const assert = require('assert')
-const client = require('./_client')
+const client = require('./_client')()
 
 describe('User', function () {
   it('register', async () => {
@@ -25,11 +25,10 @@ describe('User', function () {
   it('login', async () => {
     const res = await client.post('/api/auth/login', config.user)
     assert(res.data.user.username === config.user.username)
-    console.log(res.data.token)
     var fs = require('fs')
     const path = require('path')
     fs.writeFileSync(path.join(__dirname, '_token'), res.data.token)
+    config.token = res.data.token
 
-    // fs.writeFileSync(path.join(__dirname, '_token'), res.data.token)
   })
 });

@@ -30,16 +30,9 @@ async function insert(user: IUser) {
   if (check) {
     throw new Error('username existed')
   }
-  user.hashedPassword = bcrypt.hashSync(user.password, 10);
-  delete user.password;
   const now = new Date();
-  user.createdAt = now.getTime()
-  user.updatedAt = now.getTime()
-  const savedUser = await new User(user).save();
-
-
+  //create new bill
   const billObj = {
-    userid: savedUser._id,
     total: 0,
     remained: 0,
     freeze: 0,
@@ -48,6 +41,16 @@ async function insert(user: IUser) {
     updatedAt: now.getTime(),
   }
   const bill = await new Bill(billObj).save()
+
+  //craete new user
+  user.hashedPassword = bcrypt.hashSync(user.password, 10);
+  delete user.password;
+  // user.code = id.value
+  user.createdAt = now.getTime()
+  user.updatedAt = now.getTime()
+  user.billid = bill.id
+  const savedUser = await new User(user).save();
+
 
   return savedUser
 }

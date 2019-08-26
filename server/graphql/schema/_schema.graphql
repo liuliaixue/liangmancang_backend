@@ -19,6 +19,7 @@ type Mutation{
         qq: String
         idCard: String!
         bankCard: String!
+        inviter: String
     ): User
     updateUserStatus(
         _id: String!

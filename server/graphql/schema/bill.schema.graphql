@@ -2,9 +2,8 @@
 
 type Bill{
     _id: String!
-    userid: String
-    # unit is cent
-    total: Float
+  
+    total: Float   # unit is cent
     remained: Float
     freeze: Float
     withdraw: Float
