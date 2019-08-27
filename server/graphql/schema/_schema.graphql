@@ -127,7 +127,7 @@ type Mutation{
 
   # message
   newMessage(content:String,taskid:String):Message
-  updateMessage(content:String):Message
+  updateMessage(_id:String,content:String):Message
   messageList(skip: Int, limit:Int,taskid:String):MessageList
 
 }

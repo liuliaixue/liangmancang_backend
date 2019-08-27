@@ -4,6 +4,7 @@ import ruleCtrl from './rule.controller'
 import { IRule } from '../models/rule.model';
 import BillRecord, { IBillRecord, Status as BillRecordStatus, Type as BillRecordType } from '../models/billRecord.model';
 import Bill from '../models/bill.model';
+import User from '../models/user.model';
 
 
 const taskSchema = Joi.object({
@@ -80,7 +81,12 @@ const newTask = async (task: ITask) => {
     throw new Error('server error')
   }
 
-  const bill = await Bill.findOne({ userid: task.userid })
+  // const bill = await Bill.findOne({ userid: task.userid })
+  const user = await User.findById(task.userid)
+  if (!user) {
+    throw new Error(`invalid userid ${task.userid}`)
+  }
+  const bill = await Bill.findById(user.billid)
   if (!bill) {
     throw new Error('user bill info not found')
   }
@@ -213,7 +219,7 @@ const finish = async (_id: string) => {
     throw new Error('the task is already finished')
   }
   if (check.status === Status.DEFAULT) {
-
+    throw new Error('the task is not assigned, user abort')
   }
 
 

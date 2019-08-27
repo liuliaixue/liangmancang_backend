@@ -61,22 +61,84 @@ describe('graphql task', () => {
     `
 
     const res = await client(query, {})
-    assert(res.createTask.status === "DEFAULT")
+    assert(res.newTask.status === "DEFAULT")
+
+    config.task = res.newTask
   });
 
   it("updateTaskStatus: assigned", async () => {
+    const query = `mutation {
+      updateTaskStatus(_id: "${config.task._id}", status: ASSIGNED) {
+        _id
+        parent
+        status
+        storeid
+        userid
+        workerid
+        createdAt
+        updatedAt
+      }
+    }
+`
+    const res = await client(query, {})
+    assert(res.updateTaskStatus.status === "ASSIGNED")
+    assert(res.updateTaskStatus.workerid === config.userInfo._id)
 
   })
 
   it("updateTaskStatus: finished", async () => {
+    const query = `mutation {
+      updateTaskStatus(_id: "${config.task._id}", status: FINISHED) {
+        _id
+        parent
+        status
+        storeid
+        userid
+        workerid
+        createdAt
+        updatedAt
+      }
+    }`
+    const res = await client(query, {})
+    assert(res.updateTaskStatus.status === "FINISHED")
+    //todo check bill
 
   })
   it("updateTaskStatus: appeal", async () => {
+    const query = `mutation {
+      updateTaskStatus(_id: "${config.task._id}", status: APPEAL) {
+        _id
+        parent
+        status
+        storeid
+        userid
+        workerid
+        createdAt
+        updatedAt
+      }
+    }`
+    const res = await client(query, {})
+    assert(res.updateTaskStatus.status === "APPEAL")
 
   })
-  it("updateTaskStatus: abort")
+  it("updateTaskStatus: abort", async () => {
+    const query = `mutation {
+      updateTaskStatus(_id: "${config.task._id}", status: APPEAL) {
+        _id
+        parent
+        status
+        storeid
+        userid
+        workerid
+        createdAt
+        updatedAt
+      }
+    }`
+    const res = await client(query, {})
+    assert(res.updateTaskStatus.status === "APPEAL")
+    // todo check bill
+  })
 
-  it("undoTask")
 
   it("taskList", async () => {
     const query = `mutation {

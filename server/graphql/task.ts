@@ -40,6 +40,12 @@ export default {
 
         return updatedTask
       }
+      // finish task
+      case Status.FINISHED: {
+        // todo check bill
+        const updatedTask = await taskCtrl.finish(obj._id)
+        return updatedTask
+      }
       // appeal task
       case Status.APPEAL: {
         const updatedTask = await taskCtrl.updateStatus(
@@ -48,18 +54,11 @@ export default {
 
         return updatedTask
       }
-      // finish task
-      case Status.FINISHED: {
-
-        const updatedTask = await taskCtrl.finish(obj._id)
-        return updatedTask
-      }
 
       case Status.ABORT: {
-
+        // todo check bill
         const updatedTask = await taskCtrl.abort(obj._id)
         return updatedTask
-
 
       }
       default:
