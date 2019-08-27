@@ -31,7 +31,7 @@ describe('graphql store', () => {
         updatedAt
       }
     }`
-    console.log(query)
+    // console.log(query)
 
     const res = await client(query, {})
     assert(storeName === res.bindStore.name)
@@ -63,7 +63,7 @@ describe('graphql store', () => {
         updatedAt
       }
     }`
-    console.log(query)
+    // console.log(query)
 
     const res = await client(query, {})
     assert(newWebsite === res.updateStoreInfo.website)
@@ -91,7 +91,7 @@ describe('graphql store', () => {
         updatedAt
       }
     }`
-    console.log(query)
+    // console.log(query)
 
     const res = await client(query, {})
     assert("BAD" === res.updateStoreStatus.status)

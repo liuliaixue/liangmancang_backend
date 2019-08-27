@@ -4,6 +4,7 @@ import logger from '../tools/logger';
 
 import userCtrl from '../controllers/user.controller'
 import storeCtrl from '../controllers/store.controller'
+import checkInCtrl from '../controllers/checkIn.controller'
 
 export default {
   // todo remove test
@@ -18,6 +19,15 @@ export default {
     logger.info({ _from: 'store', _by: req.user.id, _id })
 
     const store = await storeCtrl.findById({ _id: _id })
+
+    return store
+  },
+
+
+  checkIn: async (_id: string, req: IReq) => {
+    logger.info({ _from: 'checkIn', _by: req.user.id, _id })
+
+    const store = await checkInCtrl.findById({ _id: _id })
 
     return store
   }

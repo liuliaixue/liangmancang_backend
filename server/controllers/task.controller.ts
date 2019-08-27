@@ -126,6 +126,13 @@ export interface ItaskFilter {
   parent?: string,
   status?: Status,
 }
+const findById = async (_id: string) => {
+  const check = await Task.findById(_id)
+  if (!check) {
+    throw new Error(`invalid _id`)
+  }
+  return check
+}
 const find = async (query: ITaskQuery = { skip: 0, limit: 10, }) => {
   const { skip, limit, userid, parent, status } = query
   // todo filter by parent
@@ -254,7 +261,7 @@ export default {
   newTask,
   find,
   // findOne,
-  // findById,
+  findById,
   updateInfo,
   updateStatus,
   updateWorker,

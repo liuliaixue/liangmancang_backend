@@ -17,7 +17,7 @@ export default {
     logger.info({ _from: 'checkInList', _by: req.user.id, ...obj })
 
 
-    const checkInListObj = await checkInCtrl.find(obj)
+    const checkInListObj = await checkInCtrl.find({ ...obj })
     return checkInListObj
   }
 

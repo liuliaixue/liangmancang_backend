@@ -13,6 +13,15 @@ async function findOne(filter: object) {
   return check
 }
 
+const findById = async ({ _id }: { _id: string }) => {
+  const check = await CheckIn.findById(_id)
+  if (!check) {
+    throw new Error('incorrect _id')
+  }
+
+  return check
+}
+
 async function newCheckIn(userid: string) {
   const now = new Date()
   const checkInObj = {
@@ -21,22 +30,32 @@ async function newCheckIn(userid: string) {
     updatedAt: now.getTime()
   }
   const checkIn = await new CheckIn(checkInObj).save()
+  // todo add bill
   return checkIn
 }
 
+interface ICheckInFilter {
+  userid?: string
+}
+async function find(query: IListQuery) {
+  const { skip = 0, limit = 10, userid } = query
+  const filter: ICheckInFilter = {}
+  if (userid) {
+    filter.userid = userid
+  }
 
-async function find(query: IListQuery = { skip: 0, limit: 10 }) {
-  const { skip, limit, userid } = query
-
-  const checkInList = await CheckIn.find({ userid }).skip(skip).limit(limit)
-  const total = await CheckIn.count({})
+  const checkInList = await CheckIn.find(filter).skip(skip).limit(limit)
+  const total = await CheckIn.count(filter)
 
   return { list: checkInList, total }
 }
 
+
 export default {
-  findOne,
   newCheckIn,
+
+  findOne,
+  findById,
   find,
 
 }

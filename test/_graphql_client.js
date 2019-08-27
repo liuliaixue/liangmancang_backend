@@ -2,6 +2,7 @@
 const { GraphQLClient } = require('graphql-request')
 const fs = require('fs')
 const path = require('path')
+const config = require("./_config")
 
 
 const token = fs.readFileSync(

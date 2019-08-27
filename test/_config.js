@@ -7,5 +7,8 @@ module.exports = {
 
     mobileNumber: '18817570743',
 
-  }
+  },
+
+  charge: {},
+  withdraw: {}
 }

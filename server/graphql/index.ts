@@ -5,6 +5,8 @@ import billRecord from './billRecord'
 import task from './task'
 import rule from './rule'
 import checkIn from './checkIn'
+import reason from './reason'
+import message from './message'
 
 interface IGraphqlObj {
   [key: string]: object
@@ -32,4 +34,6 @@ export default safeMerge([
   task,
   rule,
   checkIn,
+  reason,
+  message
 ])

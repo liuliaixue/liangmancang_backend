@@ -9,6 +9,7 @@ describe('User', function () {
     const res = await client.post('/api/auth/register', user)
     console.log(res.data)
     assert(res.data.user.username === user.username)
+    config.userInfo = res.data.user
   });
 
   // it('register fail with same username', async () => {
@@ -30,5 +31,10 @@ describe('User', function () {
     fs.writeFileSync(path.join(__dirname, '_token'), res.data.token)
     config.token = res.data.token
 
+  })
+
+  it('verify token', async () => {
+    const res = await client.get('/api/auth/me')
+    assert(res.data.user.createdAt > 0)
   })
 });

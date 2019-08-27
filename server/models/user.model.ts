@@ -27,7 +27,7 @@ export interface IUser extends Document {
   code: number
   inviter: string
 
-  bill: IBill
+  bill: IBill | null
 
 }
 

@@ -34,7 +34,7 @@ async function register(req: any, res: express.Response, next: express.NextFunct
 async function login(req: any, res: express.Response) {
   logger.info({ _from: "/login", ...req.body })
 
-  let user = await userCtrl.findOne(req.body);
+  let user = await userCtrl.login(req.body);
   let token = authCtrl.generateToken(user);
   res.json({ user, token });
 }

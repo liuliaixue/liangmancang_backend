@@ -2,6 +2,7 @@
 import Joi from 'joi'
 import BillRecord, { Type, Status, IBillRecord } from '../models/billRecord.model'
 import Bill from '../models/bill.model'
+import User from '../models/user.model';
 
 
 const billRecordSchema = Joi.object({
@@ -99,7 +100,11 @@ const check = async ({ _id, status }: IBillRecordCheck) => {
       if (!updatedBillRecord) {
         throw new Error('invalid billRecord')
       }
-      const bill = await Bill.findOne({ userid: updatedBillRecord.toUserid })
+      const user = await User.findById(updatedBillRecord.toUserid)
+      if (!user) {
+        throw new Error('invalid toUserid')
+      }
+      const bill = await Bill.findById(user.billid)
       if (!bill) {
         throw new Error('invalid bill')
       }
@@ -122,7 +127,11 @@ const check = async ({ _id, status }: IBillRecordCheck) => {
       if (!updatedBillRecord) {
         throw new Error('invalid billRecord')
       }
-      const bill = await Bill.findOne({ userid: updatedBillRecord.toUserid })
+      const user = await User.findById(updatedBillRecord.toUserid)
+      if (!user) {
+        throw new Error('invalid toUserid')
+      }
+      const bill = await Bill.findById(user.billid)
       if (!bill) {
         throw new Error('invalid bill')
       }

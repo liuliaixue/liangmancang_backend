@@ -13,8 +13,15 @@ export default {
 
 
     const _id = req.user.id
-    const updatedUser = await userCtrl.updateInfo(_id, obj)
-    const bill = await billCtrl.findOne({ userid: updatedUser._id })
+    const { inviterCode, ...restObj } = obj
+    if (inviterCode) {
+
+      const inviter = await userCtrl.findUserByCode(inviterCode)
+      restObj.inviter = inviter.id
+    }
+    const updatedUser = await userCtrl.updateInfo(_id, restObj)
+
+    const bill = await billCtrl.findById(updatedUser.billid)
     updatedUser.bill = bill
     return updatedUser
   },

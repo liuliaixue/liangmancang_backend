@@ -19,7 +19,7 @@ type Mutation{
         qq: String
         idCard: String!
         bankCard: String!
-        inviter: String
+        inviterCode: Int
     ): User
     updateUserStatus(
         _id: String!
@@ -117,6 +117,18 @@ type Mutation{
       status:TaskStatus
     ):TaskList
 
+
+  # checkin
+  newCheckIn(time: Float) :CheckIn 
+  checkInList(skip: Int, limit:Int, userid: String): CheckInList
+
+  # reason 拒绝理由
+  reasonList(skip:Int, limit:Int):ReasonList
+
+  # message
+  newMessage(content:String,taskid:String):Message
+  updateMessage(content:String):Message
+  messageList(skip: Int, limit:Int,taskid:String):MessageList
 
 }
 

@@ -2,14 +2,19 @@ import Bill from '../models/bill.model'
 
 
 
-async function findOne(filter: object) {
-  const check = await Bill.findOne(filter)
+async function findOne(query: object) {
+  const check = await Bill.findOne(query)
   if (!check) {
-    throw new Error(`incorrect filter ${JSON.stringify(filter)}`)
+    throw new Error(`incorrect query ${JSON.stringify(query)}`)
   }
   return check
 }
-export default {
-  findOne
 
+
+export default {
+  findOne,
+  findById: async (_id: string) => {
+    const bill = await Bill.findById(_id)
+    return bill
+  }
 }

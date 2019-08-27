@@ -68,7 +68,7 @@ interface userLogin {
   username: string,
   password: string
 }
-async function findOne(user: userLogin) {
+async function login(user: userLogin) {
   const check = await User.findOne({
     username: user.username,
 
@@ -81,6 +81,13 @@ async function findOne(user: userLogin) {
     throw new Error('incorrect password')
   }
 
+  return check
+}
+async function findUserByCode(code: string) {
+  const check = await User.findOne({ code })
+  if (!check) {
+    throw new Error(`incorrect user code ${code}`)
+  }
   return check
 }
 
@@ -98,6 +105,7 @@ const findById = async ({ _id }: { _id: string }) => {
 
 const updateInfo = async (_id: string, updateObj: IUser) => {
   const now = new Date();
+
   const check = await User.findByIdAndUpdate(_id,
     {
       $set: {
@@ -130,8 +138,9 @@ const updateStatus = async (_id: string, status: Status) => {
 
 export default {
   insert,
+  login,
   find,
-  findOne,
+  findUserByCode,
   findById,
   updateInfo,
   updateStatus
