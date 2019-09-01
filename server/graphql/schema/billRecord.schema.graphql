@@ -5,11 +5,7 @@ type BillRecord {
     userid: String
     toUserid: String
     amount: Float
-    # 0 default, normal charge 正常充值, 1 Promotion 推广金,
-    # 2 任务佣金锁定, 3 任务佣金退还, 4 任务佣金发放
-    # 5 提现
     type: String
-    # 0 default and waiting for check, 1 checked
 
     status: BillRecordStatus
 
@@ -18,17 +14,17 @@ type BillRecord {
 }
 
 enum BillRecordType {
-  DEFAULT 
-  PROMOTION 
-  TASK_LOCK 
-  TASK_REFUND 
-  TASK_PAYMENT 
-  WITHDRAW 
+  DEFAULT # 0 default, normal charge 正常充值, 
+  PROMOTION # 1 Promotion 推广金,
+  TASK_LOCK # 2 任务佣金锁定,
+  TASK_REFUND # 3 任务佣金退还, 
+  TASK_PAYMENT # 4 任务佣金发放
+  WITHDRAW  # 5 提现
 }
 
 enum BillRecordStatus{
-  DEFAULT 
-  CHECKED
+  DEFAULT # 0 default and waiting for check,
+  CHECKED # 1 checked
 }
 
 type BillRecordList{

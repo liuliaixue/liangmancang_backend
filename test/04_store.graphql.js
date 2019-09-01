@@ -1,12 +1,10 @@
-const client = require('./_graphql_client')
-const config = require('./_config')
-const assert = require('assert')
-
+const { client, adminClient } = require('./_graphql_client');
+const config = require('./_config');
+const assert = require('assert');
 
 describe('graphql store', () => {
-
-  it("bindStore", async () => {
-    const storeName = `alan store ${Date.now()}`
+  it('bindStore', async () => {
+    const storeName = `alan store ${Date.now()}`;
     const query = `mutation {
       bindStore(
         name: "${storeName}"
@@ -30,16 +28,14 @@ describe('graphql store', () => {
         createdAt
         updatedAt
       }
-    }`
-    // console.log(query)
-
-    const res = await client(query, {})
-    assert(storeName === res.bindStore.name)
-    config.store = res.bindStore
+    }`;
+    const res = await client(query, {});
+    assert(storeName === res.bindStore.name);
+    config.store = res.bindStore;
   });
 
-  it("updateStoreInfo", async () => {
-    const newWebsite = `https://website/${Date.now()}`
+  it('updateStoreInfo', async () => {
+    const newWebsite = `https://website/${Date.now()}`;
     const query = `mutation {
       updateStoreInfo(
         _id: "${config.store._id}"
@@ -62,18 +58,16 @@ describe('graphql store', () => {
         createdAt
         updatedAt
       }
-    }`
+    }`;
     // console.log(query)
 
-    const res = await client(query, {})
-    assert(newWebsite === res.updateStoreInfo.website)
+    const res = await client(query, {});
+    assert(newWebsite === res.updateStoreInfo.website);
+  });
 
-
-  })
-
-  it("updateStoreStatus", async () => {
+  it('admin_updateStoreStatus', async () => {
     const query = `mutation {
-      updateStoreStatus(
+      admin_updateStoreStatus(
         _id: "${config.store._id}"
         status:BAD
       ) {
@@ -90,11 +84,37 @@ describe('graphql store', () => {
         createdAt
         updatedAt
       }
-    }`
+    }`;
     // console.log(query)
 
-    const res = await client(query, {})
-    assert("BAD" === res.updateStoreStatus.status)
+    const res = await adminClient(query, {});
+    assert('BAD' === res.admin_updateStoreStatus.status);
+  });
 
-  })
-})
+  it('admin_storeList', async () => {
+    const query = `mutation {
+      admin_storeList(
+        skip:0
+        limit:10
+      ) {
+        list{_id
+        name
+        userid
+        type
+        website
+        wangwang
+        storeScreenShotImage
+        address
+        contactPhone
+        status
+        createdAt
+        updatedAt}
+        total
+      }
+    }`;
+    // console.log(query)
+
+    const res = await adminClient(query, {});
+    assert(res.admin_storeList.total > 0);
+  });
+});

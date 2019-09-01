@@ -1,9 +1,11 @@
-
-import Joi from 'joi'
-import BillRecord, { Type, Status, IBillRecord } from '../models/billRecord.model'
-import Bill from '../models/bill.model'
+import Joi from 'joi';
+import BillRecord, {
+  Type,
+  Status,
+  IBillRecord
+} from '../models/billRecord.model';
+import Bill from '../models/bill.model';
 import User from '../models/user.model';
-
 
 const billRecordSchema = Joi.object({
   userid: Joi.string().required(),
@@ -17,47 +19,46 @@ const billRecordSchema = Joi.object({
   createdAt: Joi.number(),
   updatedAt: Joi.number(),
 
-  resultRecordid: Joi.string(),
-
-})
-
-
+  resultRecordid: Joi.string()
+});
 
 async function insert(billRecord: IBillRecord) {
   // todo verify toUserid
-  billRecord = await Joi.validate(billRecord, billRecordSchema, { abortEarly: false });
+  billRecord = await Joi.validate(billRecord, billRecordSchema, {
+    abortEarly: false
+  });
 
   const now = new Date();
-  billRecord.createdAt = now.getTime()
-  billRecord.updatedAt = now.getTime()
+  billRecord.createdAt = now.getTime();
+  billRecord.updatedAt = now.getTime();
   return await new BillRecord(billRecord).save();
 }
 
 export interface IBillRecordQuery {
-  skip: number
-  limit: number
-  types?: [number]
-  status?: Status
+  skip: number;
+  limit: number;
+  types?: [number];
+  status?: Status;
 }
 export interface IBillRecordFilter {
-  types?: [number]
-  status?: Status
+  types?: [number];
+  status?: Status;
 }
-const find = async (query: IBillRecordQuery = { skip: 0, limit: 10, }) => {
-  const { skip, limit, types, status } = query
+const find = async (query: IBillRecordQuery = { skip: 0, limit: 10 }) => {
+  const { skip, limit, types, status } = query;
   // const filter = { $in: { type: types } }
-  const filter: IBillRecordFilter = {}
+  const filter: IBillRecordFilter = {};
   // if (types) filter.types = types
   // todo filter
-  if (status) filter.status = status
+  if (status) filter.status = status;
 
+  const billRecordList = await BillRecord.find(filter)
+    .skip(skip)
+    .limit(limit);
+  const billRecordTotal = await BillRecord.count(filter);
 
-  const billRecordList = await BillRecord.find(filter).skip(skip).limit(limit)
-  const billRecordTotal = await BillRecord.count(filter)
-
-  return { list: billRecordList, total: billRecordTotal }
-}
-
+  return { list: billRecordList, total: billRecordTotal };
+};
 
 // const updateStatus = async (_id, status) => {
 //     const now = new Date();
@@ -71,87 +72,96 @@ const find = async (query: IBillRecordQuery = { skip: 0, limit: 10, }) => {
 // }
 
 export interface IBillRecordCheck {
-  _id: string
-  status: Status
+  _id: string;
+  status: Status;
 }
 const check = async ({ _id, status }: IBillRecordCheck) => {
-  // const bill = 
+  // const bill =
 
-  const billRecord = await BillRecord.findById(_id)
+  const billRecord = await BillRecord.findById(_id);
   if (!billRecord) {
-    throw new Error("invalid bill record")
+    throw new Error('invalid bill record');
   }
   if (billRecord.status === Status.CHECKED) {
-    throw new Error('checked billRecord')
+    throw new Error('checked billRecord');
   }
 
   switch (billRecord.type) {
     case Type.DEFAULT: {
-
       const now = new Date();
 
-      const updatedBillRecord = await BillRecord.findByIdAndUpdate(_id, {
-        $set:
+      const updatedBillRecord = await BillRecord.findByIdAndUpdate(
+        _id,
         {
-          status: Status.CHECKED,
-          updatedAt: now.getTime()
-        }
-      }, { new: true })
+          $set: {
+            status: Status.CHECKED,
+            updatedAt: now.getTime()
+          }
+        },
+        { new: true }
+      );
       if (!updatedBillRecord) {
-        throw new Error('invalid billRecord')
+        throw new Error('invalid billRecord');
       }
-      const user = await User.findById(updatedBillRecord.toUserid)
+      const user = await User.findById(updatedBillRecord.toUserid);
       if (!user) {
-        throw new Error('invalid toUserid')
+        throw new Error('invalid toUserid');
       }
-      const bill = await Bill.findById(user.billid)
+      const bill = await Bill.findById(user.billid);
       if (!bill) {
-        throw new Error('invalid bill')
+        throw new Error('invalid bill');
       }
       // update bill
-      await Bill.findByIdAndUpdate(bill._id,
+      await Bill.findByIdAndUpdate(
+        bill._id,
         {
           $set: {
             total: bill.total + updatedBillRecord.amount,
             remained: bill.remained + updatedBillRecord.amount,
             updatedAt: now.getTime()
           }
-        }, { new: true })
+        },
+        { new: true }
+      );
 
-      return updatedBillRecord
+      return updatedBillRecord;
     }
     case Type.WITHDRAW: {
       const now = new Date();
 
-      const updatedBillRecord = await BillRecord.findByIdAndUpdate(_id, { $set: { status, updatedAt: now.getTime() } }, { new: true })
+      const updatedBillRecord = await BillRecord.findByIdAndUpdate(
+        _id,
+        { $set: { status, updatedAt: now.getTime() } },
+        { new: true }
+      );
       if (!updatedBillRecord) {
-        throw new Error('invalid billRecord')
+        throw new Error('invalid billRecord');
       }
-      const user = await User.findById(updatedBillRecord.toUserid)
+      const user = await User.findById(updatedBillRecord.toUserid);
       if (!user) {
-        throw new Error('invalid toUserid')
+        throw new Error('invalid toUserid');
       }
-      const bill = await Bill.findById(user.billid)
+      const bill = await Bill.findById(user.billid);
       if (!bill) {
-        throw new Error('invalid bill')
+        throw new Error('invalid bill');
       }
-      const updatedBill = await Bill.findByIdAndUpdate(bill._id,
+      const updatedBill = await Bill.findByIdAndUpdate(
+        bill._id,
         {
           $set: {
             remained: bill.remained - updatedBillRecord.amount,
             withdraw: bill.withdraw - updatedBillRecord.amount,
             updatedAt: now.getTime()
           }
-        }, { new: true })
+        },
+        { new: true }
+      );
 
-      return updatedBillRecord
+      return updatedBillRecord;
     }
     default:
-      throw "invalid operation"
+      throw 'invalid operation';
   }
+};
 
-}
-
-
-
-export default { insert, find, check }
+export default { insert, find, check };

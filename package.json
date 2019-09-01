@@ -33,6 +33,7 @@
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.6.7",
     "mongoose-int32": "^0.3.1",
+    "shortid": "^2.2.14",
     "winston": "^3.2.1"
   },
   "devDependencies": {
@@ -44,6 +45,7 @@
     "@types/http-errors": "^1.6.2",
     "@types/jsonwebtoken": "^8.3.3",
     "@types/mongoose": "^5.5.13",
+    "@types/shortid": "0.0.29",
     "graphql-request": "^1.8.2",
     "ts-node": "^8.3.0"
   }

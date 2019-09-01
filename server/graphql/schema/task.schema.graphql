@@ -57,3 +57,11 @@ type TaskList{
     list: [Task],
     total: Int
 }
+
+# type CTask {
+#     _id: String!
+#     parent: String
+#     startTime: Float
+    
+#     createdAt: Float
+# } # children task

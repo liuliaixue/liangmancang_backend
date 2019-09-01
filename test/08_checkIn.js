@@ -1,8 +1,7 @@
-const client = require('./_graphql_client')
+const { client, adminClient } = require('./_graphql_client');
 
-
-const config = require('./_config')
-const assert = require('assert')
+const config = require('./_config');
+const assert = require('assert');
 
 describe('graphql check in', () => {
   it('newCheckIn', async () => {
@@ -14,13 +13,13 @@ describe('graphql check in', () => {
         updatedAt
       }
     }
-`
+`;
 
-    const res = await client(query, {})
-    assert(res.newCheckIn.createdAt > 0)
+    const res = await client(query, {});
+    assert(res.newCheckIn.createdAt > 0);
   });
 
-  it("checkInList", async () => {
+  it('checkInList', async () => {
     const query = `mutation {
       checkInList(skip: 0, limit: 22, userid: "${config.user._id}") {
         list {
@@ -29,26 +28,22 @@ describe('graphql check in', () => {
         total
       }
     }
-`
+`;
 
+    const res = await client(query, {});
+    assert(res.checkInList.total >= 0);
+  });
+  // it('admin_checkInList', async () => {
+  //   const query = `mutation {
+  //     admin_checkInList(skip: 0, limit: 10) {
+  //       list {
+  //         _id
+  //       }
+  //       total
+  //     }
+  //   }`;
 
-    const res = await client(query, {})
-    assert(res.checkInList.total >= 0)
-
-  })
-  it("admin:checkInList", async () => {
-    const query = `mutation {
-      checkInList(skip: 0, limit: 10) {
-        list {
-          _id
-        }
-        total
-      }
-    }`
-
-    const res = await client(query, {})
-    assert(res.checkInList.total >= 0)
-
-  })
-
-})
+  //   const res = await client(query, {});
+  //   assert(res.checkInList.total >= 0);
+  // });
+});

@@ -5,18 +5,18 @@ type User{
     # remained, an increasing number 
     #id: Int
     username: String!
-    mobileNumber: String
-    code :Int
+    mobilePhone: String
+    code :String
     inviter: String
 
     qq: String
 
     idCard: String
     bankCard: String
-    # 0 default, 1 ok, 2 need update, 3 freeze
     status: UserStatus
     createdAt: Float
     updatedAt: Float
+ 
 
     billid:String
     bill: Bill
@@ -28,20 +28,9 @@ type UserList{
 }
 
 enum UserStatus{
-  DEFAULT 
-  OK 
-  BAD 
-  FREEZE
-}
-
-
-## todo userRole
-enum UserRole{
-  Admin      # platform User
-  Admin_Root # super user 
-  Admin_Cus  # CustomerService
-  Admin_Fin  # Finance
-  Store
-  Buyer
-  Default
+  DEFAULT #　0 default, once created
+  OK # checked and ok
+  BAD # 2 need update,
+  FREEZE # 3 freeze
+  DISABLED # 4 it is an admin user and it is disabled
 }

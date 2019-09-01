@@ -1,16 +1,16 @@
-
-
-import bcrypt from 'bcrypt'
-import Joi from 'joi'
-import User, { IUser, Status } from '../models/user.model'
-import Bill from "../models/bill.model"
+import bcrypt from 'bcrypt';
+import Joi, { func } from 'joi';
+import User, { IUser, Status } from '../models/user.model';
+import Bill from '../models/bill.model';
+import Err from '../tools/error';
+import shortid from '../tools/shortid';
 
 const userSchema = Joi.object({
   username: Joi.string().required(),
   password: Joi.string().required(),
 
   fullname: Joi.string(),
-  mobileNumber: Joi.string().regex(/^[1-9][0-9]{10}$/),
+  mobilePhone: Joi.string().regex(/^[1-9][0-9]{10}$/),
 
   qq: Joi.string(),
   idCard: Joi.string(),
@@ -18,17 +18,21 @@ const userSchema = Joi.object({
   status: Joi.string(),
 
   createdAt: Joi.number(),
-  updatedAt: Joi.number(),
+  updatedAt: Joi.number()
+});
 
-})
-
-
-
-async function insert(user: IUser) {
+async function newUser(user: IUser) {
   user = await Joi.validate(user, userSchema, { abortEarly: false });
-  const check = await User.findOne({ username: user.username })
+  const check = await User.findOne({ username: user.username });
   if (check) {
-    throw new Error('username existed')
+    // throw new Error('username existed');
+    throw Err.Existed(`username=${user.username}`);
+  }
+  const checkPhoneNumber = await User.findOne({
+    mobilePhone: user.mobilePhone
+  });
+  if (checkPhoneNumber) {
+    throw Err.Existed(`mobilePhone=${user.mobilePhone}`);
   }
   const now = new Date();
   //create new bill
@@ -38,110 +42,135 @@ async function insert(user: IUser) {
     freeze: 0,
     withdraw: 0,
     createdAt: now.getTime(),
-    updatedAt: now.getTime(),
-  }
-  const bill = await new Bill(billObj).save()
+    updatedAt: now.getTime()
+  };
+  const bill = await new Bill(billObj).save();
 
   //craete new user
   user.hashedPassword = bcrypt.hashSync(user.password, 10);
   delete user.password;
-  // user.code = id.value
-  user.createdAt = now.getTime()
-  user.updatedAt = now.getTime()
-  user.billid = bill.id
+  user.createdAt = now.getTime();
+  user.updatedAt = now.getTime();
+  user.code = shortid.generate();
+  user.billid = bill.id;
   const savedUser = await new User(user).save();
 
-
-  return savedUser
+  return savedUser;
 }
-
 
 const find = async (query = { skip: 0, limit: 10 }) => {
-  const { skip, limit } = query
-  const userList = await User.find().skip(skip).limit(limit)
-  const userTotal = await User.count({})
+  const { skip, limit } = query;
+  const userList = await User.find()
+    .skip(skip)
+    .limit(limit);
+  const userTotal = await User.count({});
 
-  return { list: userList, total: userTotal }
-}
+  return { list: userList, total: userTotal };
+};
 
 interface userLogin {
-  username: string,
-  password: string
+  username: string;
+  password: string;
 }
 async function login(user: userLogin) {
   const check = await User.findOne({
-    username: user.username,
-
-  })
+    username: user.username
+  });
   if (!check) {
-    throw new Error('incorrect username')
+    throw new Error('incorrect username');
   }
-  const comparePassword = bcrypt.compareSync(user.password, check.hashedPassword);
+  const comparePassword = bcrypt.compareSync(
+    user.password,
+    check.hashedPassword
+  );
   if (!comparePassword) {
-    throw new Error('incorrect password')
+    throw new Error('incorrect password');
   }
 
-  return check
+  return check;
 }
+
 async function findUserByCode(code: string) {
-  const check = await User.findOne({ code })
+  const check = await User.findOne({ code });
   if (!check) {
-    throw new Error(`incorrect user code ${code}`)
+    throw new Error(`incorrect user code ${code}`);
   }
-  return check
+  return check;
 }
 
-
-const findById = async ({ _id }: { _id: string }) => {
-  const check = await User.findOne({
-    _id
-  })
+const findById = async (_id: string) => {
+  const check = await User.findById(_id);
   if (!check) {
-    throw new Error('incorrect _id')
+    throw new Error('incorrect _id');
   }
 
-  return check
-}
+  return check;
+};
 
 const updateInfo = async (_id: string, updateObj: IUser) => {
   const now = new Date();
 
-  const check = await User.findByIdAndUpdate(_id,
+  const check = await User.findByIdAndUpdate(
+    _id,
     {
       $set: {
         ...updateObj,
         updatedAt: now.getTime()
       }
-    }, { new: true })
+    },
+    { new: true }
+  );
 
   if (!check) {
-    throw new Error('incorrect _id')
+    throw new Error('incorrect _id');
   }
 
-  return check
-}
+  return check;
+};
+const updatePassword = async (
+  _id: string,
+  password: string,
+  newPassword: string
+) => {
+  const now = new Date();
+  const check = await User.findById(_id);
+  if (!check) {
+    throw Err.NotFound(`userid=${_id}`);
+  }
+  const comparePassword = bcrypt.compareSync(password, check.hashedPassword);
+  if (!comparePassword) {
+    throw Err.NotMatch('password');
+  }
+  check.hashedPassword = bcrypt.hashSync(newPassword, 10);
+  check.updatedAt = now.getTime();
+  return check.save();
+};
 
 const updateStatus = async (_id: string, status: Status) => {
   if (status === Status.DEFAULT) {
-    throw new Error('invalid status')
+    throw new Error('invalid status');
   }
   const now = new Date();
-  const check = await User.findByIdAndUpdate(_id, { $set: { status, updatedAt: now.getTime() } }, { new: true })
+  const check = await User.findByIdAndUpdate(
+    _id,
+    { $set: { status, updatedAt: now.getTime() } },
+    { new: true }
+  );
 
   if (!check) {
-    throw new Error('incorrect _id')
+    throw new Error('incorrect _id');
   }
 
-  return check
-}
-
+  return check;
+};
 
 export default {
-  insert,
+  newUser,
   login,
+  updatePassword,
   find,
   findUserByCode,
   findById,
   updateInfo,
   updateStatus
-}
+};

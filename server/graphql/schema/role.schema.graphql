@@ -1,0 +1,31 @@
+# role
+
+type Role {
+  name: String
+  acl: [String]
+  createdAt: Float
+  updatedAt: Float
+}
+
+enum RolePermission {
+  admin_no # no permission
+  admin_all # all persmission
+  admin_role
+  admin_admin_user
+
+  admin_user
+  admin_store
+  admin_bill
+  admin_billRecord # all billRecord related API
+  admin_billRecord_new # create billRecord
+  admin_billRecord_check # check billRecord
+  admin_task
+  admin_checkin
+  admin_reason
+  admin_message
+}
+
+type RoleAccess {
+  name: String
+  des: String
+}

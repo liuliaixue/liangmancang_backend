@@ -1,8 +1,7 @@
-const client = require('./_graphql_client')
+const { client, adminClient } = require('./_graphql_client');
 
-
-const config = require('./_config')
-const assert = require('assert')
+const config = require('./_config');
+const assert = require('assert');
 
 describe('graphql task', () => {
   it('newTask', async () => {
@@ -58,15 +57,15 @@ describe('graphql task', () => {
         updatedAt
       }
     }
-    `
+    `;
 
-    const res = await client(query, {})
-    assert(res.newTask.status === "DEFAULT")
+    const res = await client(query, {});
+    assert(res.newTask.status === 'DEFAULT');
 
-    config.task = res.newTask
+    config.task = res.newTask;
   });
 
-  it("updateTaskStatus: assigned", async () => {
+  it('updateTaskStatus: assigned', async () => {
     const query = `mutation {
       updateTaskStatus(_id: "${config.task._id}", status: ASSIGNED) {
         _id
@@ -79,14 +78,13 @@ describe('graphql task', () => {
         updatedAt
       }
     }
-`
-    const res = await client(query, {})
-    assert(res.updateTaskStatus.status === "ASSIGNED")
-    assert(res.updateTaskStatus.workerid === config.userInfo._id)
+`;
+    const res = await adminClient(query, {});
+    assert(res.updateTaskStatus.status === 'ASSIGNED');
+    assert(res.updateTaskStatus.workerid === config.adminInfo._id);
+  });
 
-  })
-
-  it("updateTaskStatus: finished", async () => {
+  it('updateTaskStatus: finished', async () => {
     const query = `mutation {
       updateTaskStatus(_id: "${config.task._id}", status: FINISHED) {
         _id
@@ -98,13 +96,12 @@ describe('graphql task', () => {
         createdAt
         updatedAt
       }
-    }`
-    const res = await client(query, {})
-    assert(res.updateTaskStatus.status === "FINISHED")
+    }`;
+    const res = await client(query, {});
+    assert(res.updateTaskStatus.status === 'FINISHED');
     //todo check bill
-
-  })
-  it("updateTaskStatus: appeal", async () => {
+  });
+  it('updateTaskStatus: appeal', async () => {
     const query = `mutation {
       updateTaskStatus(_id: "${config.task._id}", status: APPEAL) {
         _id
@@ -116,14 +113,14 @@ describe('graphql task', () => {
         createdAt
         updatedAt
       }
-    }`
-    const res = await client(query, {})
-    assert(res.updateTaskStatus.status === "APPEAL")
+    }`;
+    const res = await client(query, {});
 
-  })
-  it("updateTaskStatus: abort", async () => {
+    assert(res.updateTaskStatus.status === 'APPEAL');
+  });
+  it('updateTaskStatus: abort', async () => {
     const query = `mutation {
-      updateTaskStatus(_id: "${config.task._id}", status: APPEAL) {
+      updateTaskStatus(_id: "${config.task._id}", status: ABORT) {
         _id
         parent
         status
@@ -133,14 +130,13 @@ describe('graphql task', () => {
         createdAt
         updatedAt
       }
-    }`
-    const res = await client(query, {})
-    assert(res.updateTaskStatus.status === "APPEAL")
+    }`;
+    const res = await client(query, {});
+    assert(res.updateTaskStatus.status === 'ABORT');
     // todo check bill
-  })
+  });
 
-
-  it("taskList", async () => {
+  it('taskList', async () => {
     const query = `mutation {
         taskList(skip: 0, limit: 10, status: DEFAULT) {
           list {
@@ -148,12 +144,13 @@ describe('graphql task', () => {
           }
           total
         }
-      }`
+      }`;
 
+    const res = await client(query, {});
+    assert(res.taskList.total >= 0);
+  });
+  it('cTaskList');
 
-    const res = await client(query, {})
-    assert(res.taskList.total >= 0)
-
-  })
-
-})
+  it('admin_taskList');
+  it('admin_cTaskList');
+});

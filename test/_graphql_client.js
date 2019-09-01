@@ -1,16 +1,10 @@
+const { GraphQLClient } = require('graphql-request');
+const fs = require('fs');
+const path = require('path');
+const config = require('./_config');
+const { baseURL } = config;
 
-const { GraphQLClient } = require('graphql-request')
-const fs = require('fs')
-const path = require('path')
-const config = require("./_config")
-
-
-const token = fs.readFileSync(
-  path.join(__dirname, '_token'),
-  "utf8"
-)
-const baseURL = 'http://localhost:4040'
-
+const token = fs.readFileSync(path.join(__dirname, '_token'), 'utf8');
 
 const q = `{
   Movie(title: "Inception") {
@@ -19,20 +13,40 @@ const q = `{
       name
     }
   }
-}`
+}`;
 
-
-const req = (query, variables) => {
+const client = (query, variables) => {
   return new Promise((resovle, reject) => {
     const client = new GraphQLClient(`${baseURL}/api/graphql`, {
-      headers: { 'x-lmc-token': config.token || token }
-    })
-    client.request(query, variables)
+      headers: { 'x-lmc-token': token }
+    });
+    client
+      .request(query, variables)
       .then(data => {
-        resovle(data)
+        resovle(data);
       })
-      .catch(e => { throw e })
-  })
-}
+      .catch(e => {
+        throw e;
+      });
+  });
+};
+const adminClient = (query, variables) => {
+  return new Promise((resovle, reject) => {
+    const client = new GraphQLClient(`${baseURL}/api/graphql`, {
+      headers: { 'x-lmc-token': config.adminToken }
+    });
+    client
+      .request(query, variables)
+      .then(data => {
+        resovle(data);
+      })
+      .catch(e => {
+        throw e;
+      });
+  });
+};
 
-module.exports = req
+module.exports = {
+  client,
+  adminClient
+};

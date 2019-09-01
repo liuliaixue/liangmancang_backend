@@ -1,135 +1,134 @@
 # graphql schema
-type Query{
-    user(_id: String!): User
-    store(_id: String!): Store
-    bill(userid: String): Bill
-    billRecord(_id: String!): BillRecord
-    task(_id: String!):Task
+type Query {
+  user(_id: String!): User
+  store(_id: String!): Store
+  bill(userid: String): Bill
+  billRecord(_id: String!): BillRecord
+  task(_id: String!): Task
 
-    checkIn(_id:String):CheckIn
-    reson(_id:String):Reason
-    message(_id:String):Message
-    rule(_id:String):Rule
-    
+  checkIn(_id: String): CheckIn
+  reason(_id: String): Reason
+  message(_id: String): Message
+
+  admin_rule(_id: String): Message
+  admin_role(_id: String): Role
+  admin_RoleAcl(_id: String): [RoleAccess]
 }
 
+type Mutation {
+  updateUserInfo(
+    qq: String
+    idCard: String!
+    bankCard: String!
+    inviterCode: String
+  ): User
+  updateUserPassword(password: String, newPassword: String): User
+  admin_updateUserStatus(_id: String!, status: UserStatus): User
+  admin_userList(skip: Int, limit: Int): UserList
 
-type Mutation{
-    updateUserInfo(
-        qq: String
-        idCard: String!
-        bankCard: String!
-        inviterCode: Int
-    ): User
-    updateUserStatus(
-        _id: String!
-        status: UserStatus
-    ):  User
-    userList(skip: Int, limit:Int): UserList
+  # create a store and bind to the creator
+  bindStore(
+    name: String!
+    website: String
+    wangwang: String
+    storeScreenShotImage: String
+    address: String
+    contactPhone: String
+    type: String
+  ): Store
 
-    # create a store and bind to the creator
-    bindStore(
-        name: String!
-        website: String
-        wangwang: String
-        storeScreenShotImage: String
-        address: String
-        contactPhone: String
-        type: String
-    ): Store
+  updateStoreInfo(
+    _id: String!
+    website: String
+    wangwang: String
+    storeScreenShotImage: String
+    address: String
+    contactPhone: String
+  ): Store
+  admin_updateStoreStatus(_id: String!, status: StoreStatus!): Store
+  admin_storeList(skip: Int, limit: Int): StoreList
 
-    updateStoreInfo(
-        _id: String!
-        website: String
-        wangwang: String
-        storeScreenShotImage:String
-        address: String
-        contactPhone: String
-    ):Store
-    updateStoreStatus(
-        _id: String!
-        status: StoreStatus!
-    ):Store
-    storeList(skip: Int, limit:Int): StoreList
+  admin_newBillRecord(
+    toUserid: String!
+    amount: Float!
+    type: BillRecordType
+  ): BillRecord
+  admin_checkBillRecord(_id: String!): BillRecord
+  billRecordList(
+    skip: Int!
+    limit: Int! #status: BillRecordStatus # todo
+  ): BillRecordList
+  admin_billRecordList(
+    skip: Int!
+    limit: Int! #status: BillRecordStatus # todo
+  ): BillRecordList
 
-    newBillRecord(
-        toUserid: String!
-        amount: Float!
-        # 0 default, normal charge 正常充值, 1 Promotion 推广金,
-        # 2 任务佣金锁定, 3 任务佣金退还, 4 任务佣金发放
-        # 5 提现
-        type: BillRecordType
+  #task
+  newTask(
+    # _id:String
+    orderNumber: String
 
-    ): BillRecord
-    checkBillRecord(
-        _id: String!
-    ): BillRecord
-    billRecordList(
-      skip:Int!
-      limit:Int!
-      #status: BillRecordStatus # todo
-    ):BillRecordList
+    goodsName: String
+    goodsLink: String
+    goodsImage: String
+    goodsPrice: Float
+    goodsTotal: Int
+    goodsPriceShowed: Float
+    goodsSpecification: String
+    isFreeShipping: Boolean
 
-    #task
-    newTask(
-        # _id:String
-        orderNumber: String
+    howToFindGoods: String
 
-        goodsName: String
-        goodsLink: String
-        goodsImage: String
-        goodsPrice: Float
-        goodsTotal: Int
-        goodsPriceShowed: Float
-        goodsSpecification: String
-        isFreeShipping: Boolean
+    startTime: Float
+    endTime: Float
+    total: Int
 
-        howToFindGoods: String
+    commission: Float
+    platformServiceFee: Float
+    platformCommission: Float
 
-        startTime: Float
-        endTime: Float
-        total: Int
+    extraCommission: Float
+    extraImages: [String]
+    remark: String
 
-        commission: Float
-        platformServiceFee: Float
-        platformCommission: Float
+    storeid: String
+  ): Task
 
-        extraCommission: Float
-        extraImages:[String]
-        remark:String
+  updateTaskStatus(_id: String!, status: TaskStatus): Task
 
-        storeid: String
-    ): Task
-    
-    # startTask(
-    #     _id:String!
-    # ) :Task
-    updateTaskStatus(
-        _id:String!
-        status: TaskStatus
-    ):Task
-
-
-    taskList(
-      skip: Int!
-      limit:Int!
-      parent:String
-      status:TaskStatus
-    ):TaskList
-
+  taskList(
+    skip: Int!
+    limit: Int!
+    parent: String
+    status: TaskStatus
+  ): TaskList
+  admin_taskList(
+    userid: String
+    skip: Int!
+    limit: Int!
+    parent: String
+    status: TaskStatus
+  ): TaskList
 
   # checkin
-  newCheckIn(time: Float) :CheckIn 
-  checkInList(skip: Int, limit:Int, userid: String): CheckInList
+  newCheckIn(time: Float): CheckIn
+  checkInList(skip: Int, limit: Int, userid: String): CheckInList
 
   # reason 拒绝理由
-  reasonList(skip:Int, limit:Int):ReasonList
+  admin_newReason(content: String): Reason
+  admin_removeReason(_id: String): String
+  admin_reasonList(skip: Int, limit: Int): ReasonList
 
   # message
-  newMessage(content:String,taskid:String):Message
-  updateMessage(_id:String,content:String):Message
-  messageList(skip: Int, limit:Int,taskid:String):MessageList
-
+  newMessage(content: String, taskid: String): Message
+  admin_newMessage(content: String, taskid: String): Message
+  updateMessage(_id: String, content: String): Message
+  admin_updateMessage(_id: String, content: String): Message
+  messageList(skip: Int, limit: Int, taskid: String): MessageList
+  admin_messageList(skip: Int, limit: Int, taskid: String): MessageList
+  # admin management
+  admin_newRole(_id: String): Role
+  admin_newUser(username: String, password: String, roleid: String): User
+  admin_setAdmin(username: String, roleidList: [String]): User
+  admin_disableUser(_id: String): User
 }
-
-
