@@ -1,11 +1,18 @@
-import Joi from 'joi'
-import Task, { Status, ITask } from '../models/task.model'
-import ruleCtrl from './rule.controller'
+import Joi from 'joi';
+import Task, { Status, ITask, StatusList } from '../models/task.model';
+import ruleCtrl from './rule.controller';
 import { IRule } from '../models/rule.model';
-import BillRecord, { IBillRecord, Status as BillRecordStatus, Type as BillRecordType } from '../models/billRecord.model';
+import BillRecord, {
+  IBillRecord,
+  Status as BillRecordStatus,
+  Type as BillRecordType
+} from '../models/billRecord.model';
 import Bill from '../models/bill.model';
 import User from '../models/user.model';
-
+import Err from '../tools/error';
+import { start } from 'repl';
+import { query } from 'winston';
+import { Interface } from 'readline';
 
 const taskSchema = Joi.object({
   parent: Joi.string(),
@@ -22,11 +29,9 @@ const taskSchema = Joi.object({
 
   howToFindGoods: Joi.string(),
 
-
   startTime: Joi.number(),
   endTime: Joi.number(),
   total: Joi.number(),
-
 
   commission: Joi.number(),
   platformServiceFee: Joi.number(),
@@ -36,73 +41,80 @@ const taskSchema = Joi.object({
   extraImages: Joi.array(),
   remark: Joi.string(),
 
-
   storeid: Joi.string(),
   userid: Joi.string(),
   workerid: Joi.string(),
-
 
   // # 0 default, 1  being assigned to worker, 2 in appeal 3 finished
   status: Joi.string(),
 
   createdAt: Joi.number(),
-  updatedAt: Joi.number(),
-
-})
-
-
+  updatedAt: Joi.number()
+});
 
 const insert = async (task: ITask) => {
-
   task = await Joi.validate(task, taskSchema, { abortEarly: false });
 
   const now = new Date();
-  task.createdAt = now.getTime()
-  task.updatedAt = now.getTime()
+  task.createdAt = now.getTime();
+  task.updatedAt = now.getTime();
   return await new Task(task).save();
-
-}
+};
 
 const newTask = async (task: ITask) => {
   task = await Joi.validate(task, taskSchema, { abortEarly: false });
-  const now = new Date()
+  const now = new Date();
+  if (task.startTime < task.endTime) {
+  } else {
+    throw new Error(
+      `invalid startTime=${task.startTime} and endTime=${task.endTime}`
+    );
+  }
 
-  //todo bill lock bill
-  const rule = await ruleCtrl.getCurrentRule()
+  // check rule
+  const rule = await ruleCtrl.getCurrentRule();
   if (!rule) {
-    throw new Error('unable to got rule')
+    throw Err.NotFound(`rule  not found`);
   }
-  if (!Number.isInteger(task.total) || !Number.isInteger(task.extraCommission)) {
-    throw new Error(`total is ${task.total}`)
+  if (
+    !Number.isInteger(task.total) ||
+    !Number.isInteger(task.extraCommission)
+  ) {
+    throw Err.IllegalValue(
+      `total=${task.total}, extraCommission=${task.extraCommission}`
+    );
   }
 
-  const amount = (ruleCtrl.gerCurrentRuleAmount(rule) + task.extraCommission) * task.total
+  const amount =
+    (ruleCtrl.gerCurrentRuleAmount(rule) + task.extraCommission) * task.total;
   if (!Number.isInteger(amount)) {
-    throw new Error('server error')
+    throw new Error('server error');
   }
 
-  // const bill = await Bill.findOne({ userid: task.userid })
-  const user = await User.findById(task.userid)
+  const user = await User.findById(task.userid);
   if (!user) {
-    throw new Error(`invalid userid ${task.userid}`)
+    throw new Error(`invalid userid ${task.userid}`);
   }
-  const bill = await Bill.findById(user.billid)
+  const bill = await Bill.findById(user.billid);
   if (!bill) {
-    throw new Error('user bill info not found')
+    throw new Error('user bill info not found');
   }
   if (bill.remained < amount) {
-    throw new Error('余额不足')
+    throw new Error('余额不足');
   }
 
   // lock bill and add billRecord
-  const updatedBill = await Bill.findByIdAndUpdate(bill._id,
+  const updatedBill = await Bill.findByIdAndUpdate(
+    bill._id,
     {
       $set: {
         remained: bill.remained - amount,
         freeze: bill.freeze + amount,
         updatedAt: now.getTime()
       }
-    }, { new: true })
+    },
+    { new: true }
+  );
   const lockRecordObj = {
     userid: task.userid,
     amount: amount,
@@ -110,162 +122,224 @@ const newTask = async (task: ITask) => {
     status: BillRecordStatus.DEFAULT,
     createdAt: now.getTime(),
     updatedAt: now.getTime()
+  };
+  const lockTaskBillRecord = await new BillRecord(lockRecordObj).save();
+
+  task.createdAt = now.getTime();
+  task.updatedAt = now.getTime();
+  task.status = Status.DEFAULT;
+
+  const newTask = await new Task(task).save();
+  // child tasks
+  const childTasks = [];
+  const firstChildStartAt = task.startTime;
+  const duration = task.endTime - task.startTime;
+  for (let i = 0; i < task.total; i++) {
+    childTasks.push({
+      ...task,
+      parent: newTask.id,
+      childStartAt: firstChildStartAt + (duration / task.total) * i,
+      status: Status.DEFAULT
+    });
   }
-  const lockTaskBillRecord = await new BillRecord(lockRecordObj).save()
-
-
-  task.createdAt = now.getTime()
-  task.updatedAt = now.getTime()
-  task.status = Status.DEFAULT
-  return await new Task(task).save();
-}
+  const createChildTasks = childTasks.map(async ct => {
+    const t = await new Task(ct).save();
+    return t;
+  });
+  await Promise.all(createChildTasks);
+  // child task finished
+  return newTask;
+};
 
 export interface ITaskQuery {
-  skip: number,
-  limit: number,
-  userid?: string,
-  parent?: string,
-  status?: Status,
+  skip: number;
+  limit: number;
+  userid?: string;
+  parent?: string;
+  status?: Status;
 }
 export interface ItaskFilter {
-  userid?: string,
-  parent?: string,
-  status?: Status,
+  userid?: string;
+  parent?: string;
+  status?: Status;
 }
 const findById = async (_id: string) => {
-  const check = await Task.findById(_id)
+  const check = await Task.findById(_id);
   if (!check) {
-    throw new Error(`invalid _id`)
+    throw new Error(`invalid _id`);
   }
-  return check
-}
-const find = async (query: ITaskQuery = { skip: 0, limit: 10, }) => {
-  const { skip, limit, userid, parent, status } = query
+  return check;
+};
+const find = async (query: ITaskQuery = { skip: 0, limit: 10 }) => {
+  const { skip, limit, userid, parent, status } = query;
   // todo filter by parent
-  const filter: ItaskFilter = {}
+  const filter: ItaskFilter = {};
   if (userid) {
-    filter.userid = userid
+    filter.userid = userid;
   }
   if (parent) {
-    filter.parent = parent
+    filter.parent = parent;
   }
   if (status) {
-    filter.status = status
+    filter.status = status;
   }
 
-  const list = await Task.find(filter).skip(skip).limit(limit)
-  const total = await Task.count(filter)
+  const list = await Task.find(filter)
+    .skip(skip)
+    .limit(limit);
+  const total = await Task.count(filter);
 
-  return { list, total }
+  return { list, total };
+};
+
+export interface IChildTaskQuery {
+  skip: number;
+  limit: number;
+  statusList?: Status[];
+  workid: String;
 }
+const findChildTaskList = async (query: IChildTaskQuery) => {
+  const { skip, limit, statusList } = query;
+  let filters = [];
+  if (statusList && statusList.sort().join() === StatusList.join()) {
+    // filter = {};
+  } else {
+    filters.push({ status: { $in: statusList } });
+  }
+  if (query.workid) {
+    filters.push({ workerid: query.workid });
+  }
+  const filter = Object.assign({}, ...filters);
 
+  const list = await Task.find(filter)
+    .skip(skip)
+    .limit(limit);
+  const total = await Task.count(filter);
+
+  return { list, total };
+};
 
 const updateInfo = async (_id: string, updateObj: ITask) => {
   const now = new Date();
-  const check = await Task.findByIdAndUpdate(_id,
+  const check = await Task.findByIdAndUpdate(
+    _id,
     {
       $set: {
         ...updateObj,
         updatedAt: now.getTime()
       }
-    }, { new: true })
+    },
+    { new: true }
+  );
 
   if (!check) {
-    throw new Error('incorrect _id')
+    throw new Error('incorrect _id');
   }
 
-  return check
-}
+  return check;
+};
 
 const updateStatus = async (_id: string, status: Status) => {
   const now = new Date();
-  const check = await Task.findByIdAndUpdate(_id, {
-    $set: {
-      status, updatedAt: now.getTime()
-    }
-  }, { new: true })
+  const check = await Task.findByIdAndUpdate(
+    _id,
+    {
+      $set: {
+        status,
+        updatedAt: now.getTime()
+      }
+    },
+    { new: true }
+  );
 
   if (!check) {
-    throw new Error('incorrect _id')
+    throw new Error('incorrect _id');
   }
 
-  return check
-}
+  return check;
+};
 
 const updateWorker = async (_id: string, workerid: string) => {
   const now = new Date();
-  const check = await Task.findByIdAndUpdate(_id, {
-    $set: {
-      workerid,
-      status: Status.ASSIGNED,
-      updatedAt: now.getTime()
-    }
-  }, { new: true })
+  const check = await Task.findByIdAndUpdate(
+    _id,
+    {
+      $set: {
+        workerid,
+        status: Status.ASSIGNED,
+        updatedAt: now.getTime()
+      }
+    },
+    { new: true }
+  );
 
   if (!check) {
-    throw new Error('incorrect _id')
+    throw new Error('incorrect _id');
   }
 
-  return check
-}
+  return check;
+};
 
 const finish = async (_id: string) => {
-
-  const check = await Task.findById(_id)
+  const check = await Task.findById(_id);
   if (!check) {
-    throw new Error('incorrect _id')
+    throw new Error('incorrect _id');
   }
   if (check.status === Status.FINISHED) {
-    throw new Error('the task is already finished')
+    throw new Error('the task is already finished');
   }
   if (check.status === Status.DEFAULT) {
-    throw new Error('the task is not assigned, user abort')
+    throw new Error('the task is not assigned, user abort');
   }
 
+  const now = new Date();
+  const updatedTask = await Task.findByIdAndUpdate(
+    _id,
+    {
+      $set: {
+        status: Status.FINISHED,
+        updatedAt: now.getTime()
+      }
+    },
+    { new: true }
+  );
 
-  const now = new Date()
-  const updatedTask = await Task.findByIdAndUpdate(_id, {
-    $set: {
-      status: Status.FINISHED,
-      updatedAt: now.getTime()
-    }
-  }, { new: true })
+  return updatedTask;
 
-
-  return updatedTask
-
-  // todo finish bill 
+  // todo finish bill
   // const rule = await ruleCtrl.getCurrentRule()
   // const { userid } = {}
-
-}
+};
 
 const abort = async (_id: string) => {
-
-  const check = await Task.findById(_id)
+  const check = await Task.findById(_id);
   if (!check) {
-    throw new Error('incorrect _id')
+    throw new Error('incorrect _id');
   }
   if (check.status == Status.DEFAULT) {
-    throw new Error('incorrent task status')
+    throw new Error('incorrent task status');
   }
 
-  const now = new Date()
-  const updatedTask = await Task.findByIdAndUpdate(_id, {
-    $set: {
-      status: Status.ABORT,
-      updatedAt: now.getTime()
-    }
-  }, { new: true })
+  const now = new Date();
+  const updatedTask = await Task.findByIdAndUpdate(
+    _id,
+    {
+      $set: {
+        status: Status.ABORT,
+        updatedAt: now.getTime()
+      }
+    },
+    { new: true }
+  );
 
-
-  return updatedTask
-  // todo finish bill 
-}
+  return updatedTask;
+  // todo finish bill
+};
 export default {
   insert,
   newTask,
   find,
+  findChildTaskList,
   // findOne,
   findById,
   updateInfo,
@@ -273,5 +347,4 @@ export default {
   updateWorker,
   finish,
   abort
-
-}
+};

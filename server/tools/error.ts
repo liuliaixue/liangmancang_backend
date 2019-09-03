@@ -7,6 +7,9 @@ const Err = {
   },
   Existed(msg: string) {
     return new Error(`Existed: ${msg}`);
+  },
+  IllegalValue(msg: String) {
+    return new Error(`IllegalValue: ${msg}`);
   }
 };
 export default Err;

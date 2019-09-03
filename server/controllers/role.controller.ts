@@ -44,10 +44,20 @@ const aclCheck = async (user: IUser, api: string) => {
   ) {
     return;
   }
+  if (user.acls && user.acls.indexOf('admin_no') > -1) {
+    throw new Error(`no permission`);
+  }
+  if (
+    user.acls &&
+    (user.acls.indexOf('admin_all') > -1 || user.acls.indexOf(api) > -1)
+  ) {
+    return;
+  }
   const check = await User.findById(user.id);
   if (!check) {
     throw Err.NotFound(`userid:${user.id}`);
   }
+
   if (check && check.roles && check.roles.length) {
     const promises = check.roles.map(
       role =>
@@ -78,6 +88,35 @@ const aclCheck = async (user: IUser, api: string) => {
   throw new Error(`no permission`);
 };
 
+const getUserAclList = async (user: IUser) => {
+  const check = user;
+  if (check && check.roles && check.roles.length) {
+    const promises = check.roles.map(
+      role =>
+        new Promise<IRole>(async (r, e) => {
+          try {
+            const roleInfo = await Role.findOne({ name: role });
+            if (!roleInfo) {
+              e(`invalid role name=${role}`);
+              return;
+            }
+            r(roleInfo);
+          } catch (error) {
+            e(error);
+          }
+        })
+    );
+    const roles = await Promise.all(promises);
+
+    let acls: string[] = [];
+    roles.forEach(role => {
+      acls.concat(role.acl);
+    });
+    return Array.from(new Set(acls));
+  }
+  return [];
+};
+
 export default {};
 
-export { aclCheck };
+export { aclCheck, getUserAclList };

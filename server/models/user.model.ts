@@ -28,6 +28,7 @@ export interface IUser extends Document {
   inviter: string;
 
   bill: IBill | null;
+  acls?: String[];
 }
 
 const UserSchema: Schema = new Schema(

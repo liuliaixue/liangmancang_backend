@@ -62,7 +62,7 @@ export default {
   },
   async admin_billRecordList(obj: any, req: IReq) {
     logger.info({ _from: 'billRecordList', _by: req.user.id, ...obj });
-    aclCheck(req.user, 'admin_billRecordList');
+    await aclCheck(req.user, 'admin_billRecordList');
 
     const billRecordListObj = await billRecordCtrl.find({ ...obj });
 
