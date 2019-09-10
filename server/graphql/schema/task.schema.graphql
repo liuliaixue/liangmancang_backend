@@ -1,67 +1,58 @@
 # 任务 task
 
-type Task{
-    _id: String!
-    parent: String
-    orderNumber: String
+type Task {
+  _id: String!
+  parent: String
+  orderNumber: String
 
-    goodsName: String
-    goodsLink: String
-    goodsImage: String
-    goodsPrice: Float
-    goodsTotal: Int
-    goodsPriceShowed: Float
-    goodsSpecification: String
-    isFreeShipping: Boolean
+  goodsName: String
+  goodsLink: String
+  goodsImage: String
+  goodsPrice: Float
+  goodsTotal: Int
+  goodsPriceShowed: Float
+  goodsSpecification: String
+  isFreeShipping: Boolean
 
-    howToFindGoods: String
+  howToFindGoods: String
 
+  startTime: Float
+  endTime: Float
+  total: Int
 
-    startTime: Float
-    endTime: Float
-    total: Int
+  commission: Float
+  platformServiceFee: Float
+  platformCommission: Float
 
-    commission: Float
-    platformServiceFee: Float
-    platformCommission: Float
+  extraCommission: Float
+  extraImages: [String]
+  remark: String
 
-    extraCommission: Float
-    extraImages:[String]
-    remark:String
+  status: TaskStatus
 
-    status:TaskStatus
+  storeid: String
+  userid: String
+  workerid: String
 
-    storeid: String
-    userid: String
-    workerid: String
+  createdAt: Float
+  updatedAt: Float
 
-    createdAt: Float
-    updatedAt: Float
-
+  startAt: Float #  it is a child task and it start at
 }
 
-
-# 0 default, 
-# 1 being assigned to worker, 
-# 2 in appeal 
+# 0 default,
+# 1 being assigned to worker,
+# 2 in appeal
 # 3 finished
-enum TaskStatus{
-    DEFAULT 
-    ASSIGNED
-    APPEAL
-    FINISHED
-    ABORT
+enum TaskStatus {
+  DEFAULT
+  ASSIGNED
+  APPEAL
+  FINISHED
+  ABORT
 }
 
-type TaskList{
-    list: [Task],
-    total: Int
+type TaskList {
+  list: [Task]
+  total: Int
 }
-
-# type CTask {
-#     _id: String!
-#     parent: String
-#     startTime: Float
-    
-#     createdAt: Float
-# } # children task

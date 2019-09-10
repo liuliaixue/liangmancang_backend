@@ -109,6 +109,18 @@ type Mutation {
     parent: String
     status: TaskStatus
   ): TaskList
+  childTaskList(
+    skip: Int!
+    limit: Int!
+    statusList: [TaskStatus]
+    workid: String
+  ): TaskList
+  admin_childTaskList(
+    skip: Int!
+    limit: Int!
+    statusList: [TaskStatus]
+    workid: String
+  ): TaskList
 
   # checkin
   newCheckIn(time: Float): CheckIn

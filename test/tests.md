@@ -24,7 +24,16 @@ db.getCollection('rules').insert({
 ## run test command
 
 ```
-mocha test/01_user.js test/03_user.graphql.js test/04_store.graphql.js test/05_billRecord.js test/07_task.js test/08_checkIn.js test/09_reason.js test/10_message.js
+mocha test/00_admin.js \
+test/01_user.js \
+test/04_store.graphql.js \
+test/05_billRecord.js \
+test/07_task.js \
+test/08_checkIn.js \
+test/09_reason.js \
+test/10_message.js \
+test/11_role.js
+
 ```
 
 ### User

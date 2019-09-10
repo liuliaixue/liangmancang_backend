@@ -4,6 +4,7 @@ const config = require('./_config');
 const assert = require('assert');
 
 describe('graphql task', () => {
+  const taskNumber = 5;
   it('newTask', async () => {
     const query = `mutation {
       newTask(
@@ -19,7 +20,7 @@ describe('graphql task', () => {
         howToFindGoods: "______"
         startTime: 0
         endTime: 1
-        total: 1
+        total: ${taskNumber}
         commission: 12
         platformServiceFee: 1
         platformCommission: 1
@@ -64,10 +65,36 @@ describe('graphql task', () => {
 
     config.task = res.newTask;
   });
+  it('ChildTaskList', async () => {
+    const query = `mutation {
+      childTaskList(skip: 0, limit: 10, statusList: [DEFAULT]) {
+        list {
+          _id
+        }
+        total
+      }
+    }`;
+    const res = await client(query, {});
+    assert(res.childTaskList.total > 0);
+    assert(res.childTaskList.list.length > 0);
+    config.childTask = res.childTaskList.list[0];
+  });
+  it('admin_childTaskList', async () => {
+    const query = `mutation {
+      admin_childTaskList(skip: 0, limit: 10, statusList: [DEFAULT]) {
+        list {
+          _id
+        }
+        total
+      }
+    }`;
+    const res = await adminClient(query, {});
+    assert(res.admin_childTaskList.total > 0);
+  });
 
   it('updateTaskStatus: assigned', async () => {
     const query = `mutation {
-      updateTaskStatus(_id: "${config.task._id}", status: ASSIGNED) {
+      updateTaskStatus(_id: "${config.childTask._id}", status: ASSIGNED) {
         _id
         parent
         status
@@ -86,7 +113,7 @@ describe('graphql task', () => {
 
   it('updateTaskStatus: finished', async () => {
     const query = `mutation {
-      updateTaskStatus(_id: "${config.task._id}", status: FINISHED) {
+      updateTaskStatus(_id: "${config.childTask._id}", status: FINISHED) {
         _id
         parent
         status
@@ -103,7 +130,7 @@ describe('graphql task', () => {
   });
   it('updateTaskStatus: appeal', async () => {
     const query = `mutation {
-      updateTaskStatus(_id: "${config.task._id}", status: APPEAL) {
+      updateTaskStatus(_id: "${config.childTask._id}", status: APPEAL) {
         _id
         parent
         status
@@ -120,7 +147,7 @@ describe('graphql task', () => {
   });
   it('updateTaskStatus: abort', async () => {
     const query = `mutation {
-      updateTaskStatus(_id: "${config.task._id}", status: ABORT) {
+      updateTaskStatus(_id: "${config.childTask._id}", status: ABORT) {
         _id
         parent
         status
@@ -149,8 +176,20 @@ describe('graphql task', () => {
     const res = await client(query, {});
     assert(res.taskList.total >= 0);
   });
-  it('cTaskList');
 
-  it('admin_taskList');
-  it('admin_cTaskList');
+  it(
+    'admin_taskList' /* async () => {
+    const query = `mutation {
+        admin_taskList(skip: 0, limit: 10, status: DEFAULT) {
+          list {
+            _id
+          }
+          total
+        }
+      }`;
+
+    const res = await client(query, {});
+    assert(res.admin_taskList.total >= 0);
+  } */
+  );
 });
