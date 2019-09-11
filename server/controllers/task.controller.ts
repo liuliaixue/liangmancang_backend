@@ -49,15 +49,6 @@ const taskSchema = Joi.object({
   updatedAt: Joi.number()
 });
 
-const insert = async (task: ITask) => {
-  task = await Joi.validate(task, taskSchema, { abortEarly: false });
-
-  const now = new Date();
-  task.createdAt = now.getTime();
-  task.updatedAt = now.getTime();
-  return await new Task(task).save();
-};
-
 const newTask = async (task: ITask) => {
   task = await Joi.validate(task, taskSchema, { abortEarly: false });
   const now = new Date();
@@ -144,7 +135,7 @@ const newTask = async (task: ITask) => {
     return t;
   });
   await Promise.all(createChildTasks);
-  // child task finished
+  // child tasks finished
   return newTask;
 };
 
@@ -295,7 +286,10 @@ const finish = async (_id: string) => {
   return updatedTask;
 
   // todo finish bill
-  // const rule = await ruleCtrl.getCurrentRule()
+  const rule = await ruleCtrl.getCurrentRule();
+  if (!rule) {
+    throw Err.NotFound(`rule not found`);
+  }
   // const { userid } = {}
 };
 
@@ -324,7 +318,6 @@ const abort = async (_id: string) => {
   // todo finish bill
 };
 export default {
-  insert,
   newTask,
   find,
   findChildTaskList,
