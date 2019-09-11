@@ -99,26 +99,29 @@ type Mutation {
   taskList(
     skip: Int!
     limit: Int!
-    parent: String
+    parent: String # taskid
     status: TaskStatus
-  ): TaskList
+  ): TaskList # find my tasks without parent , a task's children tasks with parent
   admin_taskList(
     userid: String
     skip: Int!
     limit: Int!
     parent: String
+    #statusList: [TaskStatus]
     status: TaskStatus
-  ): TaskList
+  ): TaskList # f
   childTaskList(
     skip: Int!
     limit: Int!
-    statusList: [TaskStatus]
+    #statusList: [TaskStatus]
+    status: TaskStatus
     workid: String
-  ): TaskList
+  ): TaskList # find all children tasks, Buyer can use tit
   admin_childTaskList(
     skip: Int!
     limit: Int!
-    statusList: [TaskStatus]
+    #statusList: [TaskStatus]
+    status: TaskStatus
     workid: String
   ): TaskList
 

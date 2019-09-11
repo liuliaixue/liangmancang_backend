@@ -5,6 +5,7 @@ const { execSync } = require('child_process');
 
 const User = require('../dist/models/user.model').default;
 const connectMongo = require('../dist/config/mongoose');
+const mongoose = require('mongoose');
 
 describe('Admin', function() {
   it('create admin user', async () => {
@@ -23,12 +24,16 @@ describe('Admin', function() {
     // "`;
     // execSync(`mongo --eval ${script.replace(/\n/gi, ' ')}`, {});
 
-    const r = await User.findByIdAndUpdate(adminInfo._id, {
-      $set: { roles: ['root'] }
-    }).catch(e => {
-      console.log(e);
-    });
-    console.log(r);
+    const r = await User.findByIdAndUpdate(
+      adminInfo._id,
+      {
+        $set: { roles: ['root'] }
+      },
+      { new: true }
+    );
+    // console.log(r);
+    assert(r.roles.length === 1);
+    mongoose.disconnect();
   });
 
   it('admin login', async () => {

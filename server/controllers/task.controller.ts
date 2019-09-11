@@ -10,9 +10,6 @@ import BillRecord, {
 import Bill from '../models/bill.model';
 import User from '../models/user.model';
 import Err from '../tools/error';
-import { start } from 'repl';
-import { query } from 'winston';
-import { Interface } from 'readline';
 
 const taskSchema = Joi.object({
   parent: Joi.string(),
@@ -157,11 +154,13 @@ export interface ITaskQuery {
   userid?: string;
   parent?: string;
   status?: Status;
+  workid?: string;
 }
 export interface ItaskFilter {
   userid?: string;
   parent?: string;
   status?: Status;
+  workid?: string;
 }
 const findById = async (_id: string) => {
   const check = await Task.findById(_id);
@@ -192,24 +191,13 @@ const find = async (query: ITaskQuery = { skip: 0, limit: 10 }) => {
   return { list, total };
 };
 
-export interface IChildTaskQuery {
-  skip: number;
-  limit: number;
-  statusList?: Status[];
-  workid: String;
-}
-const findChildTaskList = async (query: IChildTaskQuery) => {
-  const { skip, limit, statusList } = query;
-  let filters = [];
-  if (statusList && statusList.sort().join() === StatusList.join()) {
-    // filter = {};
-  } else {
-    filters.push({ status: { $in: statusList } });
-  }
-  if (query.workid) {
-    filters.push({ workerid: query.workid });
-  }
-  const filter = Object.assign({}, ...filters);
+const findChildTaskList = async (query: ITaskQuery) => {
+  const { skip, limit } = query;
+
+  const filter: ItaskFilter = {
+    status: query.status,
+    workid: query.workid
+  };
 
   const list = await Task.find(filter)
     .skip(skip)

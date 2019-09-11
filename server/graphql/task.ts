@@ -61,30 +61,29 @@ export default {
     logger.info({ _from: 'taskList', _by: req.user.id, ...obj });
 
     const userid = req.user.id;
-
     const taskListObj = await taskCtrl.find({ ...obj, userid });
 
     return taskListObj;
   },
-  admin_taskList: async () => {},
+
   childTaskList: async (obj: any, req: IReq) => {
     logger.info({ _from: 'childTaskList', _by: req.user.id, ...obj });
-
-    if (!obj.statusList || !(obj.statusList.length > 0)) {
-      throw new Error('invalid statusList');
-    }
 
     const childTaskList = await taskCtrl.findChildTaskList(obj);
 
     return childTaskList;
   },
+  admin_taskList: async (obj: any, req: IReq) => {
+    logger.info({ _from: 'admin_taskList', _by: req.user.id, ...obj });
+    await aclCheck(req.user, 'admin_taskList');
+
+    const taskListObj = await taskCtrl.find({ ...obj, parent: obj.parent });
+
+    return taskListObj;
+  },
   admin_childTaskList: async (obj: any, req: IReq) => {
     logger.info({ _from: 'admin_childTaskList', _by: req.user.id, ...obj });
-    await aclCheck(req.user, 'admin_task');
-
-    if (!obj.statusList || !(obj.statusList.length > 0)) {
-      throw new Error('invalid statusList');
-    }
+    await aclCheck(req.user, 'admin_childTaskList');
 
     const childTaskList = await taskCtrl.findChildTaskList(obj);
 

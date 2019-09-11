@@ -65,9 +65,37 @@ describe('graphql task', () => {
 
     config.task = res.newTask;
   });
+  it('taskList', async () => {
+    const query = `mutation {
+        taskList(skip: 0, limit: 10, status: DEFAULT) {
+          list {
+            _id
+          }
+          total
+        }
+      }`;
+
+    const res = await client(query, {});
+    assert(res.taskList.total >= 0);
+  });
+
+  it('admin_taskList', async () => {
+    const query = `mutation {
+        admin_taskList(skip: 0, limit: 10, status: DEFAULT) {
+          list {
+            _id
+          }
+          total
+        }
+      }`;
+
+    const res = await adminClient(query, {});
+
+    assert(res.admin_taskList.total >= 0);
+  });
   it('ChildTaskList', async () => {
     const query = `mutation {
-      childTaskList(skip: 0, limit: 10, statusList: [DEFAULT]) {
+      childTaskList(skip: 0, limit: 10, status: DEFAULT) {
         list {
           _id
         }
@@ -75,13 +103,14 @@ describe('graphql task', () => {
       }
     }`;
     const res = await client(query, {});
+
     assert(res.childTaskList.total > 0);
     assert(res.childTaskList.list.length > 0);
     config.childTask = res.childTaskList.list[0];
   });
   it('admin_childTaskList', async () => {
     const query = `mutation {
-      admin_childTaskList(skip: 0, limit: 10, statusList: [DEFAULT]) {
+      admin_childTaskList(skip: 0, limit: 10, status: DEFAULT) {
         list {
           _id
         }
@@ -162,34 +191,4 @@ describe('graphql task', () => {
     assert(res.updateTaskStatus.status === 'ABORT');
     // todo check bill
   });
-
-  it('taskList', async () => {
-    const query = `mutation {
-        taskList(skip: 0, limit: 10, status: DEFAULT) {
-          list {
-            _id
-          }
-          total
-        }
-      }`;
-
-    const res = await client(query, {});
-    assert(res.taskList.total >= 0);
-  });
-
-  it(
-    'admin_taskList' /* async () => {
-    const query = `mutation {
-        admin_taskList(skip: 0, limit: 10, status: DEFAULT) {
-          list {
-            _id
-          }
-          total
-        }
-      }`;
-
-    const res = await client(query, {});
-    assert(res.admin_taskList.total >= 0);
-  } */
-  );
 });
