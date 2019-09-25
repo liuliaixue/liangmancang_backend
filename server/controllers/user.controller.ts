@@ -7,8 +7,13 @@ import shortid from '../tools/shortid';
 import { getUserAclList } from './role.controller';
 
 const userSchema = Joi.object({
-  username: Joi.string().required(),
-  password: Joi.string().required(),
+  username: Joi.string()
+    .min(3)
+    .max(50)
+    .required(),
+  password: Joi.string()
+    .min(6)
+    .required(),
 
   fullname: Joi.string(),
   mobilePhone: Joi.string().regex(/^[1-9][0-9]{10}$/),
