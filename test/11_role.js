@@ -3,7 +3,11 @@ const config = require('./_config');
 const assert = require('assert');
 
 describe('graphql message', () => {
-  it('admin: get acl');
+  it('admin: get acl', async () => {
+    // const query = ``;
+    // const res = await adminClient(query, {});
+    // assert(res);
+  });
   it('admin new role');
   it('admin update role');
   it('admin role list');

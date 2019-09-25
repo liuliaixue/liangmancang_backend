@@ -1,9 +1,10 @@
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import Joi, { func } from 'joi';
 import User, { IUser, Status } from '../models/user.model';
 import Bill from '../models/bill.model';
 import Err from '../tools/error';
 import shortid from '../tools/shortid';
+import { getUserAclList } from './role.controller';
 
 const userSchema = Joi.object({
   username: Joi.string().required(),
@@ -73,6 +74,24 @@ interface userLogin {
   password: string;
 }
 async function login(user: userLogin) {
+  const check = await User.findOne({
+    username: user.username
+  });
+  if (!check) {
+    throw new Error('incorrect username');
+  }
+  const comparePassword = bcrypt.compareSync(
+    user.password,
+    check.hashedPassword
+  );
+  if (!comparePassword) {
+    throw new Error('incorrect password');
+  }
+
+  return check;
+}
+
+async function adminLogin(user: userLogin) {
   const check = await User.findOne({
     username: user.username
   });
@@ -167,6 +186,7 @@ const updateStatus = async (_id: string, status: Status) => {
 export default {
   newUser,
   login,
+  adminLogin,
   updatePassword,
   find,
   findUserByCode,

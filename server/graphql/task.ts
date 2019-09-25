@@ -5,6 +5,7 @@ import taskCtrl from '../controllers/task.controller';
 
 import { Status } from '../models/task.model';
 import { aclCheck } from '../controllers/role.controller';
+import Err from '../tools/error';
 
 export default {
   // 创建父亲任务, 后台在worker中创建子任务
@@ -43,7 +44,6 @@ export default {
       // appeal task
       case Status.APPEAL: {
         const updatedTask = await taskCtrl.updateStatus(obj._id, Status.APPEAL);
-
         return updatedTask;
       }
 

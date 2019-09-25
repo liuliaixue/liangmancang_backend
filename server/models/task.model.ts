@@ -47,6 +47,7 @@ export interface ITask extends Document {
   userid: string;
   workerid: string;
   startAt: number;
+  amount: number;
 
   createdAt: number;
   updatedAt: number;
@@ -132,6 +133,12 @@ const TaskSchema = new Schema(
     },
     workerid: {
       type: String
+    },
+    startAt: {
+      type: Number
+    },
+    amount: {
+      type: Number
     },
 
     createdAt: {

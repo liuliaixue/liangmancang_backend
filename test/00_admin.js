@@ -42,4 +42,11 @@ describe('Admin', function() {
     config.adminInfo = res.data.user;
     config.adminToken = res.data.token;
   });
+
+  it('admin login 2', async () => {
+    const res = await client.post('/api/auth/adminlogin', config.admin);
+
+    assert(res.data.user.username === config.admin.username);
+    assert(res.data.acls.length > 0);
+  });
 });

@@ -4,7 +4,7 @@ const path = require('path');
 const config = require('./_config');
 const { baseURL } = config;
 
-const token = fs.readFileSync(path.join(__dirname, '_token'), 'utf8');
+//const token = fs.readFileSync(path.join(__dirname, '_token'), 'utf8');
 
 const q = `{
   Movie(title: "Inception") {
@@ -18,7 +18,7 @@ const q = `{
 const client = (query, variables) => {
   return new Promise((resovle, reject) => {
     const client = new GraphQLClient(`${baseURL}/api/graphql`, {
-      headers: { 'x-lmc-token': token }
+      headers: { 'x-lmc-token': config.token }
     });
     client
       .request(query, variables)

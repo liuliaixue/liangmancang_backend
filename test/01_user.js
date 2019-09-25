@@ -37,4 +37,15 @@ describe('User', function() {
     fs.writeFileSync(path.join(__dirname, '_token'), res.data.token);
     config.token = res.data.token;
   });
+
+  it('login fail with wrong password', async () => {
+    const res = await client.post('/api/auth/login', {
+      username: config.user.username,
+      password: config.user.password + '1',
+
+      mobilePhone: '18817570743'
+    });
+    assert(res.status === 500);
+    console.log(res.data.message);
+  });
 });

@@ -1,6 +1,6 @@
 # graphql schema
 type Query {
-  user(_id: String!): User
+  user(_id: String): User #todo, userid is not nessary
   store(_id: String!): Store
   bill(userid: String): Bill
   billRecord(_id: String!): BillRecord
@@ -115,14 +115,14 @@ type Mutation {
     limit: Int!
     #statusList: [TaskStatus]
     status: TaskStatus
-    workid: String
+    workerid: String
   ): TaskList # find all children tasks, Buyer can use tit
   admin_childTaskList(
     skip: Int!
     limit: Int!
     #statusList: [TaskStatus]
     status: TaskStatus
-    workid: String
+    workerid: String
   ): TaskList
 
   # checkin

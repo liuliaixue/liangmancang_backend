@@ -38,6 +38,7 @@ type Task {
   updatedAt: Float
 
   startAt: Float #  it is a child task and it start at
+  amount: Float #
 }
 
 # 0 default,

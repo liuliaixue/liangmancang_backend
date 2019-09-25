@@ -90,6 +90,9 @@ const aclCheck = async (user: IUser, api: string) => {
 
 const getUserAclList = async (user: IUser) => {
   const check = user;
+  if (check && check.roles && check.roles.indexOf('root') > -1) {
+    return AclNameList;
+  }
   if (check && check.roles && check.roles.length) {
     const promises = check.roles.map(
       role =>
@@ -97,10 +100,10 @@ const getUserAclList = async (user: IUser) => {
           try {
             const roleInfo = await Role.findOne({ name: role });
             if (!roleInfo) {
-              e(`invalid role name=${role}`);
-              return;
+              r();
+            } else {
+              r(roleInfo);
             }
-            r(roleInfo);
           } catch (error) {
             e(error);
           }
@@ -110,13 +113,38 @@ const getUserAclList = async (user: IUser) => {
 
     let acls: string[] = [];
     roles.forEach(role => {
-      acls.concat(role.acl);
+      acls.concat(role && role.acl ? role.acl : []);
     });
     return Array.from(new Set(acls));
   }
   return [];
 };
 
-export default {};
+const newRole = async (role: IRole) => {
+  const updatedRole = await new Role(role).save();
+  return updatedRole;
+};
 
+const updateRole = async (_id: string, role: IRole) => {
+  const updatedRole = await Role.findByIdAndUpdate(_id, role, { new: true });
+  return updateRole;
+};
+
+export interface IRoleListQuery {
+  skip: number;
+  limit: number;
+}
+const find = async (query: IRoleListQuery) => {
+  const { skip = 0, limit = 10 } = query;
+  const list = await Role.find({})
+    .limit(limit)
+    .skip(skip);
+  const total = await Role.count({});
+  return { list, total };
+};
+const remove = async (_id: string) => {
+  return await Role.findByIdAndRemove(_id);
+};
+
+export default { newRole, updateRole, find, remove };
 export { aclCheck, getUserAclList };
