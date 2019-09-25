@@ -63,6 +63,18 @@ describe('graphql user', () => {
     const res = await client(query, {});
     assert(config.userInfo.updatedAt < res.updateUserPassword.updatedAt);
   });
+  it('login with new password', async () => {
+    const restfulClient = require('./_client')();
+    const res = await restfulClient.post('/api/auth/login', {
+      ...config.user,
+      password: `${config.user.password + 'a'}`
+    });
+    assert(res.data.user.username === config.user.username);
+    // var fs = require('fs');
+    // const path = require('path');
+    // fs.writeFileSync(path.join(__dirname, '_token'), res.data.token);
+    // config.token = res.data.token;
+  });
 
   it('admin_updateUserStatus', async () => {
     const query = `mutation{
