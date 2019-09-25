@@ -20,7 +20,6 @@ let currentRule: IRule = new Rule({
   createdAt: 0,
   updatedAt: 0
 });
-
 const getCurrentRule = async () => {
   return currentRule;
 };
@@ -28,6 +27,7 @@ const refreshRule = async () => {
   const ruleList = await Rule.find({}, null, { sort: { _id: -1 }, limit: 1 });
   if (ruleList.length !== 1) {
     logger.error({ _from: '', message: 'invalid rule' });
+    return;
   }
   currentRule = ruleList[0];
 };

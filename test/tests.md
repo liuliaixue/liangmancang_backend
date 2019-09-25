@@ -5,7 +5,7 @@ test flow
 3 roles in this system: platform, buyer, store
 there will be 3 users in tests: root(platform and buyer) and a user(store), a admin user(platform)
 
-create default rules
+create default rules if needed
 
 ```
 
