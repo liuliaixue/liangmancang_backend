@@ -1,7 +1,5 @@
-import Rule, { IRule, } from '../models/rule.model';
-import rule from '../graphql/rule';
-
-
+import Rule, { IRule } from '../models/rule.model';
+import logger from '../tools/logger';
 
 let currentRule: IRule = new Rule({
   buyerPercentage: 0,
@@ -20,30 +18,19 @@ let currentRule: IRule = new Rule({
   userCollection: 0,
 
   createdAt: 0,
-  updatedAt: 0,
-})
-let isCurrentRuleCached = false
-const getCurrentRule = async () => {
-  if (isCurrentRuleCached) {
-    return currentRule
-  } else {
-    const ruleList = await Rule.find({}, null, { sort: { _id: -1 }, limit: 1 })
-    if (ruleList.length !== 1) {
-      throw new Error('invalid rule')
-    }
-    currentRule = ruleList[0]
-    isCurrentRuleCached = true
+  updatedAt: 0
+});
 
-  }
-}
+const getCurrentRule = async () => {
+  return currentRule;
+};
 const refreshRule = async () => {
-  const ruleList = await Rule.find({}, null, { sort: { _id: -1 }, limit: 1 })
+  const ruleList = await Rule.find({}, null, { sort: { _id: -1 }, limit: 1 });
   if (ruleList.length !== 1) {
-    throw new Error('invalid rule')
+    logger.error('invalid rule');
   }
-  currentRule = ruleList[0]
-  isCurrentRuleCached = true
-}
+  currentRule = ruleList[0];
+};
 
 const gerCurrentRuleAmount = (rule: IRule) => {
   const {
@@ -54,20 +41,25 @@ const gerCurrentRuleAmount = (rule: IRule) => {
     userGender = 0,
     userLevel = 0,
     userAntCreditPay = 0,
-    userCollection = 0,
-  } = rule
+    userCollection = 0
+  } = rule;
 
-  return keyword + image + userArea + userAge +
-    userGender + userLevel + userAntCreditPay + userCollection
-}
-
+  return (
+    keyword +
+    image +
+    userArea +
+    userAge +
+    userGender +
+    userLevel +
+    userAntCreditPay +
+    userCollection
+  );
+};
 
 setInterval(() => {
-  refreshRule()
-}, 1000)
+  refreshRule();
+}, 1000);
 
-const insert = async () => {
+const insert = async () => {};
 
-}
-
-export default { getCurrentRule, gerCurrentRuleAmount }
+export default { getCurrentRule, gerCurrentRuleAmount };
