@@ -29,7 +29,7 @@ async function register(
     let token = authCtrl.generateToken(user);
     res.json({ user, token });
   } catch (err) {
-    logger.error({ _from: 'error', mssage: err.message });
+    logger.error({ _from: 'error', message: err.message });
     next(err);
   }
 }
@@ -45,7 +45,7 @@ async function login(
     let token = authCtrl.generateToken(user);
     res.json({ user, token });
   } catch (err) {
-    logger.error({ _from: 'error', mssage: err.message });
+    logger.error({ _from: 'error', message: err.message });
     next(err);
   }
 }
@@ -67,7 +67,7 @@ async function adminLogin(
       acls
     });
   } catch (err) {
-    logger.error({ _from: 'error', mssage: err.message });
+    logger.error({ _from: 'error', message: err.message });
     next(err);
   }
 }

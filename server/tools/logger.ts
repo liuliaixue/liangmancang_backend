@@ -1,4 +1,6 @@
 import winston from 'winston';
+import { string } from 'joi';
+import message from '../graphql/message';
 
 const logger = winston.createLogger({
   level: 'info',
@@ -25,15 +27,22 @@ if (process.env.NODE_ENV !== 'production') {
     })
   );
 }
-
+export interface IError {
+  _from: string;
+  message: any;
+}
 const info = (obj: any) => {
   obj._date = new Date();
   logger.info(JSON.stringify(obj));
 };
 
-const error = (obj: any) => {
-  obj._date = new Date();
-  logger.error(JSON.stringify(obj));
+const error = (obj: IError) => {
+  logger.error(
+    JSON.stringify({
+      ...obj,
+      _date: new Date()
+    })
+  );
 };
 
 export default { info, error };

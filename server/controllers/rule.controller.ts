@@ -27,7 +27,7 @@ const getCurrentRule = async () => {
 const refreshRule = async () => {
   const ruleList = await Rule.find({}, null, { sort: { _id: -1 }, limit: 1 });
   if (ruleList.length !== 1) {
-    logger.error('invalid rule');
+    logger.error({ _from: '', message: 'invalid rule' });
   }
   currentRule = ruleList[0];
 };
