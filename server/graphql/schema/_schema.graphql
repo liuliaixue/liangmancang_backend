@@ -48,6 +48,13 @@ type Mutation {
   admin_updateStoreStatus(_id: String!, status: StoreStatus!): Store
   admin_storeList(skip: Int, limit: Int): StoreList
 
+  newBillRecord(
+    amount: Float!
+    type: BillRecordType
+    fromBank: String
+    fromCard: String
+    fromUser: String
+  ): BillRecord
   admin_newBillRecord(
     toUserid: String!
     amount: Float!

@@ -8,6 +8,22 @@ import { aclCheck } from '../controllers/role.controller';
 // import acl from './acl'
 
 export default {
+  newBillRecord: async (obj: any, req: IReq) => {
+    logger.info({ _from: 'newBillRecord', _by: req.user.id, ...obj });
+
+    const { type } = obj;
+    const userid = req.user.id;
+    if (type !== Type.DEFAULT) {
+      throw new Error('invalid type');
+    }
+    const record = await billRecordCtrl.insert({
+      ...obj,
+      toUserid: userid,
+      status: Status.DEFAULT,
+      userid
+    });
+    return record;
+  },
   admin_newBillRecord: async (obj: any, req: IReq) => {
     logger.info({ _from: 'admin_newBillRecord', _by: req.user.id, ...obj });
     await aclCheck(req.user, 'admin_newBillRecord');

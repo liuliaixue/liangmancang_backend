@@ -120,4 +120,25 @@ describe('graphql billRecord', () => {
     const res = await client(query, {});
     assert(res.billRecordList.total > 0);
   });
+
+  it('newBillRecord', async () => {
+    const amount = 22000;
+    const query = `mutation{
+          newBillRecord(amount: ${amount}, type: DEFAULT, fromBank:"农业银行",fromCard:"1231231231231239999", fromUser: "钱三"){
+            _id
+            userid
+            toUserid
+            amount
+            type
+            status
+            createdAt
+            updatedAt
+          }
+        }`;
+
+    const res = await client(query, {});
+
+    //# amount check
+    assert(amount === res.newBillRecord.amount);
+  });
 });

@@ -11,10 +11,14 @@ const billRecordSchema = Joi.object({
   userid: Joi.string().required(),
   toUserid: Joi.string().required(),
 
-  amount: Joi.number(),
+  amount: Joi.number().max(100 * 10000 * 100),
   type: Joi.string(),
 
   status: Joi.string(),
+
+  fromBank: Joi.string(),
+  fromCard: Joi.string(),
+  fromUser: Joi.string(),
 
   createdAt: Joi.number(),
   updatedAt: Joi.number(),
