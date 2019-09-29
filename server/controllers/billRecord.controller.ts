@@ -94,20 +94,20 @@ const check = async ({ _id, status }: IBillRecordCheck) => {
     case Type.DEFAULT: {
       const now = new Date();
 
-      const updatedBillRecord = await BillRecord.findByIdAndUpdate(
-        _id,
-        {
-          $set: {
-            status: Status.CHECKED,
-            updatedAt: now.getTime()
-          }
-        },
-        { new: true }
-      );
-      if (!updatedBillRecord) {
-        throw new Error('invalid billRecord');
-      }
-      const user = await User.findById(updatedBillRecord.toUserid);
+      // const updatedBillRecord = await BillRecord.findByIdAndUpdate(
+      //   _id,
+      //   {
+      //     $set: {
+      //       status: Status.CHECKED,
+      //       updatedAt: now.getTime()
+      //     }
+      //   },
+      //   { new: true }
+      // );
+      // if (!updatedBillRecord) {
+      //   throw new Error('invalid billRecord');
+      // }
+      const user = await User.findById(billRecord.toUserid);
       if (!user) {
         throw new Error('invalid toUserid');
       }
@@ -120,28 +120,34 @@ const check = async ({ _id, status }: IBillRecordCheck) => {
         bill._id,
         {
           $set: {
-            total: bill.total + updatedBillRecord.amount,
-            remained: bill.remained + updatedBillRecord.amount,
+            total: bill.total + billRecord.amount,
+            remained: bill.remained + billRecord.amount,
             updatedAt: now.getTime()
           }
         },
         { new: true }
       );
-
-      return updatedBillRecord;
-    }
-    case Type.WITHDRAW: {
-      const now = new Date();
-
+      // update billrecord
       const updatedBillRecord = await BillRecord.findByIdAndUpdate(
         _id,
-        { $set: { status, updatedAt: now.getTime() } },
+        {
+          $set: {
+            status: Status.CHECKED,
+            updatedAt: now.getTime(),
+            remained: bill.remained + billRecord.amount
+          }
+        },
         { new: true }
       );
       if (!updatedBillRecord) {
         throw new Error('invalid billRecord');
       }
-      const user = await User.findById(updatedBillRecord.toUserid);
+      return updatedBillRecord;
+    }
+    case Type.WITHDRAW: {
+      const now = new Date();
+
+      const user = await User.findById(billRecord.toUserid);
       if (!user) {
         throw new Error('invalid toUserid');
       }
@@ -149,18 +155,33 @@ const check = async ({ _id, status }: IBillRecordCheck) => {
       if (!bill) {
         throw new Error('invalid bill');
       }
-      const updatedBill = await Bill.findByIdAndUpdate(
+      // update bill
+      await Bill.findByIdAndUpdate(
         bill._id,
         {
           $set: {
-            remained: bill.remained - updatedBillRecord.amount,
-            withdraw: bill.withdraw - updatedBillRecord.amount,
+            remained: bill.remained - billRecord.amount,
+            withdraw: bill.withdraw - billRecord.amount,
             updatedAt: now.getTime()
           }
         },
         { new: true }
       );
-
+      // update bill record
+      const updatedBillRecord = await BillRecord.findByIdAndUpdate(
+        _id,
+        {
+          $set: {
+            status: Status.CHECKED,
+            updatedAt: now.getTime(),
+            remained: bill.remained + billRecord.amount
+          }
+        },
+        { new: true }
+      );
+      if (!updatedBillRecord) {
+        throw new Error('invalid billRecord');
+      }
       return updatedBillRecord;
     }
     default:

@@ -1,4 +1,5 @@
 import { Schema, Model, model, Document } from 'mongoose';
+import { number } from 'joi';
 
 interface IBillRecord extends Document {
   // _id?: mongoose.Types.ObjectId
@@ -14,6 +15,8 @@ interface IBillRecord extends Document {
   fromUser: string;
 
   status: Status;
+  remained: number;
+
   createdAt: number;
   updatedAt: number;
 }
@@ -50,6 +53,9 @@ const BillRecordSchema: Schema = new Schema(
       type: String,
       required: true
     },
+    remained: {
+      type: Number
+    },
 
     createdAt: {
       type: Number,
@@ -69,11 +75,17 @@ const BillRecordSchema: Schema = new Schema(
 );
 
 enum Type {
+  // 充值
   DEFAULT = 'DEFAULT',
+  // 推广
   PROMOTION = 'PROMOTION',
+  // 创建任务锁定
   TASK_LOCK = 'TASK_LOCK',
+  // 放弃任务退款
   TASK_REFUNK = 'TASK_REFUNK',
+  // 任务完成付款
   TASK_PAYMENT = 'TASK_PAYMENT',
+  // 提现
   WITHDRAW = 'WITHDRAW'
 }
 enum Status {

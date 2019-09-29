@@ -3,6 +3,26 @@ const config = require('./_config');
 const assert = require('assert');
 
 describe('graphql user', () => {
+  it('user', async () => {
+    const query = `query {
+      user(_id: "") {
+        _id
+        username
+        mobilePhone
+        code
+        inviter
+        qq
+        idCard
+        bankCard
+        status
+        createdAt
+        updatedAt
+        billid
+      }
+    }`;
+    const res = await client(query, {});
+    assert(config.user.username === res.user.username);
+  });
   it('updateUserInfo', async () => {
     const query = `mutation{
       updateUserInfo(qq: "12345678", idCard: "______", bankCard:  "______", inviterCode:"${config.userInfo.code}"){

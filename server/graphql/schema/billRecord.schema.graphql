@@ -13,6 +13,8 @@ type BillRecord {
 
   status: BillRecordStatus
 
+  remained: Float
+
   createdAt: Float
   updatedAt: Float
 }

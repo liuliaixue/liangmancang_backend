@@ -7,25 +7,25 @@ import checkInCtrl from '../controllers/checkIn.controller';
 
 export default {
   // todo remove test
-  user: async (_id: string, req: IReq) => {
-    logger.info({ _from: 'user', _by: req.user.id, _id });
-
-    const user = await userCtrl.findById(_id);
+  user: async (obj: any, req: IReq) => {
+    logger.info({ _from: 'user', _by: req.user.id, ...obj });
+    const userid = obj._id || req.user.id;
+    const user = await userCtrl.findById(userid);
 
     return user;
   },
-  store: async (_id: string, req: IReq) => {
-    logger.info({ _from: 'store', _by: req.user.id, _id });
+  store: async (obj: any, req: IReq) => {
+    logger.info({ ...obj, _from: 'store', _by: req.user.id });
 
-    const store = await storeCtrl.findById(_id);
+    const store = await storeCtrl.findById(obj._id);
 
     return store;
   },
 
-  checkIn: async (_id: string, req: IReq) => {
-    logger.info({ _from: 'checkIn', _by: req.user.id, _id });
+  checkIn: async (obj: any, req: IReq) => {
+    logger.info({ ...obj, _from: 'checkIn', _by: req.user.id });
 
-    const store = await checkInCtrl.findById(_id);
+    const store = await checkInCtrl.findById(obj._id);
 
     return store;
   }
