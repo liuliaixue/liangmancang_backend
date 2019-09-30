@@ -1,6 +1,4 @@
 import winston from 'winston';
-import { string } from 'joi';
-import message from '../graphql/message';
 
 const logger = winston.createLogger({
   level: 'info',
@@ -31,18 +29,26 @@ export interface IError {
   _from: string;
   message: any;
 }
-const info = (obj: any) => {
-  obj._date = new Date();
-  logger.info(JSON.stringify(obj));
-};
 
-const error = (obj: IError) => {
-  logger.error(
-    JSON.stringify({
-      ...obj,
-      _date: new Date()
-    })
-  );
+export default {
+  info: (obj: any) => {
+    obj._date = new Date();
+    logger.info(JSON.stringify(obj));
+  },
+  error: (obj: IError) => {
+    logger.error(
+      JSON.stringify({
+        ...obj,
+        _date: new Date()
+      })
+    );
+  },
+  warn: (obj: IError) => {
+    logger.error(
+      JSON.stringify({
+        ...obj,
+        _date: new Date()
+      })
+    );
+  }
 };
-
-export default { info, error };
