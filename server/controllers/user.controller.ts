@@ -171,6 +171,17 @@ const updatePassword = async (
   check.updatedAt = now.getTime();
   return check.save();
 };
+const resetPassword = async (username: string, newPassword: string) => {
+  const now = new Date();
+  const check = await User.findOne({ username });
+  if (!check) {
+    throw Err.NotFound(`username=${username}`);
+  }
+
+  check.hashedPassword = bcrypt.hashSync(newPassword, 10);
+  check.updatedAt = now.getTime();
+  return check.save();
+};
 
 const updateStatus = async (_id: string, status: Status) => {
   if (status === Status.DEFAULT) {
@@ -195,6 +206,7 @@ export default {
   login,
   adminLogin,
   updatePassword,
+  resetPassword,
   find,
   findUserByCode,
   findById,

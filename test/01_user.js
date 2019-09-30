@@ -78,4 +78,25 @@ describe('User', function() {
     assert(res.status === 500);
     // console.log(res.data.message);
   });
+
+  it('resetPassword', async () => {
+    // get code
+    const resetCode = await client.post('/api/user/verificationCode', {
+      mobilePhone: config.user.mobilePhone
+    });
+    // console.log(resetCode.data);
+    // reset password
+    const resetPassword = await client.post('/api/user/resetPassword', {
+      username: config.user.username,
+      verificationCode: resetCode.data.code,
+      newPassword: 'p123456'
+    });
+    // console.log(resetPassword.data);
+    // redo login
+    const res = await client.post('/api/auth/login', {
+      username: config.user.username,
+      password: 'p123456'
+    });
+    assert(res.data.user.username === config.user.username);
+  });
 });
