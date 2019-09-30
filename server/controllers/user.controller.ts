@@ -151,6 +151,7 @@ const updateInfo = async (_id: string, updateObj: IUser) => {
 
   return check;
 };
+
 const updatePassword = async (
   _id: string,
   password: string,

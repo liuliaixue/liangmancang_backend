@@ -7,6 +7,7 @@ import billRecordController from '../controllers/billRecord.controller';
 import billCtrl from '../controllers/bill.controller';
 import Err from '../tools/error';
 import { aclCheck } from '../controllers/role.controller';
+const oneDay = 1 * 24 * 3600 * 1000;
 
 export default {
   updateUserInfo: async (obj: any, req: IReq) => {
@@ -14,7 +15,15 @@ export default {
 
     const _id = req.user.id;
     const { inviterCode, ...restObj } = obj;
+
     if (inviterCode) {
+      const { inviter } = req.user;
+      if (inviter) {
+        throw new Error('inviter existed');
+      }
+      if (inviterCode === req.user.code) {
+        throw new Error('cannot inviter yourself');
+      }
       const user = await userCtrl.findById(req.user.id);
       if (!user) {
         throw Err.NotFound(
@@ -24,9 +33,10 @@ export default {
       if (user.inviter) {
         throw Err.Existed(`inviter=${user.inviter}`);
       }
-      const inviter = await userCtrl.findUserByCode(inviterCode);
 
-      restObj.inviter = inviter.id;
+      const inviterUser = await userCtrl.findUserByCode(inviterCode);
+
+      restObj.inviter = inviterUser.id;
     }
     const updatedUser = await userCtrl.updateInfo(_id, restObj);
 
