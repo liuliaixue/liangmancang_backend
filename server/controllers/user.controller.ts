@@ -17,6 +17,7 @@ const userSchema = Joi.object({
 
   fullname: Joi.string(),
   mobilePhone: Joi.string().regex(/^[1-9][0-9]{10}$/),
+  inviter: Joi.string(),
 
   qq: Joi.string(),
   idCard: Joi.string(),

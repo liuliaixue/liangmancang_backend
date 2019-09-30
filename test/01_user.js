@@ -9,6 +9,17 @@ describe('User', function() {
     assert(res.data.user.username === user.username);
     config.userInfo = res.data.user;
   });
+  it('reigster with inviterCode', async () => {
+    const user = config.user;
+    const res = await client.post('/api/auth/register', {
+      username: user.username + 'inviter',
+      password: '123456',
+      mobilePhone: config.ramdomMobilePhone(),
+      inviterCode: config.userInfo.code
+    });
+    // 这个新用户的邀请人　是　上一个用户
+    assert(res.data.user.inviter === config.userInfo._id);
+  });
   it('register fail with too short username', async () => {
     const user2 = config.user2;
     const res = await client.post('/api/auth/register', user2);

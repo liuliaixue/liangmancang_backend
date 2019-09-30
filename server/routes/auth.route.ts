@@ -1,5 +1,4 @@
 import express from 'express';
-import asyncHandler from 'express-async-handler';
 import userCtrl from '../controllers/user.controller';
 import authCtrl from '../controllers/auth.controller';
 import config from '../config/config';
@@ -9,7 +8,7 @@ import { getUserAclList } from '../controllers/role.controller';
 
 const router = express.Router();
 
-router.post('/register', asyncHandler(register));
+router.post('/register', register);
 router.post('/login', login);
 router.post('/adminlogin', adminLogin);
 
@@ -21,6 +20,12 @@ async function register(
   logger.info({ _from: '/register', ...req.body });
 
   try {
+    if (req.body.inviterCode) {
+      const inviterUser = await userCtrl.findUserByCode(req.body.inviterCode);
+
+      req.body.inviter = inviterUser.id;
+    }
+    delete req.body.inviterCode;
     let user = await userCtrl.newUser(req.body);
     user = user.toObject();
     delete user.hashedPassword;
