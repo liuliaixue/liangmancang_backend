@@ -57,3 +57,36 @@ type TaskList {
   list: [Task]
   total: Int
 }
+
+# 订单 order
+
+type Order {
+  _id: String!
+  type: OrderType
+  action: OrderAction
+  searchKeyword: String
+  collection: String
+  goodsSpecification: String
+  comment: String
+  pictures: [String]
+  remark: String
+  status: OrderStatus
+}
+
+enum OrderStatus {
+  DEFAULT
+  CHECKED
+  ASSIGNED
+  FINISHED
+  ABORT
+}
+enum OrderType {
+  DEFAULT
+  WORD_COMMENT
+  PICTURE_COMMENT
+}
+
+enum OrderAction {
+  PAYMENT_IN_ADVANCE
+  BROWSE
+}
