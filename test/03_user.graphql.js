@@ -1,3 +1,7 @@
+/**
+mocha test
+ */
+
 const { client, adminClient } = require('./_graphql_client');
 const config = require('./_config');
 const assert = require('assert');
@@ -25,7 +29,7 @@ describe('graphql user', () => {
   });
   it('updateUserInfo', async () => {
     const query = `mutation{
-      updateUserInfo(qq: "12345678", idCard: "______", bankCard:  "______", inviterCode:"${config.userInfo.code}"){
+      updateUserInfo(qq: "12345678", idCard: "______", bankCard:  "______", inviterCode:"${config.adminInfo.code}"){
         _id
         username
         mobilePhone
@@ -53,9 +57,10 @@ describe('graphql user', () => {
   });
 
   it('updatePassword', async () => {
+    //password was set as 'p123456' in 01_user.js
     const query = `mutation {
       updateUserPassword(password: "${
-        config.user.password
+        'p123456' //config.user.password
       }", newPassword: "${config.user.password + 'a'}") {
         _id
         username
