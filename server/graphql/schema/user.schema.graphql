@@ -1,33 +1,30 @@
 #用户
 
-type User{
-    _id: String!
-    # remained, an increasing number 
-    #id: Int
-    username: String!
-    mobilePhone: String
-    code :String
-    inviter: String
+type User {
+  _id: String!
+  # remained, an increasing number
+  #id: Int
+  username: String!
+  mobilePhone: String
+  code: String
+  inviter: String
 
-    qq: String
+  qq: String
 
-    idCard: String
-    bankCard: String
-    status: UserStatus
-    createdAt: Float
-    updatedAt: Float
- 
+  idCard: String
+  bankCard: String
+  status: UserStatus
+  createdAt: Float
+  updatedAt: Float
 
-    billid:String
-    bill: Bill
-
+  bill: Bill
 }
-type UserList{
-    list: [User],
-    total: Int
+type UserList {
+  list: [User]
+  total: Int
 }
 
-enum UserStatus{
+enum UserStatus {
   DEFAULT #　0 default, once created
   OK # checked and ok
   BAD # 2 need update,

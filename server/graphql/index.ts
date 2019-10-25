@@ -1,7 +1,7 @@
 import Query from './Query';
 import user from './user';
 import store from './store';
-import billRecord from './billRecord';
+import bill from './bill';
 import task from './task';
 import rule from './rule';
 import checkIn from './checkIn';
@@ -40,7 +40,7 @@ export default safeMerge([
   Query,
   user,
   store,
-  billRecord,
+  bill,
   task,
   rule,
   checkIn,

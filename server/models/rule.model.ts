@@ -14,7 +14,11 @@ export interface IRule extends Document {
   userGender: number,
   userLevel: number,
   userAntCreditPay: number,
+
   userCollection: number,
+  userBrowse: number,
+  OrderBaseCommission: number , // 订单基础佣金
+  OrderShippingDeposit: number, // 运
 
   createdAt: number,
   updatedAt: number,

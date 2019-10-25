@@ -14,7 +14,7 @@ log
 # generated files
 server/graphql/schema.graphql
 test/_token
-
+test/_tokenAdmin
 
 # server package
 *.tar

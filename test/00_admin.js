@@ -41,6 +41,9 @@ describe('Admin', function() {
     assert(res.data.user.username === config.admin.username);
     config.adminInfo = res.data.user;
     config.adminToken = res.data.token;
+    var fs = require('fs');
+    const path = require('path');
+    fs.writeFileSync(path.join(__dirname, '_tokenAdmin'), res.data.token);
   });
 
   it('admin login 2', async () => {

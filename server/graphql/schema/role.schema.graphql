@@ -15,10 +15,9 @@ enum RolePermission {
 
   admin_user
   admin_store
-  admin_bill
-  admin_billRecord # all billRecord related API
-  admin_billRecord_new # create billRecord
-  admin_billRecord_check # check billRecord
+  admin_bill # all bill related API
+  admin_bill_new # create bill
+  admin_bill_check # check bill
   admin_task
   admin_checkin
   admin_reason

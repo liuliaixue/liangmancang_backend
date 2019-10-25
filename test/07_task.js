@@ -1,37 +1,73 @@
+// mocha test/00_admin.js test/01_user.js test/03_user.graphql.js test/04_store.graphql.js test/05_billRecord.js test/07_task.js
+
 const { client, adminClient } = require('./_graphql_client');
 
 const config = require('./_config');
 const assert = require('assert');
 
 describe('graphql task', () => {
-  const taskNumber = 5;
   it('newTask', async () => {
     const query = `mutation {
       newTask(
-        orderNumber: "______"
-        goodsName: "______"
-        goodsLink: "______"
-        goodsImage: "______"
-        goodsPrice: 12
-        goodsTotal: 2
-        goodsPriceShowed: 2
-        goodsSpecification: "______"
-        isFreeShipping: true
-        howToFindGoods: "______"
-        startTime: 0
-        endTime: 1
-        total: ${taskNumber}
-        commission: 12
-        platformServiceFee: 1
-        platformCommission: 1
-        extraCommission: 1
-        extraImages: ["______"]
-        remark: "______"
-        storeid: "______"
+        goodsName: "木林森皮鞋男冬季加绒韩版商务休闲黑色真皮英伦正装内增高男鞋子"
+        goodsLink: "https://detail.tmall.com/item.htm?id=595735103244&spm=a21bz.7725275.1998564545.1.2e245fc2SVQnDL&umpChannel=qianggou&u_channel=qianggou"
+        goodsImage: "https://img.alicdn.com/imgextra/i1/3372687502/O1CN013D7wEd25Hxol9V6qT_!!3372687502.jpg_430x430q90.jpg"
+        goodsPrice: 39900
+        goodsTotal: 1
+        goodsPriceShowed: 39900
+        goodsSpecification: "尺码:37,颜色:红色"
+        isFreeShipping: false
+    
+        howToFindGoods: "keyword=增高男鞋子&price=1-1000"
+    
+        orders: [
+          {
+            type: DEFAULT
+            buyTimes: 1
+            browseTimes: 2
+            collectTimes: 1
+            collect: "收藏商品"
+            searchKeyword: "鞋子"
+          }
+          {
+            type: DEFAULT
+            buyTimes: 0
+            browseTimes: 2
+            collectTimes: 1
+            collect: "收藏店铺"
+            searchKeyword: "内增高男鞋"
+          }
+          {
+            type: WORD_COMMENT
+            buyTimes: 1
+            browseTimes: 8
+            collectTimes: 1
+            collect: "收藏商品"
+            searchKeyword: "鞋子"
+            comment: "鞋子很不错,很适合我儿子"
+          }
+          {
+            type: PICTURE_COMMENT
+            buyTimes: 1
+            browseTimes: 2
+            collectTimes: 1
+            collect: "收藏商品"
+            searchKeyword: "鞋子"
+            goodsSpecification: "尺码:38,颜色:红色"
+            comment: "鞋子很不错,很适合我儿子"
+            pictures: ["", ""]
+            remark: "给出舒服,尺码准确,合脚,老公喜欢等评论,要有评论30字以上"
+          }
+        ]
+    
+        startTime: 1572566400000 #new Date("2019-11-01").getTime(),
+        endTime: 1572652800000 #new Date("2019-11-02").getTime(),
+        extraCommission: 100
+        extraImages: [""]
+        remark: "111"
+        storeid: "${config.store._id}"
       ) {
         _id
-        parent
-        orderNumber
         goodsName
         goodsLink
         goodsImage
@@ -41,30 +77,31 @@ describe('graphql task', () => {
         goodsSpecification
         isFreeShipping
         howToFindGoods
+        orders {
+          type
+        }
         startTime
         endTime
-        total
         commission
         platformServiceFee
         platformCommission
         extraCommission
         extraImages
-        remark
         status
         storeid
         userid
-        workerid
         createdAt
         updatedAt
       }
-    }
+    }    
     `;
-
+    // console.log(query);
     const res = await client(query, {});
     assert(res.newTask.status === 'DEFAULT');
 
     config.task = res.newTask;
   });
+
   it('taskList', async () => {
     const query = `mutation {
         taskList(skip: 0, limit: 10, status: DEFAULT) {
@@ -93,9 +130,148 @@ describe('graphql task', () => {
 
     assert(res.admin_taskList.total >= 0);
   });
-  it('ChildTaskList', async () => {
+  it('updateTaskInfo', async () => {
     const query = `mutation {
-      childTaskList(skip: 0, limit: 10, status: DEFAULT) {
+      updateTaskInfo(
+        _id:"${config.task._id}"
+        goodsName: "木林森皮鞋男冬季加绒韩版商务休闲黑色真皮英伦正装内增高男鞋子"
+        goodsLink: "https://detail.tmall.com/item.htm?id=595735103244&spm=a21bz.7725275.1998564545.1.2e245fc2SVQnDL&umpChannel=qianggou&u_channel=qianggou"
+        goodsImage: "https://img.alicdn.com/imgextra/i1/3372687502/O1CN013D7wEd25Hxol9V6qT_!!3372687502.jpg_430x430q90.jpg"
+        goodsPrice: 39900
+        goodsTotal: 1
+        goodsPriceShowed: 39900
+        goodsSpecification: "尺码:37,颜色:红色"
+        isFreeShipping: false
+    
+        howToFindGoods: "keyword=增高男鞋子&price=1-1000&sort=1"
+    
+        orders: [
+          {
+            type: DEFAULT
+            buyTimes: 1
+            browseTimes: 2
+            collectTimes: 1
+            collect: "收藏商品"
+            searchKeyword: "鞋子"
+          }
+          {
+            type: DEFAULT
+            buyTimes: 3
+            browseTimes: 2
+            collectTimes: 1
+            collect: "收藏商品"
+            searchKeyword: "鞋子"
+          }
+          {
+            type: DEFAULT
+            buyTimes: 0
+            browseTimes: 2
+            collectTimes: 1
+            collect: "收藏店铺"
+            searchKeyword: "内增高男鞋"
+          }
+          {
+            type: WORD_COMMENT
+            buyTimes: 1
+            browseTimes: 8
+            collectTimes: 1
+            collect: "收藏商品"
+            searchKeyword: "鞋子"
+            comment: "鞋子很不错,很适合我儿子"
+          }
+          {
+            type: PICTURE_COMMENT
+            buyTimes: 1
+            browseTimes: 2
+            collectTimes: 1
+            collect: "收藏商品"
+            searchKeyword: "鞋子"
+            goodsSpecification: "尺码:38,颜色:红色"
+            comment: "鞋子很不错,很适合我儿子"
+            pictures: ["", ""]
+            remark: "给出舒服,尺码准确,合脚,老公喜欢等评论,要有评论30字以上"
+          }
+        ]
+    
+        startTime: 1572566400000 #new Date("2019-11-01").getTime(),
+        endTime: 1572652800000 #new Date("2019-11-02").getTime(),
+        extraCommission: 100
+        extraImages: [""]
+        remark: "111"
+        storeid: "${config.store._id}"
+      ) {
+        _id
+        goodsName
+        goodsLink
+        goodsImage
+        goodsPrice
+        goodsTotal
+        goodsPriceShowed
+        goodsSpecification
+        isFreeShipping
+        howToFindGoods
+        orders {
+          type
+        }
+        startTime
+        endTime
+        commission
+        platformServiceFee
+        platformCommission
+        extraCommission
+        extraImages
+        status
+        storeid
+        userid
+        createdAt
+        updatedAt
+      }
+    }    
+    `;
+
+    const res = await client(query, {});
+    assert(res.updateTaskInfo.status === 'DEFAULT');
+  });
+
+  it('admin_updateTaskStatus: check', async () => {
+    // console.log(config);
+    const query = `
+      mutation {
+        admin_updateTaskStatus(_id: "${config.task._id}", status: CHECKED) {
+          _id
+          goodsName
+          goodsLink
+          goodsImage
+          goodsPrice
+          goodsTotal
+          goodsPriceShowed
+          goodsSpecification
+          isFreeShipping
+          howToFindGoods
+          orders {
+            type
+          }
+          startTime
+          endTime
+          commission
+          platformServiceFee
+          platformCommission
+          extraCommission
+          extraImages
+          status
+          storeid
+          userid
+          createdAt
+          updatedAt
+        }
+      }`;
+    const res = await adminClient(query, {});
+    assert(res.admin_updateTaskStatus.status === 'CHECKED');
+  });
+
+  it('order list', async () => {
+    const query = `mutation {
+      orderList(skip: 0, limit: 10, status: DEFAULT) {
         list {
           _id
         }
@@ -104,15 +280,15 @@ describe('graphql task', () => {
     }`;
     const res = await client(query, {});
 
-    assert(res.childTaskList.total > 0);
-    assert(res.childTaskList.list.length > 0);
+    assert(res.orderList.total > 0);
+    assert(res.orderList.list.length > 0);
     // two children tasks
-    config.childTask = res.childTaskList.list[0];
-    config.childTask2 = res.childTaskList.list[1];
+    config.order = res.orderList.list[0];
+    config.order2 = res.orderList.list[1];
   });
-  it('admin_childTaskList', async () => {
+  it('admin_orderList', async () => {
     const query = `mutation {
-      admin_childTaskList(skip: 0, limit: 10, status: DEFAULT) {
+      admin_orderList(skip: 0, limit: 10, status: DEFAULT) {
         list {
           _id
         }
@@ -120,43 +296,64 @@ describe('graphql task', () => {
       }
     }`;
     const res = await adminClient(query, {});
-    assert(res.admin_childTaskList.total > 0);
+    assert(res.admin_orderList.total > 0);
   });
 
-  it('updateTaskStatus: assigned', async () => {
+  it('updateOrderStatus: assigned', async () => {
     const query = `mutation {
-      updateTaskStatus(_id: "${config.childTask._id}", status: ASSIGNED) {
-        _id
-        parent
-        status
-        storeid
-        userid
-        workerid
-        createdAt
-        updatedAt
+      updateOrderStatus(_id: "${config.order._id}", status: ASSIGNED) {
+       _id
+      taskid
+      type
+      buyTimes
+      browseTimes
+      collectTimes
+      collect
+      searchKeyword
+      goodsSpecification
+      comment
+      pictures
+      remark
+      status
+      userid
+      workerid
+      startAt
+      createdAt
+      updatedAt
       }
     }
 `;
     const res = await adminClient(query, {});
-    assert(res.updateTaskStatus.status === 'ASSIGNED');
-    assert(res.updateTaskStatus.workerid === config.adminInfo._id);
+    assert(res.updateOrderStatus.status === 'ASSIGNED');
+    assert(res.updateOrderStatus.workerid === config.adminInfo._id);
   });
-
-  it('updateTaskStatus: finished', async () => {
+  it('updateOrderStatus: finished', async () => {
     const query = `mutation {
-      updateTaskStatus(_id: "${config.childTask._id}", status: FINISHED) {
+      updateOrderStatus(_id: "${config.order._id}", status: FINISHED) {
         _id
-        parent
+        taskid
+        type
+        buyTimes
+        browseTimes
+        collectTimes
+        collect
+        searchKeyword
+        goodsSpecification
+        comment
+        pictures
+        remark
         status
-        storeid
         userid
         workerid
+        startAt
         createdAt
         updatedAt
       }
     }`;
+    // console.log(config);
+    // return;
     const res = await client(query, {});
-    assert(res.updateTaskStatus.status === 'FINISHED');
+    assert(res.updateOrderStatus.status === 'FINISHED');
     //todo check bill
   });
   // it('updateTaskStatus: appeal', async () => {

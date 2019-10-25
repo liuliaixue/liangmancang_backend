@@ -23,10 +23,9 @@ export interface IUser extends Document {
   status: Status;
   createdAt: number;
   updatedAt: number;
-  billid: string;
   code: string;
   inviter: string;
-
+  isTaskAutoCheck: boolean;
   bill: IBill | null;
   acls?: String[];
 }
@@ -66,6 +65,10 @@ const UserSchema: Schema = new Schema(
       type: String,
       required: false
     },
+    isTaskAutoCheck: {
+      type: Boolean,
+      default: false
+    },
     qq: {
       type: String,
       required: false
@@ -81,10 +84,6 @@ const UserSchema: Schema = new Schema(
     status: {
       type: String,
       required: false
-    },
-    billid: {
-      type: String,
-      required: true
     },
 
     createdAt: {

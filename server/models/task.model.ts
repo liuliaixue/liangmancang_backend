@@ -1,24 +1,29 @@
 import { Schema, Model, model, Document } from 'mongoose';
-import { Stats } from 'fs';
+import {Type as OrderType , Status as OrderStaus} from './order.model'
 
 enum Status {
   DEFAULT = 'DEFAULT',
-  ASSIGNED = 'ASSIGNED',
-  APPEAL = 'APPEAL',
-  FINISHED = 'FINISHED',
-  ABORT = 'ABORT'
+  CHECKED = 'CHECKED'
 }
-const StatusList = [
-  Status.DEFAULT,
-  Status.ASSIGNED,
-  Status.APPEAL,
-  Status.FINISHED,
-  Status.ABORT
-].sort();
-export interface ITask extends Document {
-  parent: string;
-  orderNumber: string;
 
+interface IOrderInput {
+  type: OrderType;
+
+  buyTimes: number;
+  browseTimes: number;
+  collectTimes: number;
+  collect: string;
+
+  searchKeyword: string;
+  goodsSpecification: string;
+
+  comment: string;
+  pictures: [string];
+  remark: string;
+  status: OrderStaus;
+}
+
+export interface ITask extends Document {
   goodsName: string;
   goodsLink: string;
   goodsImage: string;
@@ -28,6 +33,7 @@ export interface ITask extends Document {
   goodsSpecification: string;
   isFreeShipping: boolean;
   howToFindGoods: string;
+  orders: [IOrderInput];
 
   startTime: number;
   endTime: number;
@@ -45,8 +51,6 @@ export interface ITask extends Document {
 
   storeid: string;
   userid: string;
-  workerid: string;
-  startAt: number;
   amount: number;
 
   createdAt: number;
@@ -55,13 +59,6 @@ export interface ITask extends Document {
 
 const TaskSchema = new Schema(
   {
-    parent: {
-      type: String
-    },
-    orderNumber: {
-      type: String
-    },
-
     goodsName: {
       type: String
     },
@@ -86,10 +83,12 @@ const TaskSchema = new Schema(
     isFreeShipping: {
       type: Boolean
     },
+
     howToFindGoods: {
       type: String
     },
 
+    orders: {},
     startTime: {
       type: Number
     },
@@ -131,12 +130,7 @@ const TaskSchema = new Schema(
     userid: {
       type: String
     },
-    workerid: {
-      type: String
-    },
-    startAt: {
-      type: Number
-    },
+
     amount: {
       type: Number
     },
@@ -158,4 +152,4 @@ const TaskSchema = new Schema(
 const Task: Model<ITask> = model('Task', TaskSchema);
 
 export default Task;
-export { Status, StatusList };
+export { Status };

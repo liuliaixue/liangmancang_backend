@@ -13,9 +13,9 @@ const ACL = [
   { name: 'admin_store', des: '' },
 
   { name: 'admin_bill', des: '' },
-  { name: 'admin_billRecord', des: '' },
-  { name: 'admin_billRecord_new', des: '' },
-  { name: 'admin_billRecord_check', des: '' },
+  { name: 'admin_bill', des: '' },
+  { name: 'admin_bill_new', des: '' },
+  { name: 'admin_bill_check', des: '' },
   { name: 'admin_task', des: '' },
   { name: 'admin_checkin', des: '' },
   { name: 'admin_reason', des: '' },

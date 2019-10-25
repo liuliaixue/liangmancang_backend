@@ -21,7 +21,6 @@ describe('graphql user', () => {
         status
         createdAt
         updatedAt
-        billid
       }
     }`;
     const res = await client(query, {});
@@ -39,7 +38,6 @@ describe('graphql user', () => {
         status
         createdAt
         updatedAt
-        billid
         bill{
           _id
           total
@@ -73,7 +71,6 @@ describe('graphql user', () => {
         status
         createdAt
         updatedAt
-        billid
         bill {
           _id
           total

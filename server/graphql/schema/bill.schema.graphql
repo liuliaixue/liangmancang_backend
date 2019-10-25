@@ -1,14 +1,43 @@
 # 用户余额
 
-type Bill{
-    _id: String!
-  
-    total: Float   # unit is cent
-    remained: Float
-    freeze: Float
-    withdraw: Float
+type Bill {
+  _id: String!
 
+  total: Float # unit is cent
+  remained: Float
+  freeze: Float
+  withdraw: Float
 
-    createdAt: Float
-    updatedAt: Float
+  type: BillType
+  amount: Float
+
+  fromBank: String
+  fromCard: String
+  fromUser: String
+
+  status: BillStatus
+  userid: String
+  updatedBy: String
+
+  createdAt: Float
+  updatedAt: Float
+}
+
+enum BillType {
+  DEFAULT # 0 default, normal charge 正常充值,
+  PROMOTION # 1 Promotion 推广金,
+  TASK_LOCK # 2 任务佣金锁定,
+  TASK_REFUND # 3 任务佣金退还,
+  TASK_PAYMENT # 4 任务佣金发放
+  WITHDRAW # 5 提现
+}
+
+enum BillStatus {
+  DEFAULT # 0 default and waiting for check,
+  CHECKED # 1 checked
+}
+
+type BillList {
+  list: [Bill]
+  total: Int
 }

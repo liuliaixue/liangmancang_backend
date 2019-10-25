@@ -2,8 +2,6 @@
 
 type Task {
   _id: String!
-  parent: String
-  orderNumber: String
 
   goodsName: String
   goodsLink: String
@@ -13,12 +11,11 @@ type Task {
   goodsPriceShowed: Float
   goodsSpecification: String
   isFreeShipping: Boolean
-
-  howToFindGoods: String
+  howToFindGoods: String #json string
+  orders: [Order]
 
   startTime: Float
   endTime: Float
-  total: Int
 
   commission: Float
   platformServiceFee: Float
@@ -26,31 +23,22 @@ type Task {
 
   extraCommission: Float
   extraImages: [String]
-  remark: String
 
   status: TaskStatus
 
   storeid: String
   userid: String
-  workerid: String
 
   createdAt: Float
   updatedAt: Float
-
-  startAt: Float #  it is a child task and it start at
-  amount: Float #
 }
 
 # 0 default,
-# 1 being assigned to worker,
-# 2 in appeal
-# 3 finished
+# 1 checked,
 enum TaskStatus {
   DEFAULT
-  ASSIGNED
-  APPEAL
-  FINISHED
-  ABORT
+  CHECKED
+  AUTO_CHECKED
 }
 
 type TaskList {
@@ -61,22 +49,53 @@ type TaskList {
 # 订单 order
 
 type Order {
-  _id: String!
+  _id: String
+  taskid: String
   type: OrderType
-  action: OrderAction
+
+  buyTimes: Int
+  browseTimes: Int
+  collectTimes: Int
+  collect: String
+
   searchKeyword: String
-  collection: String
   goodsSpecification: String
+
   comment: String
   pictures: [String]
   remark: String
   status: OrderStatus
+
+  userid: String
+  workerid: String
+
+  startAt: Float
+  #endAt: Float
+
+  createdAt: Float
+  updatedAt: Float
 }
 
+input orderInput {
+  type: OrderType
+
+  buyTimes: Int
+  browseTimes: Int
+  collectTimes: Int
+  collect: String
+
+  searchKeyword: String
+  goodsSpecification: String
+
+  comment: String
+  pictures: [String]
+  remark: String
+}
 enum OrderStatus {
   DEFAULT
-  CHECKED
   ASSIGNED
+  CONFIRM
+  #COMMENT
   FINISHED
   ABORT
 }
@@ -84,9 +103,4 @@ enum OrderType {
   DEFAULT
   WORD_COMMENT
   PICTURE_COMMENT
-}
-
-enum OrderAction {
-  PAYMENT_IN_ADVANCE
-  BROWSE
 }

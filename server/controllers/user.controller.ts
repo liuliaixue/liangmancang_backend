@@ -5,6 +5,7 @@ import Bill from '../models/bill.model';
 import Err from '../tools/error';
 import shortid from '../tools/shortid';
 import { getUserAclList } from './role.controller';
+import { Status as BillStatus } from '../models/bill.model';
 
 const userSchema = Joi.object({
   username: Joi.string()
@@ -42,16 +43,6 @@ async function newUser(user: IUser) {
     throw Err.Existed(`mobilePhone=${user.mobilePhone}`);
   }
   const now = new Date();
-  //create new bill
-  const billObj = {
-    total: 0,
-    remained: 0,
-    freeze: 0,
-    withdraw: 0,
-    createdAt: now.getTime(),
-    updatedAt: now.getTime()
-  };
-  const bill = await new Bill(billObj).save();
 
   //craete new user
   user.hashedPassword = bcrypt.hashSync(user.password, 10);
@@ -59,8 +50,20 @@ async function newUser(user: IUser) {
   user.createdAt = now.getTime();
   user.updatedAt = now.getTime();
   user.code = shortid.generate();
-  user.billid = bill.id;
   const savedUser = await new User(user).save();
+  //create new bill
+
+  const billObj = {
+    total: 0,
+    remained: 0,
+    freeze: 0,
+    withdraw: 0,
+    status: BillStatus.CHECKED,
+    userid: savedUser._id,
+    createdAt: now.getTime(),
+    updatedAt: now.getTime()
+  };
+  const bill = await new Bill(billObj).save();
 
   return savedUser;
 }

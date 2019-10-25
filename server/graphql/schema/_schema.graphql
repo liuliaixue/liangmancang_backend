@@ -1,10 +1,10 @@
 # graphql schema
 type Query {
-  user(_id: String): User #todo, userid is not nessary
+  user(_id: String): User
   store(_id: String!): Store
   bill(userid: String): Bill
-  billRecord(_id: String!): BillRecord
   task(_id: String!): Task
+  #order(_id:String):Order
 
   checkIn(_id: String): CheckIn
   reason(_id: String): Reason
@@ -48,32 +48,27 @@ type Mutation {
   admin_updateStoreStatus(_id: String!, status: StoreStatus!): Store
   admin_storeList(skip: Int, limit: Int): StoreList
 
-  newBillRecord(
+  newBill(
     amount: Float!
-    type: BillRecordType
+    type: BillType
     fromBank: String
     fromCard: String
     fromUser: String
-  ): BillRecord
-  admin_newBillRecord(
-    toUserid: String!
-    amount: Float!
-    type: BillRecordType
-  ): BillRecord
-  admin_checkBillRecord(_id: String!): BillRecord
-  billRecordList(
+  ): Bill
+  admin_newBill(toUserid: String!, amount: Float!, type: BillType): Bill
+  admin_checkBill(_id: String!): Bill
+  billList(
     skip: Int!
-    limit: Int! #status: BillRecordStatus # todo
-  ): BillRecordList
-  admin_billRecordList(
+    limit: Int! #status: BillStatus # todo
+  ): BillList
+  admin_billList(
     skip: Int!
-    limit: Int! #status: BillRecordStatus # todo
-  ): BillRecordList
+    limit: Int! #status: BillStatus # todo
+  ): BillList
 
   #task
   newTask(
     # _id:String
-    orderNumber: String
 
     goodsName: String
     goodsLink: String
@@ -86,51 +81,67 @@ type Mutation {
 
     howToFindGoods: String
 
+    orders: [orderInput]
+
     startTime: Float
     endTime: Float
-    total: Int
-
-    commission: Float
-    platformServiceFee: Float
-    platformCommission: Float
 
     extraCommission: Float
     extraImages: [String]
     remark: String
-
     storeid: String
   ): Task
 
-  updateTaskStatus(_id: String!, status: TaskStatus): Task
-
-  taskList(
-    skip: Int!
-    limit: Int!
-    parent: String # taskid
-    status: TaskStatus
-  ): TaskList # find my tasks without parent , a task's children tasks with parent
+  taskList(skip: Int!, limit: Int!, status: TaskStatus): TaskList
   admin_taskList(
     userid: String
     skip: Int!
     limit: Int!
-    parent: String
     #statusList: [TaskStatus]
     status: TaskStatus
-  ): TaskList # f
-  childTaskList(
+  ): TaskList
+  updateTaskInfo(
+    _id: String!
+
+    goodsName: String
+    goodsLink: String
+    goodsImage: String
+    goodsPrice: Float
+    goodsTotal: Int
+    goodsPriceShowed: Float
+    goodsSpecification: String
+    isFreeShipping: Boolean
+
+    howToFindGoods: String
+
+    orders: [orderInput]
+
+    startTime: Float
+    endTime: Float
+
+    extraCommission: Float
+    extraImages: [String]
+    remark: String
+    storeid: String
+  ): Task
+  admin_updateTaskStatus(_id: String!, status: TaskStatus): Task
+
+  # order
+  orderList(
     skip: Int!
     limit: Int!
     #statusList: [TaskStatus]
     status: TaskStatus
     workerid: String
   ): TaskList # find all children tasks, Buyer can use tit
-  admin_childTaskList(
+  admin_orderList(
     skip: Int!
     limit: Int!
     #statusList: [TaskStatus]
     status: TaskStatus
     workerid: String
   ): TaskList
+  updateOrderStatus(_id: String!, status: OrderStatus!): Order
 
   # checkin
   newCheckIn(time: Float): CheckIn

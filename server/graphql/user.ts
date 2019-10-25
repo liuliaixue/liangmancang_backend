@@ -3,7 +3,7 @@
 import userCtrl from '../controllers/user.controller';
 import logger from '../tools/logger';
 import { IReq } from '../config/passport';
-import billRecordController from '../controllers/billRecord.controller';
+import billController from '../controllers/bill.controller';
 import billCtrl from '../controllers/bill.controller';
 import Err from '../tools/error';
 import { aclCheck } from '../controllers/role.controller';
@@ -40,7 +40,7 @@ export default {
     }
     const updatedUser = await userCtrl.updateInfo(_id, restObj);
 
-    const bill = await billCtrl.findById(updatedUser.billid);
+    const bill = await billCtrl.findUserLastestBill(updatedUser._id);
     updatedUser.bill = bill;
     return updatedUser;
   },
