@@ -8,6 +8,7 @@ import checkIn from './checkIn';
 import reason from './reason';
 import message from './message';
 import role from './role';
+import qiniu from './qiniu';
 import logger from '../tools/logger';
 
 interface IGraphqlObj {
@@ -45,5 +46,6 @@ export default safeMerge([
   rule,
   checkIn,
   reason,
-  message
+  message,
+  qiniu
 ]);
