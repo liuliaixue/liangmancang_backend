@@ -2,6 +2,7 @@
 type Query {
   user(_id: String): User
   store(_id: String!): Store
+  storeList(_id: String): [Store]
   bill(userid: String): Bill
   task(_id: String!): Task
   #order(_id:String):Order
@@ -13,11 +14,11 @@ type Query {
   admin_rule(_id: String): Message
   admin_role(_id: String): Role
   admin_RoleAcl(_id: String): [RoleAccess]
-
-  uploadFileToken(filename: String): String
 }
 
 type Mutation {
+  uploadFileToken(filename: String): uploadFileTokenReturn
+
   updateUserInfo(
     qq: String
     idCard: String!
@@ -166,4 +167,10 @@ type Mutation {
   admin_newUser(username: String, password: String, roleid: String): User
   admin_setAdmin(username: String, roleidList: [String]): User
   admin_disableUser(_id: String): User
+}
+
+# uploadFile
+type uploadFileTokenReturn {
+  key: String
+  uploadToken: String
 }

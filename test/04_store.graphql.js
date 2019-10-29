@@ -65,6 +65,28 @@ describe('graphql store', () => {
     assert(newWebsite === res.updateStoreInfo.website);
   });
 
+  it('myStores, storeList', async () => {
+    const query = `query {
+      storeList(_id: "") {
+        _id
+        name
+        userid
+        type
+        website
+        wangwang
+        storeScreenShotImage
+        address
+        contactPhone
+        status
+        createdAt
+        updatedAt
+      }
+    }
+`;
+    const res = await client(query, {});
+    assert(res.storeList.length > 0);
+  });
+
   it('admin_updateStoreStatus', async () => {
     const query = `mutation {
       admin_updateStoreStatus(

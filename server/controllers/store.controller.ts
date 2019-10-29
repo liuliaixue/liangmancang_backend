@@ -39,6 +39,14 @@ const find = async (query = { skip: 0, limit: 10 }) => {
 
   return { list: storeList, total: storeTotal };
 };
+
+const findAll = async (query = { userid: '' }) => {
+  const { userid } = query;
+  const filter = { userid };
+  if (!userid) delete filter.userid;
+  const storeList = await Store.find(filter);
+  return storeList;
+};
 const findById = async (_id: string) => {
   const check = await Store.findById(_id);
   if (!check) {
@@ -89,6 +97,7 @@ const updateStatus = async (_id: string, status: Status) => {
 export default {
   insert,
   find,
+  findAll,
   findById,
   updateInfo,
   updateStatus

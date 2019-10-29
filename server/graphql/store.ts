@@ -16,6 +16,12 @@ export default {
     });
     return store;
   },
+  storeList: async (obj: any, req: IReq) => {
+    logger.info({ _from: 'storeList', _by: req.user.id, ...obj });
+
+    const storeList = await storeCtrl.findAll({ userid: req.user.id });
+    return storeList;
+  },
 
   updateStoreInfo: async (obj: any, req: IReq) => {
     logger.info({ _from: 'updateStoreInfo', _by: req.user.id, ...obj });
