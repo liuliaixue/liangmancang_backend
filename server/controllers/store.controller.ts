@@ -30,6 +30,10 @@ const insert = async (store: IStore) => {
   store.updatedAt = now.getTime();
   return await new Store(store).save();
 };
+const remove = async (_id: string) => {
+  const res = await Store.findByIdAndRemove(_id);
+  return res;
+};
 const find = async (query = { skip: 0, limit: 10 }) => {
   const { skip, limit } = query;
   const storeList = await Store.find()
@@ -96,6 +100,7 @@ const updateStatus = async (_id: string, status: Status) => {
 
 export default {
   insert,
+  remove,
   find,
   findAll,
   findById,

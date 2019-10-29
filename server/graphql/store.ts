@@ -16,6 +16,22 @@ export default {
     });
     return store;
   },
+  removeStore: async (obj: any, req: IReq) => {
+    // todo remove relative  task and  bill, etc.
+    logger.info({ _from: 'removeStore', _by: req.user.id, ...obj });
+
+    const check = await storeCtrl.findById(obj._id);
+
+    if (check.userid !== req.user.id) {
+      throw new Error('not allowed');
+    }
+    if (check.status === Status.OK) {
+      throw new Error('the store is checked');
+    }
+
+    let store = await storeCtrl.remove(obj._id);
+    return store;
+  },
   storeList: async (obj: any, req: IReq) => {
     logger.info({ _from: 'storeList', _by: req.user.id, ...obj });
 

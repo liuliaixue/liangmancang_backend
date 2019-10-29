@@ -139,4 +139,5 @@ describe('graphql store', () => {
     const res = await adminClient(query, {});
     assert(res.admin_storeList.total > 0);
   });
+  it('removeStore');
 });

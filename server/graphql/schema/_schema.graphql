@@ -48,6 +48,8 @@ type Mutation {
     address: String
     contactPhone: String
   ): Store
+  removeStore(_id: String): Store
+
   admin_updateStoreStatus(_id: String!, status: StoreStatus!): Store
   admin_storeList(skip: Int, limit: Int): StoreList
 
