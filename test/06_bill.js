@@ -112,7 +112,7 @@ describe('graphql bill', () => {
     assert(2000 === res.admin_checkBill.amount);
   });
   it('admin: billList', async () => {
-    const query = `mutation{
+    const query = `query{
       admin_billList(skip:0,limit:10){
         list{
            _id
@@ -139,7 +139,7 @@ describe('graphql bill', () => {
     assert(res.admin_billList.total > 0);
   });
   it('billList', async () => {
-    const query = `mutation{
+    const query = `query{
       billList(skip:0,limit:10){
         list{
         _id

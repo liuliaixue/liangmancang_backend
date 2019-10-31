@@ -114,7 +114,7 @@ describe('graphql store', () => {
   });
 
   it('admin_storeList', async () => {
-    const query = `mutation {
+    const query = `query {
       admin_storeList(
         skip:0
         limit:10

@@ -20,7 +20,7 @@ describe('graphql check in', () => {
   });
 
   it('checkInList', async () => {
-    const query = `mutation {
+    const query = `query {
       checkInList(skip: 0, limit: 22, userid: "${config.user._id}") {
         list {
           _id

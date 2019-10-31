@@ -1,15 +1,57 @@
 # graphql schema
 type Query {
   user(_id: String): User
+  admin_userList(skip: Int, limit: Int): UserList
+
   store(_id: String!): Store
-  storeList(_id: String): [Store]
+  storeList(_id: String): [Store] # userid
+  admin_storeList(skip: Int, limit: Int): StoreList
+
   bill(userid: String): Bill
+  billList(
+    skip: Int!
+    limit: Int! #status: BillStatus # todo
+  ): BillList
+  admin_billList(
+    skip: Int!
+    limit: Int! #status: BillStatus # todo
+  ): BillList
+
   task(_id: String!): Task
+  taskList(skip: Int!, limit: Int!, status: TaskStatus): TaskList
+  admin_taskList(
+    userid: String
+    skip: Int!
+    limit: Int!
+    #statusList: [TaskStatus]
+    status: TaskStatus
+  ): TaskList
+
   #order(_id:String):Order
+  orderList(
+    skip: Int!
+    limit: Int!
+    #statusList: [TaskStatus]
+    status: TaskStatus
+    workerid: String
+  ): TaskList # find all children tasks, Buyer can use tit
+  admin_orderList(
+    skip: Int!
+    limit: Int!
+    #statusList: [TaskStatus]
+    status: TaskStatus
+    workerid: String
+  ): TaskList
 
   checkIn(_id: String): CheckIn
+  checkInList(skip: Int, limit: Int, userid: String): CheckInList
+
   reason(_id: String): Reason
+  admin_reasonList(skip: Int, limit: Int): ReasonList
+
   message(_id: String): Message
+  messageList(skip: Int, limit: Int, taskid: String): MessageList
+  admin_messageList(skip: Int, limit: Int, taskid: String): MessageList
 
   admin_rule(_id: String): Message
   admin_role(_id: String): Role
@@ -27,7 +69,6 @@ type Mutation {
   ): User
   updateUserPassword(password: String, newPassword: String): User
   admin_updateUserStatus(_id: String!, status: UserStatus): User
-  admin_userList(skip: Int, limit: Int): UserList
 
   # create a store and bind to the creator
   bindStore(
@@ -51,7 +92,6 @@ type Mutation {
   removeStore(_id: String): Store
 
   admin_updateStoreStatus(_id: String!, status: StoreStatus!): Store
-  admin_storeList(skip: Int, limit: Int): StoreList
 
   newBill(
     amount: Float!
@@ -62,14 +102,6 @@ type Mutation {
   ): Bill
   admin_newBill(toUserid: String!, amount: Float!, type: BillType): Bill
   admin_checkBill(_id: String!): Bill
-  billList(
-    skip: Int!
-    limit: Int! #status: BillStatus # todo
-  ): BillList
-  admin_billList(
-    skip: Int!
-    limit: Int! #status: BillStatus # todo
-  ): BillList
 
   #task
   newTask(
@@ -97,14 +129,6 @@ type Mutation {
     storeid: String
   ): Task
 
-  taskList(skip: Int!, limit: Int!, status: TaskStatus): TaskList
-  admin_taskList(
-    userid: String
-    skip: Int!
-    limit: Int!
-    #statusList: [TaskStatus]
-    status: TaskStatus
-  ): TaskList
   updateTaskInfo(
     _id: String!
 
@@ -132,38 +156,21 @@ type Mutation {
   admin_updateTaskStatus(_id: String!, status: TaskStatus): Task
 
   # order
-  orderList(
-    skip: Int!
-    limit: Int!
-    #statusList: [TaskStatus]
-    status: TaskStatus
-    workerid: String
-  ): TaskList # find all children tasks, Buyer can use tit
-  admin_orderList(
-    skip: Int!
-    limit: Int!
-    #statusList: [TaskStatus]
-    status: TaskStatus
-    workerid: String
-  ): TaskList
   updateOrderStatus(_id: String!, status: OrderStatus!): Order
 
   # checkin
   newCheckIn(time: Float): CheckIn
-  checkInList(skip: Int, limit: Int, userid: String): CheckInList
 
   # reason 拒绝理由
   admin_newReason(content: String): Reason
   admin_removeReason(_id: String): String
-  admin_reasonList(skip: Int, limit: Int): ReasonList
 
   # message
   newMessage(content: String, taskid: String): Message
   admin_newMessage(content: String, taskid: String): Message
   updateMessage(_id: String, content: String): Message
   admin_updateMessage(_id: String, content: String): Message
-  messageList(skip: Int, limit: Int, taskid: String): MessageList
-  admin_messageList(skip: Int, limit: Int, taskid: String): MessageList
+
   # admin management
   admin_newRole(_id: String): Role
   admin_newUser(username: String, password: String, roleid: String): User

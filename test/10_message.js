@@ -37,7 +37,7 @@ describe('graphql message', () => {
     assert(res.updateMessage._id === config.message._id);
   });
   it('messageList', async () => {
-    const query = `mutation {
+    const query = `query {
       messageList(skip: 0, limit: 10) {
         list {
           _id

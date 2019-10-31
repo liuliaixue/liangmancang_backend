@@ -119,7 +119,7 @@ describe('graphql user', () => {
   });
 
   it('admin_userList', async () => {
-    const query = `mutation {
+    const query = `query {
       admin_userList(skip: 0, limit: 10) {
         list {
           _id

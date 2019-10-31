@@ -103,7 +103,7 @@ describe('graphql task', () => {
   });
 
   it('taskList', async () => {
-    const query = `mutation {
+    const query = `query {
         taskList(skip: 0, limit: 10, status: DEFAULT) {
           list {
             _id
@@ -117,7 +117,7 @@ describe('graphql task', () => {
   });
 
   it('admin_taskList', async () => {
-    const query = `mutation {
+    const query = `query {
         admin_taskList(skip: 0, limit: 10, status: DEFAULT) {
           list {
             _id
@@ -270,7 +270,7 @@ describe('graphql task', () => {
   });
 
   it('order list', async () => {
-    const query = `mutation {
+    const query = `query {
       orderList(skip: 0, limit: 10, status: DEFAULT) {
         list {
           _id
@@ -287,7 +287,7 @@ describe('graphql task', () => {
     config.order2 = res.orderList.list[1];
   });
   it('admin_orderList', async () => {
-    const query = `mutation {
+    const query = `query {
       admin_orderList(skip: 0, limit: 10, status: DEFAULT) {
         list {
           _id
