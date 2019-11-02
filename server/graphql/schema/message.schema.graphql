@@ -1,16 +1,23 @@
 # 申诉留言
 
-type Message{
-    _id: String!
-    content:String!
-    taskid: String
-
-    userid:String
-    createdAt:Float
-    updatedAt:Float
+type Message {
+  _id: String!
+  content: String!
+  taskid: String
+  type: MessageType
+  chatroom: String # the chat room id
+  #toUserid: String
+  userid: String
+  createdAt: Float
+  updatedAt: Float
 }
 
-type MessageList{
-  list:[Message]
-  total: Int 
+enum MessageType {
+  DEFAULT # 普通聊天消息
+  FEEDBACK # 反馈, 用户给平台留言
+  APPEAL # 申诉, 一般会带上taskid
+}
+type MessageList {
+  list: [Message]
+  total: Int
 }

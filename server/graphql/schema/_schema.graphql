@@ -166,7 +166,13 @@ type Mutation {
   admin_removeReason(_id: String): String
 
   # message
-  newMessage(content: String, taskid: String): Message
+  newMessage(
+    content: String!
+    #orderid: String
+    toUserid: String
+    chatroom: String
+    type: MessageType!
+  ): Message
   admin_newMessage(content: String, taskid: String): Message
   updateMessage(_id: String, content: String): Message
   admin_updateMessage(_id: String, content: String): Message
