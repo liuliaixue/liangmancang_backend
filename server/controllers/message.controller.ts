@@ -1,4 +1,4 @@
-import Joi from 'joi';
+import Joi, { func } from 'joi';
 import Message, { IMessage } from '../models/message.model';
 import { IlistFilter, IListQuery } from './_.controller';
 import Task from '../models/task.model';
@@ -30,6 +30,12 @@ async function newMessage(msg: IMessage) {
   const savedMessage = await new Message(msg).save();
   return savedMessage;
 }
+
+async function remove(_id: string) {
+  const res = await Message.findByIdAndRemove(_id);
+  return res;
+}
+
 const update = async (_id: string, udpateObj: IMessage) => {
   const now = Date.now();
   const updatedMessage = await Message.findByIdAndUpdate(
@@ -41,11 +47,9 @@ const update = async (_id: string, udpateObj: IMessage) => {
 };
 
 const find = async (query: IListQuery) => {
-  const { skip = 0, limit = 10, taskid } = query;
-  const filter: IlistFilter = {};
-  if (taskid) {
-    filter.taskid = taskid;
-  }
+  const { skip = 0, limit = 10, taskid, type } = query;
+  const filter = { taskid, type };
+  if (!taskid) delete filter.taskid;
 
   const checkInList = await Message.find(filter)
     .skip(skip)
@@ -54,5 +58,13 @@ const find = async (query: IListQuery) => {
 
   return { list: checkInList, total };
 };
+const findById = async (_id: string) => {
+  const check = await Message.findById(_id);
+  if (!check) {
+    throw new Error('message not found');
+  }
 
-export default { newMessage, update, find };
+  return check;
+};
+
+export default { newMessage, remove, update, find, findById };

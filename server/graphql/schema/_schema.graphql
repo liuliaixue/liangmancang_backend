@@ -50,8 +50,18 @@ type Query {
   admin_reasonList(skip: Int, limit: Int): ReasonList
 
   message(_id: String): Message
-  messageList(skip: Int, limit: Int, taskid: String): MessageList
-  admin_messageList(skip: Int, limit: Int, taskid: String): MessageList
+  messageList(
+    skip: Int
+    limit: Int
+    taskid: String
+    type: MessageType!
+  ): MessageList
+  admin_messageList(
+    skip: Int
+    limit: Int
+    taskid: String
+    type: MessageType!
+  ): MessageList
 
   admin_rule(_id: String): Message
   admin_role(_id: String): Role
@@ -173,6 +183,7 @@ type Mutation {
     chatroom: String
     type: MessageType!
   ): Message
+  removeMessage(_id: String): Message
   admin_newMessage(content: String, taskid: String): Message
   updateMessage(_id: String, content: String): Message
   admin_updateMessage(_id: String, content: String): Message
