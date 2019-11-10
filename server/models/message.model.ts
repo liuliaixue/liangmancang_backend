@@ -7,6 +7,8 @@ export interface IMessage extends Document {
   type: string;
   chatroom: string;
   userid: string;
+  image: string;
+  phone: string;
   createdAt: number;
   updatedAt: number;
 }
@@ -17,6 +19,8 @@ const MessageSchema = new Schema(
     taskid: { type: String },
     type: { type: String },
     chatroom: { type: String },
+    image: { type: String },
+    phone: { type: String },
 
     userid: { type: String, required: true },
     createdAt: { type: Number, default: 0 },

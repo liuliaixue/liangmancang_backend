@@ -6,6 +6,8 @@ type Message {
   taskid: String
   type: MessageType
   chatroom: String # the chat room id
+  image: String
+  phone: String
   #toUserid: String
   userid: String
   createdAt: Float

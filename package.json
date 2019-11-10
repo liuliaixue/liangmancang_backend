@@ -4,9 +4,10 @@
   "description": "",
   "main": "server",
   "scripts": {
+    "build": "tsc --build tsconfig.json",
     "start": "npm run gen && node dist/index",
     "gen": "node server/graphql/schema/_generate.js && cp server/graphql/schema.graphql dist/graphql/schema.graphql",
-    "build": "tsc --build tsconfig.json",
+    "update-remote": "",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [

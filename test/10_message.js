@@ -5,7 +5,7 @@ const assert = require('assert');
 describe('graphql message', () => {
   it('newMessage default', async () => {
     const query = `mutation {
-      newMessage(content: "native", type: DEFAULT, toUserid:"${config.admin._id}") {
+      newMessage(content: "native", type: DEFAULT, toUserid:"${config.admin._id}",image:"http://testimage", phone:"88888888") {
         _id
         content
         taskid
@@ -19,6 +19,21 @@ describe('graphql message', () => {
     assert(res.newMessage.content === 'native');
     // console.log(res)
     config.message = res.newMessage;
+  });
+  it('newMessage less arguments', async () => {
+    const query = `mutation {
+      newMessage(content: "native", type: DEFAULT, toUserid:"${config.admin._id}") {
+        _id
+        content
+        taskid
+        userid
+        createdAt
+        updatedAt
+      }
+    }
+    `;
+    const res = await client(query, {});
+    assert(res.newMessage.content === 'native');
   });
   // it('newMessage: feedback', async () => {
   //   const query = `mutation {

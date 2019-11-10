@@ -7,7 +7,10 @@ const messageSchema = Joi.object({
   content: Joi.string().required(),
   // taskid: Joi.string(),
   type: Joi.string().required(),
-  toUserid: Joi.string(),
+  toUserid: Joi.any(),
+
+  image: Joi.any(),
+  phone: Joi.any(),
 
   userid: Joi.string().required(),
   createdAt: Joi.number(),
