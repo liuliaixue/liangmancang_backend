@@ -10,6 +10,14 @@ import { aclCheck } from '../controllers/role.controller';
 const oneDay = 1 * 24 * 3600 * 1000;
 
 export default {
+  user: async (obj: any, req: IReq) => {
+    logger.info({ _from: 'user', _by: req.user.id, ...obj });
+    const userid = obj._id || req.user.id;
+    const user = await userCtrl.findById(userid);
+    const bill = await billController.findUserLastestBill(userid);
+    user.bill = bill;
+    return user;
+  },
   updateUserInfo: async (obj: any, req: IReq) => {
     logger.info({ _from: 'updateUserInfo', _by: req.user.id, ...obj });
 

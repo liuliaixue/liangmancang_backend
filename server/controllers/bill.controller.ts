@@ -43,7 +43,7 @@ const newBill = async (bill: IBill) => {
     withdraw: 0,
     createdAt: now.getTime(),
     updatedAt: now.getTime(),
-    status: Status.DEFAULT
+    status: bill.status || Status.CHECKED
   }).save();
 };
 
@@ -59,6 +59,7 @@ const find = async (query: IBillQuery) => {
   if (!userid) delete filter.userid;
   if (!status) delete filter.status;
   const billList = await Bill.find(filter)
+    .sort({ updatedAt: -1 })
     .skip(skip)
     .limit(limit);
   const billTotal = await Bill.count(filter);

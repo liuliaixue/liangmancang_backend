@@ -10,11 +10,13 @@ type Query {
   bill(userid: String): Bill
   billList(
     skip: Int!
-    limit: Int! #status: BillStatus # todo
+    limit: Int!
+    status: BillStatus # todo
   ): BillList
   admin_billList(
     skip: Int!
-    limit: Int! #status: BillStatus # todo
+    limit: Int!
+    status: BillStatus # todo
   ): BillList
 
   task(_id: String!): Task
