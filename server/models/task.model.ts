@@ -1,12 +1,14 @@
 import { Schema, Model, model, Document } from 'mongoose';
-import {Type as OrderType , Status as OrderStaus} from './order.model'
+import { Type as OrderType, Status as OrderStaus } from './order.model';
 
 enum Status {
   DEFAULT = 'DEFAULT',
-  CHECKED = 'CHECKED'
+  CONFIRMED = 'CONFIRMED',
+  CHECKED = 'CHECKED',
+  AUTO_CHECKED = 'AUTO_CHECKED'
 }
 
-interface IOrderInput {
+export interface IOrderInput {
   type: OrderType;
 
   buyTimes: number;

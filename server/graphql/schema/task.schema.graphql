@@ -37,6 +37,7 @@ type Task {
 # 1 checked,
 enum TaskStatus {
   DEFAULT
+  CONFIRMED
   CHECKED
   AUTO_CHECKED
 }

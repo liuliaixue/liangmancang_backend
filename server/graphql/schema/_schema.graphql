@@ -137,6 +137,8 @@ type Mutation {
     extraImages: [String]
     remark: String
     storeid: String
+
+    status: TaskStatus
   ): Task
 
   updateTaskInfo(

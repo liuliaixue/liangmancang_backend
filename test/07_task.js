@@ -9,6 +9,8 @@ describe('graphql task', () => {
   it('newTask', async () => {
     const query = `mutation {
       newTask(
+
+        status:DEFAULT
         goodsName: "木林森皮鞋男冬季加绒韩版商务休闲黑色真皮英伦正装内增高男鞋子"
         goodsLink: "https://detail.tmall.com/item.htm?id=595735103244&spm=a21bz.7725275.1998564545.1.2e245fc2SVQnDL&umpChannel=qianggou&u_channel=qianggou"
         goodsImage: "https://img.alicdn.com/imgextra/i1/3372687502/O1CN013D7wEd25Hxol9V6qT_!!3372687502.jpg_430x430q90.jpg"
@@ -101,7 +103,6 @@ describe('graphql task', () => {
 
     config.task = res.newTask;
   });
-
   it('taskList', async () => {
     const query = `query {
         taskList(skip: 0, limit: 10, status: DEFAULT) {

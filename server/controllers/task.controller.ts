@@ -1,5 +1,5 @@
 import Joi from 'joi';
-import Task, { Status, ITask } from '../models/task.model';
+import Task, { Status, ITask, IOrderInput } from '../models/task.model';
 import Order, { Status as OrderStatus, IOrder } from '../models/order.model';
 import ruleCtrl from './rule.controller';
 import { IRule } from '../models/rule.model';
@@ -34,31 +34,89 @@ const taskSchema = Joi.object({
 
   remark: Joi.string().min(0),
   storeid: Joi.string(),
-  userid: Joi.string()
+  userid: Joi.string(),
+
+  status: Joi.string()
 });
+
+function genOrderList(task: ITask) {
+  const orders = task.orders;
+  let orderStartAt = task.startTime;
+  const duration = task.endTime - task.startTime;
+
+  let orderList = [];
+  const now = new Date();
+  for (let i = 0; i < orders.length; i++) {
+    const order = orders[i];
+    const {
+      type,
+
+      buyTimes,
+      browseTimes,
+      collectTimes
+      // collect,
+
+      // searchKeyword,
+      // goodsSpecification,
+
+      // comment,
+      // pictures,
+      // remark,
+    } = order;
+    for (let i = 0; i < buyTimes; i++) {
+      orderList.push({
+        ...order,
+        buyTimes: 1,
+        browseTimes: 0,
+        collectTimes: 0,
+        taskid: task.id,
+        startAt: 0,
+        status: OrderStatus.DEFAULT,
+        userid: task.userid,
+        createdAt: now.getTime(),
+        updatedAt: now.getTime()
+      });
+    }
+    for (let i = 0; i < browseTimes; i++) {
+      orderList.push({
+        ...order,
+        buyTimes: 0,
+        browseTimes: 1,
+        collectTimes: collectTimes > i ? 1 : 0,
+        taskid: task.id,
+        startAt: 0,
+        status: OrderStatus.DEFAULT,
+        userid: task.userid,
+        createdAt: now.getTime(),
+        updatedAt: now.getTime()
+      });
+    }
+  }
+  for (let i = 0; i < orderList.length; i++) {
+    orderList[i].startAt = orderStartAt + (duration / orderList.length) * i;
+  }
+
+  return orderList;
+}
 
 const newTask = async (task: ITask) => {
   task = await Joi.validate(task, taskSchema, { abortEarly: false });
   const now = new Date();
+  // check time
   if (task.startTime < task.endTime) {
   } else {
     throw new Error(
       `invalid startTime=${task.startTime} and endTime=${task.endTime}`
     );
   }
-  task.total = task.orders.length;
+
   // check rule
   const rule = await ruleCtrl.getCurrentRule();
   if (!rule) {
     throw Err.NotFound(`rule  not found`);
   }
-  if (
-    !Number.isInteger(task.total) ||
-    !Number.isInteger(task.extraCommission)
-  ) {
-    throw Err.IllegalValue(
-      `total=${task.total}, extraCommission=${task.extraCommission}`
-    );
+  if (!Number.isInteger(task.extraCommission)) {
+    throw Err.IllegalValue(`extraCommission=${task.extraCommission}`);
   }
 
   const { allCommission, allDeposit } = ruleCtrl.gerCurrentTaskAmount(task);
@@ -72,11 +130,14 @@ const newTask = async (task: ITask) => {
     throw new Error(`invalid userid ${task.userid}`);
   }
 
+  // 1. 创建任务,状态默认
+  // 1.1. 创建任务,状态已确认
+  // 3. 创建任务,并创建订单
+
   // task auto check
   if (!user.isTaskAutoCheck) {
     task.createdAt = now.getTime();
     task.updatedAt = now.getTime();
-    task.status = Status.DEFAULT;
     task.amount = totalAmount;
     const newTask = await new Task(task).save();
     return newTask;
@@ -112,26 +173,11 @@ const newTask = async (task: ITask) => {
 
     task.createdAt = now.getTime();
     task.updatedAt = now.getTime();
-    task.status = Status.CHECKED;
+    task.status = Status.AUTO_CHECKED;
     task.amount = totalAmount;
 
     const newTask = await new Task(task).save();
-    // child tasks
-    const orders = [];
-    const firstChildStartAt = task.startTime;
-    const duration = task.endTime - task.startTime;
-    for (let i = 0; i < task.total; i++) {
-      const order = task.orders[i];
-      orders.push({
-        ...order,
-        taskid: newTask.id,
-        startAt: firstChildStartAt + (duration / task.total) * i,
-        status: Status.DEFAULT,
-        userid: user._id,
-        createdAt: now.getTime(),
-        updatedAt: now.getTime()
-      });
-    }
+    const orders = genOrderList(newTask);
     const createOrders = orders.map(async co => {
       const o = await new Task(co).save();
       return o;
@@ -282,21 +328,7 @@ const check = async (_id: string, operator?: string) => {
 
   const newTask = await new Task(task).save();
   // child tasks
-  const orders = [];
-  const firstChildStartAt = task.startTime;
-  const duration = task.endTime - task.startTime;
-  for (let i = 0; i < task.total; i++) {
-    const order = task.orders[i];
-    orders.push({
-      ...order,
-      taskid: newTask.id,
-      startAt: firstChildStartAt + (duration / task.total) * i,
-      status: Status.DEFAULT,
-      userid: user._id,
-      createdAt: now.getTime(),
-      updatedAt: now.getTime()
-    });
-  }
+  const orders = genOrderList(newTask);
   const createOrders = orders.map(async co => {
     const o = await new Order(co).save();
     return o;
