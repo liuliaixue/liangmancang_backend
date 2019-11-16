@@ -23,3 +23,8 @@ type MessageList {
   list: [Message]
   total: Int
 }
+
+type ChatList {
+  list: [MessageList]
+  total: Int
+}

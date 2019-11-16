@@ -132,4 +132,33 @@ describe('graphql message', () => {
   it('admin new message');
   it('admin update message');
   it('admin message list');
+
+  it('chat list', async function() {
+    const query = `query {
+      chatList(skip: 0, limit: 10) {
+        list {
+          list {
+            _id
+            content
+            taskid
+            type
+            chatroom
+            image
+            phone
+            userid
+            createdAt
+            updatedAt
+          }
+          total
+        }
+        total
+      }
+    }
+    `;
+
+    const res = await client(query, {});
+    // console.log(res.chatList);
+    assert(res.chatList.list.length > 0);
+    assert(res.chatList.list[0].list.length > 0);
+  });
 });

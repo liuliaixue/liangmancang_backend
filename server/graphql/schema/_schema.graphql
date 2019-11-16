@@ -58,6 +58,9 @@ type Query {
     taskid: String
     type: MessageType!
   ): MessageList
+
+  chatList(skip: Int, limit: Int): ChatList
+
   admin_messageList(
     skip: Int
     limit: Int

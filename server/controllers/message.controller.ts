@@ -30,6 +30,14 @@ async function newMessage(msg: IMessage) {
   const now = Date.now();
   msg.createdAt = now;
   msg.updatedAt = now;
+  if (msg.chatroom) {
+    const check = await Message.findOne({ chatroom: msg.chatroom });
+    if (!check) {
+      throw new Error('charroom not found');
+    }
+  } else {
+    msg.chatroom = `${msg.userid}-${now}`;
+  }
   const savedMessage = await new Message(msg).save();
   return savedMessage;
 }
@@ -61,6 +69,28 @@ const find = async (query: IListQuery) => {
 
   return { list: checkInList, total };
 };
+
+const chatList = async (query: IListQuery) => {
+  const { skip = 0, limit = 10, userid } = query;
+  // const filter = { userid };
+
+  const chatRoomList = await Message.distinct('chatroom', { userid });
+
+  const promises = chatRoomList.slice(0, limit).map(async chatroom => {
+    const filter = { chatroom };
+    const messageList = await Message.find(filter)
+      .skip(skip)
+      .limit(limit)
+      .sort({ updatedAt: -1 });
+    const total = await Message.count(filter);
+    return { list: messageList, total };
+  });
+
+  const list = await Promise.all(promises);
+
+  return { list: list, total: chatRoomList.length };
+};
+
 const findById = async (_id: string) => {
   const check = await Message.findById(_id);
   if (!check) {
@@ -70,4 +100,4 @@ const findById = async (_id: string) => {
   return check;
 };
 
-export default { newMessage, remove, update, find, findById };
+export default { newMessage, remove, update, find, chatList, findById };

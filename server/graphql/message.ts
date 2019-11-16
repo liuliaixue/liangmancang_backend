@@ -46,5 +46,12 @@ export default {
     const listObj = await messageCtrl.find(obj);
 
     return listObj;
+  },
+  chatList: async (obj: any, req: IReq) => {
+    logger.info({ _from: 'chatList', _by: req.user.id, ...obj });
+
+    const listObj = await messageCtrl.chatList({ ...obj, userid: req.user.id });
+
+    return listObj;
   }
 };
