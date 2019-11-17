@@ -10,6 +10,7 @@ import message from './message';
 import role from './role';
 import qiniu from './qiniu';
 import logger from '../tools/logger';
+import notcie from './notice';
 
 interface IGraphqlObj {
   [key: string]: object;
@@ -47,5 +48,6 @@ export default safeMerge([
   checkIn,
   reason,
   message,
-  qiniu
+  qiniu,
+  notcie
 ]);

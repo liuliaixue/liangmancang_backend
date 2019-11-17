@@ -15,7 +15,7 @@ const q = `{
   }
 }`;
 
-const client = (query, variables) => {
+const client = (query, variables = {}) => {
   return new Promise((resolve, reject) => {
     const client = new GraphQLClient(`${baseURL}/api/graphql`, {
       headers: { 'x-lmc-token': config.token }

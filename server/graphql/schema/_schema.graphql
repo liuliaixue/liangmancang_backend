@@ -71,6 +71,9 @@ type Query {
   admin_rule(_id: String): Message
   admin_role(_id: String): Role
   admin_RoleAcl(_id: String): [RoleAccess]
+
+  notice(_id: String): Notice
+  noticeList(skip: Int, limit: Int): NoticeList
 }
 
 type Mutation {
@@ -202,6 +205,15 @@ type Mutation {
   admin_newUser(username: String, password: String, roleid: String): User
   admin_setAdmin(username: String, roleidList: [String]): User
   admin_disableUser(_id: String): User
+
+  admin_newNotice(type: String, title: String, content: String): Notice
+  admin_updateNotice(
+    _id: String
+    type: String
+    title: String
+    content: String
+  ): Notice
+  admin_removeNotice(_id: String): Notice
 }
 
 # uploadFile

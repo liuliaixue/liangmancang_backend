@@ -1,0 +1,16 @@
+type Notice {
+  _id: String!
+
+  type: String
+  title: String
+  content: String
+
+  userid: String
+  createdAt: Float
+  updatedAt: Float
+}
+
+type NoticeList {
+  list: [Notice]
+  total: Int
+}
