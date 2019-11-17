@@ -10,6 +10,13 @@ import Err from '../tools/error';
 import { Status as OrderStatus } from '../models/order.model';
 
 export default {
+  task: async (obj: any, req: IReq) => {
+    logger.info({ _from: 'task', _by: req.user.id, ...obj });
+
+    const task = await taskCtrl.findById(obj._id);
+
+    return task;
+  },
   // 创建父亲任务, 后台在worker中创建子任务
   newTask: async (obj: any, req: IReq) => {
     logger.info({ _from: 'newTask', _by: req.user.id, ...obj });

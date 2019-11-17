@@ -60,6 +60,8 @@ type Query {
   ): MessageList
 
   chatList(skip: Int, limit: Int): ChatList
+  admin_chatList(skip: Int, limit: Int): ChatList
+  chat(skip: Int, limit: Int, chatroom: String): MessageList
 
   admin_messageList(
     skip: Int

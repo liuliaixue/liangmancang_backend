@@ -8,6 +8,7 @@ const messageSchema = Joi.object({
   // taskid: Joi.string(),
   type: Joi.string().required(),
   toUserid: Joi.any(),
+  chatroom: Joi.any(),
 
   image: Joi.any(),
   phone: Joi.any(),
@@ -70,17 +71,29 @@ const find = async (query: IListQuery) => {
   return { list: checkInList, total };
 };
 
+const chat = async (query: IListQuery) => {
+  const { skip = 0, limit = 10, chatroom } = query;
+  const filter = { chatroom };
+  const messageList = await Message.find(filter)
+    .skip(skip)
+    .limit(limit)
+    .sort({ updatedAt: -1 });
+  const total = await Message.count(filter);
+  return { list: messageList, total };
+};
+
 const chatList = async (query: IListQuery) => {
   const { skip = 0, limit = 10, userid } = query;
-  // const filter = { userid };
+  const chatFilter = { userid };
+  if (!userid) delete chatFilter.userid;
 
-  const chatRoomList = await Message.distinct('chatroom', { userid });
+  const chatRoomList = await Message.distinct('chatroom', chatFilter);
 
-  const promises = chatRoomList.slice(0, limit).map(async chatroom => {
+  const promises = chatRoomList.slice(skip, limit).map(async chatroom => {
     const filter = { chatroom };
     const messageList = await Message.find(filter)
-      .skip(skip)
-      .limit(limit)
+      .skip(0)
+      .limit(100)
       .sort({ updatedAt: -1 });
     const total = await Message.count(filter);
     return { list: messageList, total };
@@ -100,4 +113,4 @@ const findById = async (_id: string) => {
   return check;
 };
 
-export default { newMessage, remove, update, find, chatList, findById };
+export default { newMessage, remove, update, find, chat, chatList, findById };

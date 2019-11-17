@@ -4,6 +4,7 @@ export interface IListQuery {
   userid?: string;
   taskid?: string;
   type?: string;
+  chatroom: string;
 }
 
 export interface IlistFilter {

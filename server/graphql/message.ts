@@ -47,10 +47,24 @@ export default {
 
     return listObj;
   },
+  chat: async (obj: any, req: IReq) => {
+    logger.info({ _from: 'chatList', _by: req.user.id, ...obj });
+
+    const listObj = await messageCtrl.chat({ ...obj, userid: req.user.id });
+
+    return listObj;
+  },
   chatList: async (obj: any, req: IReq) => {
     logger.info({ _from: 'chatList', _by: req.user.id, ...obj });
 
     const listObj = await messageCtrl.chatList({ ...obj, userid: req.user.id });
+
+    return listObj;
+  },
+  admin_chatList: async (obj: any, req: IReq) => {
+    logger.info({ _from: 'admin_chatList', _by: req.user.id, ...obj });
+
+    const listObj = await messageCtrl.chatList({ ...obj });
 
     return listObj;
   }
