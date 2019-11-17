@@ -18,7 +18,6 @@ var newTask = `{
   goodsSpecification: "尺码:37,颜色:红色",
   isFreeShipping: false,
 
-  howToFindGoods: "\"{\"sort\":\"1\",\"keyword\":\"增高男鞋子\",\"price\":\"1 - 1000\",\"area\":\"上海\",\"message\":\"\"}\"",
 
   orders: [
     {

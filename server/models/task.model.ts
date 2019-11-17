@@ -7,6 +7,18 @@ enum Status {
   CHECKED = 'CHECKED',
   AUTO_CHECKED = 'AUTO_CHECKED'
 }
+enum TaskPlatform {
+  TMALL = 'TMALL',
+  TAOBAO = 'TAOBAO'
+}
+enum TaskType {
+  MOBILE_TAOBAO = 'MOBILE_TAOBAO',
+  MOBILE_TAOBAO_PRESALE = 'MOBILE_TAOBAO_PRESALE',
+  MOBILE_TMALL = 'MOBILE_TMALL',
+  MOBILE_TAOBAO_SPECIAL = 'MOBILE_TAOBAO_SPECIAL',
+  PC_TAOBAO_REFUND = 'PC_TAOBAO_REFUND',
+  PC_TAOBAO = 'PC_TAOBAO'
+}
 
 export interface IOrderInput {
   type: OrderType;
@@ -26,6 +38,9 @@ export interface IOrderInput {
 }
 
 export interface ITask extends Document {
+  platform: TaskPlatform;
+  type: TaskType;
+
   goodsName: string;
   goodsLink: string;
   goodsImage: string;
@@ -34,7 +49,13 @@ export interface ITask extends Document {
   goodsPriceShowed: number;
   goodsSpecification: string;
   isFreeShipping: boolean;
-  howToFindGoods: string;
+  search_sort: string;
+  search_ReceiverNum: number;
+  search_price_from: number;
+  search_price_to: number;
+  search_where: string;
+  search_keywrod: string;
+
   orders: [IOrderInput];
 
   startTime: number;
@@ -61,18 +82,16 @@ export interface ITask extends Document {
 
 const TaskSchema = new Schema(
   {
-    goodsName: {
-      type: String
-    },
+    platform: { type: String },
+    type: { type: String },
+    goodsName: { type: String },
     goodsLink: {
       type: String
     },
     goodsImage: {
       type: String
     },
-    goodsPrice: {
-      type: Number
-    },
+    goodsPrice: { type: Number },
     goodsTotal: {
       type: Number
     },
@@ -86,9 +105,12 @@ const TaskSchema = new Schema(
       type: Boolean
     },
 
-    howToFindGoods: {
-      type: String
-    },
+    search_sort: { type: String },
+    search_ReceiverNum: { type: Number },
+    search_price_from: { type: Number },
+    search_price_to: { type: Number },
+    search_where: { type: String },
+    search_keyword: { type: String },
 
     orders: {},
     startTime: {

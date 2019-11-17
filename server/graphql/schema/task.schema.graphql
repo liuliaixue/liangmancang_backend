@@ -3,6 +3,9 @@
 type Task {
   _id: String!
 
+  platform: TaskPlatform
+  type: TaskType
+
   goodsName: String
   goodsLink: String
   goodsImage: String
@@ -11,7 +14,14 @@ type Task {
   goodsPriceShowed: Float
   goodsSpecification: String
   isFreeShipping: Boolean
-  howToFindGoods: String #json string
+
+  search_sort: String
+  search_ReceiverNum: Int
+  search_price_from: Int
+  search_price_to: Int
+  search_where: String
+  search_keyword: String
+
   orders: [Order]
 
   startTime: Float
@@ -45,6 +55,18 @@ enum TaskStatus {
 type TaskList {
   list: [Task]
   total: Int
+}
+enum TaskPlatform {
+  TMALL
+  TAOBAO
+}
+enum TaskType {
+  MOBILE_TAOBAO
+  MOBILE_TAOBAO_PRESALE
+  MOBILE_TMALL
+  MOBILE_TAOBAO_SPECIAL
+  PC_TAOBAO_REFUND
+  PC_TAOBAO
 }
 
 # 订单 order

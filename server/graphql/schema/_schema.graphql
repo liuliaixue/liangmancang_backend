@@ -124,6 +124,8 @@ type Mutation {
   #task
   newTask(
     # _id:String
+    platform: TaskPlatform
+    type: TaskType
 
     goodsName: String
     goodsLink: String
@@ -134,7 +136,12 @@ type Mutation {
     goodsSpecification: String
     isFreeShipping: Boolean
 
-    howToFindGoods: String
+    search_sort: String
+    search_ReceiverNum: Int
+    search_price_from: Int
+    search_price_to: Int
+    search_where: String
+    search_keyword: String
 
     orders: [orderInput]
 
@@ -151,6 +158,8 @@ type Mutation {
 
   updateTaskInfo(
     _id: String!
+    platform: TaskPlatform
+    type: TaskType
 
     goodsName: String
     goodsLink: String
@@ -161,7 +170,12 @@ type Mutation {
     goodsSpecification: String
     isFreeShipping: Boolean
 
-    howToFindGoods: String
+    search_sort: String
+    search_ReceiverNum: Int
+    search_price_from: Int
+    search_price_to: Int
+    search_where: String
+    search_keyword: String
 
     orders: [orderInput]
 

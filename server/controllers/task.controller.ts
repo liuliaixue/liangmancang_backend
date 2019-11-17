@@ -13,6 +13,9 @@ import Err from '../tools/error';
 import billCtrl from './bill.controller';
 
 const taskSchema = Joi.object({
+  platform: Joi.string(),
+  type: Joi.string(),
+
   goodsName: Joi.string(),
   goodsLink: Joi.string(),
   goodsImage: Joi.string(),
@@ -22,7 +25,12 @@ const taskSchema = Joi.object({
   goodsSpecification: Joi.string(),
   isFreeShipping: Joi.bool(),
 
-  howToFindGoods: Joi.string(),
+  search_sort: Joi.any(),
+  search_ReceiverNum: Joi.any(),
+  search_price_from: Joi.any(),
+  search_price_to: Joi.any(),
+  search_where: Joi.any(),
+  search_keyword: Joi.any(),
 
   orders: Joi.array(),
 
