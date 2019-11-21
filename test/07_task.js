@@ -70,6 +70,7 @@ describe('graphql task', () => {
 
               startTime: 1572566400000 #new Date("2019-11-01").getTime(),
               endTime: 1572652800000 #new Date("2019-11-02").getTime(),
+              orderQuantity: 2,
               extraCommission: 100
               extraImages: [""]
               remark: "111"
@@ -90,6 +91,7 @@ describe('graphql task', () => {
               }
               startTime
               endTime
+              orderQuantity
               commission
               platformServiceFee
               platformCommission
@@ -208,6 +210,7 @@ describe('graphql task', () => {
     
         startTime: 1572566400000 #new Date("2019-11-01").getTime(),
         endTime: 1572652800000 #new Date("2019-11-02").getTime(),
+        orderQuantity: 2,
         extraCommission: 100
         extraImages: [""]
         remark: "111"
@@ -228,6 +231,7 @@ describe('graphql task', () => {
         }
         startTime
         endTime
+        orderQuantity
         commission
         platformServiceFee
         platformCommission
@@ -264,6 +268,7 @@ describe('graphql task', () => {
           }
           startTime
           endTime
+          orderQuantity
           commission
           platformServiceFee
           platformCommission

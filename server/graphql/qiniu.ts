@@ -5,7 +5,7 @@ import { IReq } from '../config/passport';
 import moment from 'moment';
 import shortid from '../tools/shortid';
 
-const { ak, sk } = config;
+const { ak, sk, qiuniuFilePrefix } = config;
 const mac = new qiniu.auth.digest.Mac(ak, sk);
 
 const genUploadToken = (filename: string) => {
@@ -13,7 +13,8 @@ const genUploadToken = (filename: string) => {
     'YYYY-MM-DD'
   )}/${shortid.generate()}/${filename}`;
   const options = {
-    scope: `shangbi2019:${key}`
+    scope: `shangbi2019:${key}`,
+    returnBody: `{"key":"$(key)","hash":"$(etag)","fsize":$(fsize),"bucket":"$(bucket)","name":"qiniu","url":"${qiuniuFilePrefix}/$(key)"}`
   };
   const putPolicy = new qiniu.rs.PutPolicy(options);
   const uploadToken = putPolicy.uploadToken(mac);

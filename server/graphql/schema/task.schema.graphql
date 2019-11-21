@@ -26,6 +26,7 @@ type Task {
 
   startTime: Float
   endTime: Float
+  orderQuantity: Int
 
   commission: Float
   platformServiceFee: Float
@@ -56,6 +57,56 @@ type TaskList {
   list: [Task]
   total: Int
 }
+
+type TaskWithStore {
+  _id: String!
+
+  platform: TaskPlatform
+  type: TaskType
+
+  goodsName: String
+  goodsLink: String
+  goodsImage: String
+  goodsPrice: Float
+  goodsTotal: Int
+  goodsPriceShowed: Float
+  goodsSpecification: String
+  isFreeShipping: Boolean
+
+  search_sort: String
+  search_ReceiverNum: Int
+  search_price_from: Int
+  search_price_to: Int
+  search_where: String
+  search_keyword: String
+
+  orders: [Order]
+
+  startTime: Float
+  endTime: Float
+  orderQuantity: Int
+
+  commission: Float
+  platformServiceFee: Float
+  platformCommission: Float
+
+  extraCommission: Float
+  extraImages: [String]
+
+  status: TaskStatus
+
+  storeid: String
+  userid: String
+  store: Store
+
+  createdAt: Float
+  updatedAt: Float
+}
+type TaskWithStoreList {
+  list: [TaskWithStore]
+  total: Int
+}
+
 enum TaskPlatform {
   TMALL
   TAOBAO

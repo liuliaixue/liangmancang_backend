@@ -74,6 +74,14 @@ export default {
 
     return taskListObj;
   },
+  taskWithStoreList: async (obj: any, req: IReq) => {
+    logger.info({ _from: 'taskWithStoreList', _by: req.user.id, ...obj });
+
+    const userid = req.user.id;
+    const taskListObj = await taskCtrl.findWithStore({ ...obj, userid });
+
+    return taskListObj;
+  },
 
   admin_taskList: async (obj: any, req: IReq) => {
     logger.info({ _from: 'admin_taskList', _by: req.user.id, ...obj });

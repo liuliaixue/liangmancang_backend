@@ -64,6 +64,7 @@ var newTask = `{
 
   startTime: 1572566400000#new Date("2019-11-01").getTime(),
   endTime: 1572652800000#new Date("2019-11-02").getTime(),
+  orderQuantity: 2,
 
   extraCommission: 100,
   extraImages: [""],

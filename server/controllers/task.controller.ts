@@ -11,6 +11,7 @@ import Bill, {
 import User from '../models/user.model';
 import Err from '../tools/error';
 import billCtrl from './bill.controller';
+import Store from '../models/store.model';
 
 const taskSchema = Joi.object({
   platform: Joi.string(),
@@ -36,6 +37,7 @@ const taskSchema = Joi.object({
 
   startTime: Joi.number(),
   endTime: Joi.number(),
+  orderQuantity: Joi.number(),
 
   extraCommission: Joi.number(),
   extraImages: Joi.array(),
@@ -219,14 +221,10 @@ const findById = async (_id: string) => {
 };
 const find = async (query: ITaskQuery = { skip: 0, limit: 10 }) => {
   const { skip, limit, userid, status } = query;
-  const filter: ItaskFilter = {};
-  if (userid) {
-    filter.userid = userid;
-  }
 
-  if (status) {
-    filter.status = status;
-  }
+  const filter = { userid, status };
+  if (!filter.userid) delete filter.userid;
+  if (!filter.status) delete filter.status;
 
   const list = await Task.find(filter)
     .skip(skip)
@@ -234,6 +232,29 @@ const find = async (query: ITaskQuery = { skip: 0, limit: 10 }) => {
   const total = await Task.count(filter);
 
   return { list, total };
+};
+
+const findWithStore = async (query: ITaskQuery = { skip: 0, limit: 10 }) => {
+  const { skip, limit, userid, status } = query;
+  const filter = { userid, status };
+  if (!filter.userid) delete filter.userid;
+  if (!filter.status) delete filter.status;
+
+  let list = await Task.find(filter)
+    .skip(skip)
+    .limit(limit);
+  const promises = list.map(async _task => {
+    const store = await Store.findById(_task.storeid);
+    // _task.store= store
+    (_task as any).store = store;
+    return _task;
+    // return { ..._task, store };
+  });
+  let listWithStore = await Promise.all(promises);
+
+  const total = await Task.count(filter);
+
+  return { list: listWithStore, total };
 };
 
 const updateInfo = async (_id: string, updateObj: ITask) => {
@@ -461,6 +482,7 @@ const abortFinishedTask = async () => {};
 export default {
   newTask,
   find,
+  findWithStore,
   // findOne,
   findById,
   updateInfo,

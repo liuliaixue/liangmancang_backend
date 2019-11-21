@@ -60,6 +60,7 @@ export interface ITask extends Document {
 
   startTime: number;
   endTime: number;
+  orderQuantity: number;
   total: number;
 
   commission: number;
@@ -113,12 +114,9 @@ const TaskSchema = new Schema(
     search_keyword: { type: String },
 
     orders: {},
-    startTime: {
-      type: Number
-    },
-    endTime: {
-      type: Number
-    },
+    startTime: { type: Number },
+    endTime: { type: Number },
+    orderQuantity: { type: Number },
     total: {
       type: Number
     },

@@ -37,6 +37,7 @@ if (error) {
 const config = {
   ak: 'C6zJv3pJd9NaHqodJom5QwacN50HopI9vbldfe1X',
   sk: 'HTOixXgmbsN8f9F8lRR7T9cnYelMoLgwm6m59Glj',
+  qiuniuFilePrefix: 'http://pzxtt0qa8.bkt.clouddn.com',
   env: envVars.NODE_ENV,
   port: envVars.SERVER_PORT,
   mongooseDebug: envVars.MONGOOSE_DEBUG,

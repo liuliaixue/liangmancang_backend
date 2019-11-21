@@ -21,6 +21,11 @@ type Query {
 
   task(_id: String!): Task
   taskList(skip: Int!, limit: Int!, status: TaskStatus): TaskList
+  taskWithStoreList(
+    skip: Int!
+    limit: Int!
+    status: TaskStatus
+  ): TaskWithStoreList
   admin_taskList(
     userid: String
     skip: Int!
@@ -149,6 +154,7 @@ type Mutation {
 
     startTime: Float
     endTime: Float
+    orderQuantity: Int
 
     extraCommission: Float
     extraImages: [String]
@@ -183,6 +189,7 @@ type Mutation {
 
     startTime: Float
     endTime: Float
+    orderQuantity: Int
 
     extraCommission: Float
     extraImages: [String]
