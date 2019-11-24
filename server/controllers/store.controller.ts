@@ -66,6 +66,7 @@ const updateInfo = async (_id: string, updateObj: IStore) => {
     {
       $set: {
         ...updateObj,
+        status: Status.DEFAULT,
         updatedAt: new Date().getTime()
       }
     },
