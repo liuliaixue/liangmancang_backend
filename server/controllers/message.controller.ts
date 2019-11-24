@@ -89,15 +89,20 @@ const chatList = async (query: IListQuery) => {
 
   const chatRoomList = await Message.distinct('chatroom', chatFilter);
 
-  const promises = chatRoomList.slice(skip, limit).map(async chatroom => {
-    const filter = { chatroom };
-    const messageList = await Message.find(filter)
-      .skip(0)
-      .limit(100)
-      .sort({ updatedAt: -1 });
-    const total = await Message.count(filter);
-    return { list: messageList, total };
-  });
+  const promises = chatRoomList
+    .slice(
+      skip,
+      skip + limit > chatRoomList.length ? chatRoomList.length : skip + limit
+    )
+    .map(async chatroom => {
+      const filter = { chatroom };
+      const messageList = await Message.find(filter)
+        .skip(0)
+        .limit(100)
+        .sort({ createdAt: -1 });
+      const total = await Message.count(filter);
+      return { list: messageList, total };
+    });
 
   const list = await Promise.all(promises);
 

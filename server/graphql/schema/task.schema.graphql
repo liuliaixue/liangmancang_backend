@@ -149,6 +149,10 @@ type Order {
   createdAt: Float
   updatedAt: Float
 }
+type OrderList {
+  list: [Order]
+  total: Int
+}
 
 input orderInput {
   type: OrderType

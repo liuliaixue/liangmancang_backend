@@ -120,6 +120,8 @@ const newTask = async (task: ITask) => {
     );
   }
 
+  //todo storeid check
+
   // check rule
   const rule = await ruleCtrl.getCurrentRule();
   if (!rule) {

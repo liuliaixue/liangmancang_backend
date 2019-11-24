@@ -41,14 +41,14 @@ type Query {
     #statusList: [TaskStatus]
     status: TaskStatus
     workerid: String
-  ): TaskList # find all children tasks, Buyer can use tit
+  ): OrderList # find all children tasks, Buyer can use tit
   admin_orderList(
     skip: Int!
     limit: Int!
     #statusList: [TaskStatus]
     status: TaskStatus
     workerid: String
-  ): TaskList
+  ): OrderList
 
   checkIn(_id: String): CheckIn
   checkInList(skip: Int, limit: Int, userid: String): CheckInList
