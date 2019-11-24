@@ -130,7 +130,10 @@ type Order {
   buyTimes: Int
   browseTimes: Int
   collectTimes: Int
-  collect: String
+
+  collectGoods: Boolean
+  collectStore: Boolean
+  addToCart: Boolean
 
   searchKeyword: String
   goodsSpecification: String
@@ -160,7 +163,9 @@ input orderInput {
   buyTimes: Int
   browseTimes: Int
   collectTimes: Int
-  collect: String
+  collectGoods: Boolean
+  collectStore: Boolean
+  addToCart: Boolean
 
   searchKeyword: String
   goodsSpecification: String

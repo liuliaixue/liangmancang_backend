@@ -26,7 +26,10 @@ export interface IOrderInput {
   buyTimes: number;
   browseTimes: number;
   collectTimes: number;
-  collect: string;
+
+  collectGoods: boolean;
+  collectStore: boolean;
+  addToCart: boolean;
 
   searchKeyword: string;
   goodsSpecification: string;

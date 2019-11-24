@@ -34,7 +34,9 @@ describe('graphql task', () => {
                   buyTimes: 1
                   browseTimes: 2
                   collectTimes: 1
-                  collect: "收藏商品"
+                  collectGoods: true
+                  collectStore: true
+                  addToCart: true
                   searchKeyword: "鞋子"
                 }
                 {
@@ -42,7 +44,9 @@ describe('graphql task', () => {
                   buyTimes: 0
                   browseTimes: 2
                   collectTimes: 1
-                  collect: "收藏店铺"
+                  collectGoods: false
+                  collectStore: false
+                  addToCart: false
                   searchKeyword: "内增高男鞋"
                 }
                 {
@@ -50,7 +54,9 @@ describe('graphql task', () => {
                   buyTimes: 1
                   browseTimes: 8
                   collectTimes: 1
-                  collect: "收藏商品"
+                  collectGoods: true
+                  collectStore: true
+                  addToCart: true
                   searchKeyword: "鞋子"
                   comment: "鞋子很不错,很适合我儿子"
                 }
@@ -59,7 +65,9 @@ describe('graphql task', () => {
                   buyTimes: 1
                   browseTimes: 2
                   collectTimes: 1
-                  collect: "收藏商品"
+                  collectGoods: true
+                  collectStore: true
+                  addToCart: true
                   searchKeyword: "鞋子"
                   goodsSpecification: "尺码:38,颜色:红色"
                   comment: "鞋子很不错,很适合我儿子"
@@ -166,7 +174,9 @@ describe('graphql task', () => {
             buyTimes: 1
             browseTimes: 2
             collectTimes: 1
-            collect: "收藏商品"
+               collectGoods: true
+                  collectStore: true
+                  addToCart: true
             searchKeyword: "鞋子"
           }
           {
@@ -174,7 +184,9 @@ describe('graphql task', () => {
             buyTimes: 3
             browseTimes: 2
             collectTimes: 1
-            collect: "收藏商品"
+               collectGoods: true
+                  collectStore: true
+                  addToCart: true
             searchKeyword: "鞋子"
           }
           {
@@ -182,7 +194,9 @@ describe('graphql task', () => {
             buyTimes: 0
             browseTimes: 2
             collectTimes: 1
-            collect: "收藏店铺"
+            collectGoods: true
+            collectStore: true
+            addToCart: true
             searchKeyword: "内增高男鞋"
           }
           {
@@ -190,7 +204,9 @@ describe('graphql task', () => {
             buyTimes: 1
             browseTimes: 8
             collectTimes: 1
-            collect: "收藏商品"
+               collectGoods: true
+                  collectStore: true
+                  addToCart: true
             searchKeyword: "鞋子"
             comment: "鞋子很不错,很适合我儿子"
           }
@@ -199,7 +215,9 @@ describe('graphql task', () => {
             buyTimes: 1
             browseTimes: 2
             collectTimes: 1
-            collect: "收藏商品"
+            collectGoods: true
+            collectStore: true
+            addToCart: true
             searchKeyword: "鞋子"
             goodsSpecification: "尺码:38,颜色:红色"
             comment: "鞋子很不错,很适合我儿子"
@@ -227,7 +245,7 @@ describe('graphql task', () => {
         isFreeShipping
 
         orders {
-          type
+          type,
         }
         startTime
         endTime
@@ -324,7 +342,9 @@ describe('graphql task', () => {
       buyTimes
       browseTimes
       collectTimes
-      collect
+      collectGoods
+      collectStore
+      addToCart
       searchKeyword
       goodsSpecification
       comment
@@ -352,7 +372,9 @@ describe('graphql task', () => {
         buyTimes
         browseTimes
         collectTimes
-        collect
+        collectGoods
+        collectStore
+        addToCart
         searchKeyword
         goodsSpecification
         comment

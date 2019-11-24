@@ -20,7 +20,10 @@ export interface IOrder extends Document {
   buyTimes: number;
   browseTimes: number;
   collectTimes: number;
-  collect: string;
+
+  collectGoods: boolean;
+  collectStore: boolean;
+  addToCart: boolean;
 
   searchKeyword: string;
   goodsSpecification: string;
@@ -47,7 +50,10 @@ const OrderSchema = new Schema(
     buyTimes: { type: Number },
     browseTimes: { type: Number },
     collectTimes: { type: Number },
-    collect: { type: String },
+
+    collectGoods: { type: Boolean },
+    collectStore: { type: Boolean },
+    addToCart: { type: Boolean },
 
     searchKeyword: { type: String },
     goodsSpecification: { type: String },
