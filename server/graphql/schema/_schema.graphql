@@ -160,8 +160,6 @@ type Mutation {
     extraImages: [String]
     remark: String
     storeid: String
-
-    status: TaskStatus
   ): Task
 
   updateTaskInfo(
@@ -196,6 +194,8 @@ type Mutation {
     remark: String
     storeid: String
   ): Task
+  confirmTask(_id: String): Task
+
   admin_updateTaskStatus(_id: String!, status: TaskStatus): Task
 
   # order

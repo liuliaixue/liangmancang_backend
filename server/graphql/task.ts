@@ -4,7 +4,7 @@ import logger from '../tools/logger';
 import taskCtrl from '../controllers/task.controller';
 import orderCtrl from '../controllers/order.controller';
 
-import { Status } from '../models/task.model';
+import Task, { Status } from '../models/task.model';
 import { aclCheck } from '../controllers/role.controller';
 import Err from '../tools/error';
 import { Status as OrderStatus } from '../models/order.model';
@@ -21,7 +21,6 @@ export default {
   newTask: async (obj: any, req: IReq) => {
     logger.info({ _from: 'newTask', _by: req.user.id, ...obj });
 
-    // const task = await taskCtrl.insert({ ...obj, userid: req.user.id })
     const task = await taskCtrl.newTask({ ...obj, userid: req.user.id });
 
     return task;
@@ -102,6 +101,20 @@ export default {
     });
 
     return taskListObj;
+  },
+  confirmTask: async (obj: any, req: IReq) => {
+    logger.info({ _from: 'confirmTask', _by: req.user.id, ...obj });
+
+    const check = await Task.findById(obj._id);
+    if (!check) {
+      throw new Error('task not found');
+    }
+    if (req.user.id !== check.userid) {
+      throw new Error('not alllowed');
+    }
+    const updatedTask = await taskCtrl.confirm(obj._id);
+
+    return updatedTask;
   },
   admin_updateTaskStatus: async (obj: any, req: IReq) => {
     logger.info({ _from: 'admin_updateTaskStatus', _by: req.user.id, ...obj });

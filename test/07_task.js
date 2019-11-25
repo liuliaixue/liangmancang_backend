@@ -11,7 +11,7 @@ describe('graphql task', () => {
             newTask(
               platform: TAOBAO
               type: MOBILE_TAOBAO
-              status: DEFAULT
+             
               goodsName: "木林森皮鞋男冬季加绒韩版商务休闲黑色真皮英伦正装内增高男鞋子"
               goodsLink: "https://detail.tmall.com/item.htm?id=595735103244&spm=a21bz.7725275.1998564545.1.2e245fc2SVQnDL&umpChannel=qianggou&u_channel=qianggou"
               goodsImage: "https://img.alicdn.com/imgextra/i1/3372687502/O1CN013D7wEd25Hxol9V6qT_!!3372687502.jpg_430x430q90.jpg"
@@ -118,34 +118,6 @@ describe('graphql task', () => {
 
     config.task = res.newTask;
   });
-  it('taskList', async () => {
-    const query = `query {
-        taskList(skip: 0, limit: 10, status: DEFAULT) {
-          list {
-            _id
-          }
-          total
-        }
-      }`;
-
-    const res = await client(query, {});
-    assert(res.taskList.total >= 0);
-  });
-
-  it('admin_taskList', async () => {
-    const query = `query {
-        admin_taskList(skip: 0, limit: 10, status: DEFAULT) {
-          list {
-            _id
-          }
-          total
-        }
-      }`;
-
-    const res = await adminClient(query, {});
-
-    assert(res.admin_taskList.total >= 0);
-  });
   it('updateTaskInfo', async () => {
     const query = `mutation {
       updateTaskInfo(
@@ -174,9 +146,9 @@ describe('graphql task', () => {
             buyTimes: 1
             browseTimes: 2
             collectTimes: 1
-               collectGoods: true
-                  collectStore: true
-                  addToCart: true
+            collectGoods: true
+            collectStore: true
+            addToCart: true
             searchKeyword: "鞋子"
           }
           {
@@ -184,9 +156,9 @@ describe('graphql task', () => {
             buyTimes: 3
             browseTimes: 2
             collectTimes: 1
-               collectGoods: true
-                  collectStore: true
-                  addToCart: true
+            collectGoods: true
+            collectStore: true
+            addToCart: true
             searchKeyword: "鞋子"
           }
           {
@@ -204,9 +176,9 @@ describe('graphql task', () => {
             buyTimes: 1
             browseTimes: 8
             collectTimes: 1
-               collectGoods: true
-                  collectStore: true
-                  addToCart: true
+            collectGoods: true
+            collectStore: true
+            addToCart: true
             searchKeyword: "鞋子"
             comment: "鞋子很不错,很适合我儿子"
           }
@@ -266,6 +238,69 @@ describe('graphql task', () => {
 
     const res = await client(query, {});
     assert(res.updateTaskInfo.status === 'DEFAULT');
+  });
+  it('confirm task', async () => {
+    const query = `mutation {
+            confirmTask(_id: "${config.task._id}") {
+              _id
+              goodsName
+              goodsLink
+              goodsImage
+              goodsPrice
+              goodsTotal
+              goodsPriceShowed
+              goodsSpecification
+              isFreeShipping
+
+              orders {
+                type
+              }
+              startTime
+              endTime
+              orderQuantity
+              commission
+              platformServiceFee
+              platformCommission
+              extraCommission
+              extraImages
+              status
+              storeid
+              userid
+              createdAt
+              updatedAt
+            }
+          }`;
+
+    const res = await client(query, {});
+    assert(res.confirmTask.status === 'CONFIRMED');
+  });
+  it('taskList', async () => {
+    const query = `query {
+        taskList(skip: 0, limit: 10, status: DEFAULT) {
+          list {
+            _id
+          }
+          total
+        }
+      }`;
+
+    const res = await client(query, {});
+    assert(res.taskList.total >= 0);
+  });
+
+  it('admin_taskList', async () => {
+    const query = `query {
+        admin_taskList(skip: 0, limit: 10, status: DEFAULT) {
+          list {
+            _id
+          }
+          total
+        }
+      }`;
+
+    const res = await adminClient(query, {});
+
+    assert(res.admin_taskList.total >= 0);
   });
 
   it('admin_updateTaskStatus: check', async () => {

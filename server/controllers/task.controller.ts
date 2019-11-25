@@ -44,9 +44,7 @@ const taskSchema = Joi.object({
 
   remark: Joi.string().min(0),
   storeid: Joi.string(),
-  userid: Joi.string(),
-
-  status: Joi.string()
+  userid: Joi.string()
 });
 
 function genOrderList(task: ITask) {
@@ -109,6 +107,10 @@ function genOrderList(task: ITask) {
   return orderList;
 }
 
+// 1. 创建任务,状态默认
+// 1.1. 创建任务,状态已确认
+// 3. 创建任务,并创建订单
+
 const newTask = async (task: ITask) => {
   task = await Joi.validate(task, taskSchema, { abortEarly: false });
   const now = new Date();
@@ -120,13 +122,12 @@ const newTask = async (task: ITask) => {
     );
   }
 
-  //todo storeid check
-
-  // check rule
-  const rule = await ruleCtrl.getCurrentRule();
-  if (!rule) {
-    throw Err.NotFound(`rule  not found`);
+  // storeid check
+  const store = await Store.findById(task.storeid);
+  if (!store) {
+    throw new Error(`store not found storeid=${task.storeid}`);
   }
+
   if (!Number.isInteger(task.extraCommission)) {
     throw Err.IllegalValue(`extraCommission=${task.extraCommission}`);
   }
@@ -142,145 +143,108 @@ const newTask = async (task: ITask) => {
     throw new Error(`invalid userid ${task.userid}`);
   }
 
-  // 1. 创建任务,状态默认
-  // 1.1. 创建任务,状态已确认
-  // 3. 创建任务,并创建订单
+  task.createdAt = now.getTime();
+  task.updatedAt = now.getTime();
+  task.status = Status.DEFAULT;
+  task.amount = totalAmount;
+  const newTask = await new Task(task).save();
 
-  // task auto check
-  if (!user.isTaskAutoCheck) {
-    task.createdAt = now.getTime();
-    task.updatedAt = now.getTime();
-    task.amount = totalAmount;
-    const newTask = await new Task(task).save();
-    return newTask;
-  } else {
+  return newTask;
+};
+
+const confirm = async (_id: string) => {
+  const now = new Date();
+  const task = await Task.findById(_id);
+  if (!task) {
+    throw new Error('task not found');
+  }
+  if (task.status !== Status.DEFAULT) {
+    throw new Error(`wrong task status=${task.status}`);
+  }
+  const user = await User.findById(task.userid);
+  if (!user) {
+    throw new Error(`invalid userid ${task.userid}`);
+  }
+
+  {
     const bill = await billCtrl.findUserLastestBill(user._id);
     if (!bill) {
       throw new Error('user bill info not found');
     }
+    const totalAmount = task.amount;
     if (bill.remained < totalAmount) {
-      throw new Error('余额不足');
+      throw new Error(
+        `余额不足,remained=${bill.remained},totalAmount=${totalAmount}`
+      );
     }
 
-    const updatedBill = await Bill.findByIdAndUpdate(
-      bill._id,
-      {
-        $set: {
-          remained: bill.remained - totalAmount,
-          freeze: bill.freeze + totalAmount,
-          updatedAt: now.getTime()
-        }
-      },
-      { new: true }
-    );
-    const lockRecordObj = {
-      userid: task.userid,
-      amount: totalAmount,
+    //todo if isTaskAutoCheck
+    //todo no isTaskAutoCheck
+    if (!user.isTaskAutoCheck) {
+      const udpatedTask = await Task.findByIdAndUpdate(
+        _id,
+        {
+          $set: {
+            updatedAt: now.getTime(),
+            status: Status.CONFIRMED
+          }
+        },
+        { new: true }
+      );
+      return udpatedTask;
+    }
+
+    const lockBillObj = {
+      total: bill.total - totalAmount,
+      remained: bill.remained - totalAmount,
+      freeze: 0, // todo freeze the deposit
+      withdraw: 0,
+
       type: BillType.TASK_LOCK,
-      status: BillStatus.DEFAULT,
+      amount: totalAmount,
+
+      status: BillStatus.CHECKED,
+      userid: user.id,
+      updatedBy: user.id,
       createdAt: now.getTime(),
       updatedAt: now.getTime()
     };
-    const lockTaskBill = await new Bill(lockRecordObj).save();
+    const lockTaskBill = await new Bill(lockBillObj).save();
 
-    task.createdAt = now.getTime();
     task.updatedAt = now.getTime();
     task.status = Status.AUTO_CHECKED;
-    task.amount = totalAmount;
+    await task.save();
 
-    const newTask = await new Task(task).save();
-    const orders = genOrderList(newTask);
-    const createOrders = orders.map(async co => {
-      const o = await new Task(co).save();
+    const orders = genOrderList(task);
+    const createOrders = orders.map(async od => {
+      const o = await new Order(od).save();
       return o;
     });
     await Promise.all(createOrders);
-    // child tasks finished
-    return newTask;
+
+    return task;
   }
-};
-
-export interface ITaskQuery {
-  skip: number;
-  limit: number;
-  userid?: string;
-  parent?: string;
-  status?: Status;
-  workerid?: string;
-}
-export interface ItaskFilter {
-  userid?: string;
-  parent?: string;
-  status?: Status;
-  workerid?: string;
-}
-const findById = async (_id: string) => {
-  const check = await Task.findById(_id);
-  if (!check) {
-    throw new Error(`invalid _id`);
-  }
-  return check;
-};
-const find = async (query: ITaskQuery = { skip: 0, limit: 10 }) => {
-  const { skip, limit, userid, status } = query;
-
-  const filter = { userid, status };
-  if (!filter.userid) delete filter.userid;
-  if (!filter.status) delete filter.status;
-
-  const list = await Task.find(filter)
-    .skip(skip)
-    .limit(limit);
-  const total = await Task.count(filter);
-
-  return { list, total };
-};
-
-const findWithStore = async (query: ITaskQuery = { skip: 0, limit: 10 }) => {
-  const { skip, limit, userid, status } = query;
-  const filter = { userid, status };
-  if (!filter.userid) delete filter.userid;
-  if (!filter.status) delete filter.status;
-
-  let list = await Task.find(filter)
-    .skip(skip)
-    .limit(limit);
-  const promises = list.map(async _task => {
-    const store = await Store.findById(_task.storeid);
-    // _task.store= store
-    (_task as any).store = store;
-    return _task;
-    // return { ..._task, store };
-  });
-  let listWithStore = await Promise.all(promises);
-
-  const total = await Task.count(filter);
-
-  return { list: listWithStore, total };
 };
 
 const updateInfo = async (_id: string, updateObj: ITask) => {
   const task = await Joi.validate(updateObj, taskSchema, { abortEarly: false });
   const now = new Date();
+  //check time
   if (task.startTime < task.endTime) {
   } else {
     throw new Error(
       `invalid startTime=${task.startTime} and endTime=${task.endTime}`
     );
   }
-  task.total = task.orders.length;
-  // check rule
-  const rule = await ruleCtrl.getCurrentRule();
-  if (!rule) {
-    throw Err.NotFound(`rule  not found`);
+
+  // storeid check
+  const store = await Store.findById(task.storeid);
+  if (!store) {
+    throw new Error(`store not found storeid=${task.storeid}`);
   }
-  if (
-    !Number.isInteger(task.total) ||
-    !Number.isInteger(task.extraCommission)
-  ) {
-    throw Err.IllegalValue(
-      `total=${task.total}, extraCommission=${task.extraCommission}`
-    );
+
+  if (!Number.isInteger(task.extraCommission)) {
+    throw Err.IllegalValue(`extraCommission=${task.extraCommission}`);
   }
 
   const { allCommission, allDeposit } = ruleCtrl.gerCurrentTaskAmount(task);
@@ -317,11 +281,12 @@ const check = async (_id: string, operator?: string) => {
   const now = new Date();
   const task = await Task.findById(_id);
   if (!task) {
-    throw new Error('incorrect _id');
+    throw new Error('task not found');
   }
-  if (task.status === Status.CHECKED) {
-    throw new Error('already checked');
+  if (task.status !== Status.CONFIRMED) {
+    throw new Error('not CONFIRMED');
   }
+
   const totalAmount = task.amount;
   const user = await User.findById(task.userid);
   if (!user) {
@@ -334,38 +299,37 @@ const check = async (_id: string, operator?: string) => {
   if (bill.remained < totalAmount) {
     throw new Error('余额不足');
   }
-  const { total, remained, freeze, withdraw } = bill;
+
   const lockBillObj = {
-    userid: task.userid,
-    amount: totalAmount,
-    type: BillType.TASK_LOCK,
     total: bill.total - totalAmount,
     remained: bill.remained - totalAmount,
+    freeze: 0, // todo freeze the deposit
+    withdraw: 0,
 
-    freeze,
-    withdraw,
+    type: BillType.TASK_LOCK,
+    amount: totalAmount,
 
     status: BillStatus.CHECKED,
-    updatedBy: operator,
+    userid: user.id,
+    updatedBy: user.id,
     createdAt: now.getTime(),
     updatedAt: now.getTime()
   };
+
   const lockTaskBill = await new Bill(lockBillObj).save();
 
   task.createdAt = now.getTime();
-  task.updatedAt = now.getTime();
   task.status = Status.CHECKED;
-  task.amount = totalAmount;
+  await task.save();
 
-  const newTask = await new Task(task).save();
-  // child tasks
-  const orders = genOrderList(newTask);
-  const createOrders = orders.map(async co => {
-    const o = await new Order(co).save();
+  const orders = genOrderList(task);
+  const createOrders = orders.map(async od => {
+    const o = await new Order(od).save();
     return o;
   });
   await Promise.all(createOrders);
-  return newTask;
+
+  return task;
 };
 // const finish = async (_id: string) => {
 //   const check = await Task.findById(_id);
@@ -480,6 +444,65 @@ const check = async (_id: string, operator?: string) => {
 //   return updatedTask;
 // };
 
+export interface ITaskQuery {
+  skip: number;
+  limit: number;
+  userid?: string;
+  parent?: string;
+  status?: Status;
+  workerid?: string;
+}
+export interface ItaskFilter {
+  userid?: string;
+  parent?: string;
+  status?: Status;
+  workerid?: string;
+}
+const findById = async (_id: string) => {
+  const check = await Task.findById(_id);
+  if (!check) {
+    throw new Error(`invalid _id`);
+  }
+  return check;
+};
+const find = async (query: ITaskQuery = { skip: 0, limit: 10 }) => {
+  const { skip, limit, userid, status } = query;
+
+  const filter = { userid, status };
+  if (!filter.userid) delete filter.userid;
+  if (!filter.status) delete filter.status;
+
+  const list = await Task.find(filter)
+    .skip(skip)
+    .limit(limit);
+  const total = await Task.count(filter);
+
+  return { list, total };
+};
+
+const findWithStore = async (query: ITaskQuery = { skip: 0, limit: 10 }) => {
+  const { skip, limit, userid, status } = query;
+  const filter = { userid, status };
+  if (!filter.userid) delete filter.userid;
+  if (!filter.status) delete filter.status;
+
+  let list = await Task.find(filter)
+    .skip(skip)
+    .limit(limit);
+  const promises = list.map(async _task => {
+    const store = await Store.findById(_task.storeid);
+    // _task.store= store
+    (_task as any).store = store;
+    return _task;
+    // return { ..._task, store };
+  });
+  let listWithStore = await Promise.all(promises);
+
+  const total = await Task.count(filter);
+
+  return { list: listWithStore, total };
+};
+
 const abortFinishedTask = async () => {};
 export default {
   newTask,
@@ -488,6 +511,7 @@ export default {
   // findOne,
   findById,
   updateInfo,
+  confirm,
   check
   // updateStatus
   // finish,

@@ -64,7 +64,6 @@ export interface ITask extends Document {
   startTime: number;
   endTime: number;
   orderQuantity: number;
-  total: number;
 
   commission: number;
   platformServiceFee: number;
@@ -120,9 +119,6 @@ const TaskSchema = new Schema(
     startTime: { type: Number },
     endTime: { type: Number },
     orderQuantity: { type: Number },
-    total: {
-      type: Number
-    },
 
     commission: {
       type: Number
