@@ -264,6 +264,7 @@ const updateInfo = async (_id: string, updateObj: ITask) => {
       $set: {
         ...updateObj,
         amount: totalAmount,
+        status: Status.DEFAULT,
         updatedAt: now.getTime()
       }
     },
