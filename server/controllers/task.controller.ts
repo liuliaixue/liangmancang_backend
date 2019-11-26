@@ -332,6 +332,31 @@ const check = async (_id: string, operator?: string) => {
 
   return task;
 };
+
+const reject = async (_id: string, message: string, operator?: string) => {
+  const now = new Date();
+
+  const task = await Task.findById(_id);
+  if (!task) {
+    throw new Error('task not found');
+  }
+  if (task.status !== Status.CONFIRMED) {
+    throw new Error('not CONFIRMED');
+  }
+
+  const updatedTask = await Task.findByIdAndUpdate(
+    _id,
+    {
+      $set: {
+        status: Status.BAD,
+        message,
+        updatedAt: now.getTime()
+      }
+    },
+    { new: true }
+  );
+  return updatedTask;
+};
 // const finish = async (_id: string) => {
 //   const check = await Task.findById(_id);
 //   if (!check) {
@@ -474,6 +499,7 @@ const find = async (query: ITaskQuery = { skip: 0, limit: 10 }) => {
   if (!filter.status) delete filter.status;
 
   const list = await Task.find(filter)
+    .sort({ updatedAt: -1 })
     .skip(skip)
     .limit(limit);
   const total = await Task.count(filter);
@@ -513,7 +539,8 @@ export default {
   findById,
   updateInfo,
   confirm,
-  check
+  check,
+  reject
   // updateStatus
   // finish,
   // abort

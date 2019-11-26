@@ -51,8 +51,8 @@ export default {
     logger.info({ _from: 'admin_updateStoreStatus', _by: req.user.id, ...obj });
     await aclCheck(req.user, 'admin_updateStoreStatus');
 
-    const { _id = 0, status = 0 } = obj;
-    const updateStore = await storeCtrl.updateStatus(_id, status);
+    const { _id, status, message } = obj;
+    const updateStore = await storeCtrl.updateStatus(_id, status, message);
     return updateStore;
   },
   admin_storeList: async (obj: any, req: IReq) => {

@@ -116,7 +116,11 @@ type Mutation {
   ): Store
   removeStore(_id: String): Store
 
-  admin_updateStoreStatus(_id: String!, status: StoreStatus!): Store
+  admin_updateStoreStatus(
+    _id: String!
+    status: StoreStatus!
+    message: String
+  ): Store
 
   newBill(
     amount: Float!
@@ -196,7 +200,11 @@ type Mutation {
   ): Task
   confirmTask(_id: String): Task
 
-  admin_updateTaskStatus(_id: String!, status: TaskStatus): Task
+  admin_updateTaskStatus(
+    _id: String!
+    status: TaskStatus
+    message: String
+  ): Task
 
   # order
   updateOrderStatus(_id: String!, status: OrderStatus!): Order

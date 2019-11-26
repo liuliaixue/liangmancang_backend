@@ -119,11 +119,15 @@ export default {
   admin_updateTaskStatus: async (obj: any, req: IReq) => {
     logger.info({ _from: 'admin_updateTaskStatus', _by: req.user.id, ...obj });
     await aclCheck(req.user, 'admin_updateTaskStatus');
-    if (obj.status !== Status.CHECKED) {
-      throw new Error('invalid status, only CHECKED is supported ');
+    if (obj.status === Status.CHECKED) {
+      const task = await taskCtrl.check(obj._id);
+      return task;
     }
-    const task = await taskCtrl.check(obj._id);
-    return task;
+    if (obj.status === Status.BAD) {
+      const task = await taskCtrl.reject(obj._id, obj.message);
+      return task;
+    }
+    throw new Error('invalid status, only CHECKED and BAD are supported ');
   },
   orderList: async (obj: any, req: IReq) => {
     logger.info({ _from: 'orderList', _by: req.user.id, ...obj });

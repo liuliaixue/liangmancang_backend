@@ -1,10 +1,12 @@
 import { Schema, Model, model, Document } from 'mongoose';
 import { Type as OrderType, Status as OrderStaus } from './order.model';
+import { string } from 'joi';
 
 enum Status {
   DEFAULT = 'DEFAULT',
   CONFIRMED = 'CONFIRMED',
   CHECKED = 'CHECKED',
+  BAD = 'BAD',
   AUTO_CHECKED = 'AUTO_CHECKED'
 }
 enum TaskPlatform {
@@ -78,6 +80,8 @@ export interface ITask extends Document {
   storeid: string;
   userid: string;
   amount: number;
+
+  message: string;
 
   createdAt: number;
   updatedAt: number;
@@ -155,6 +159,7 @@ const TaskSchema = new Schema(
     amount: {
       type: Number
     },
+    message: { type: String },
 
     createdAt: {
       type: Number,

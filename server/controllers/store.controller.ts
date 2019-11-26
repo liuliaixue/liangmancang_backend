@@ -37,6 +37,7 @@ const remove = async (_id: string) => {
 const find = async (query = { skip: 0, limit: 10 }) => {
   const { skip, limit } = query;
   const storeList = await Store.find()
+    .sort({ updatedAt: -1 })
     .skip(skip)
     .limit(limit);
   const storeTotal = await Store.count({});
@@ -80,12 +81,13 @@ const updateInfo = async (_id: string, updateObj: IStore) => {
   return check;
 };
 
-const updateStatus = async (_id: string, status: Status) => {
+const updateStatus = async (_id: string, status: Status, message: string) => {
   const check = await Store.findByIdAndUpdate(
     _id,
     {
       $set: {
         status,
+        message,
         updatedAt: new Date().getTime()
       }
     },

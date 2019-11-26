@@ -1,34 +1,35 @@
 # 店铺信息
 
-type Store{
-    _id: String!
-    name: String!
-    userid: String
+type Store {
+  _id: String!
+  name: String!
+  userid: String
 
-    # 类型 淘宝,京东,拼多多
-    type: String
-    website: String
-    # 旺旺名称
-    wangwang: String
-    storeScreenShotImage:String
+  # 类型 淘宝,京东,拼多多
+  type: String
+  website: String
+  # 旺旺名称
+  wangwang: String
+  storeScreenShotImage: String
 
-    # provice_city_area_detail
-    address: String
-    contactPhone: String
-    # 0 default, 1 ok, 2 checked need update
-    status: StoreStatus
-
-    createdAt: Float
-    updatedAt: Float
+  # provice_city_area_detail
+  address: String
+  contactPhone: String
+  # 0 default, 1 ok, 2 checked need update
+  status: StoreStatus
+  # reject message
+  message: String
+  createdAt: Float
+  updatedAt: Float
 }
 
-enum StoreStatus{
+enum StoreStatus {
   DEFAULT
-  OK 
+  OK
   BAD
 }
 
-type StoreList{
-    list: [Store],
-    total: Int
+type StoreList {
+  list: [Store]
+  total: Int
 }

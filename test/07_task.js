@@ -274,6 +274,8 @@ describe('graphql task', () => {
     const res = await client(query, {});
     assert(res.confirmTask.status === 'CONFIRMED');
   });
+  // return;
+  // 创建一个confirmed 的task
   it('taskList', async () => {
     const query = `query {
         taskList(skip: 0, limit: 10, status: DEFAULT) {

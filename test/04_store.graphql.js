@@ -10,7 +10,7 @@ describe('graphql store', () => {
         name: "${storeName}"
         website: "https://website"
         wangwang: "98992"
-        storeScreenShotImage: "https://image"
+        storeScreenShotImage: "https://www.baidu.com/img/baidu_jgylogo3.gif"
         address: "shanghai chongyang road"
         contactPhone: "9090"
         type:"tmall"
@@ -41,7 +41,7 @@ describe('graphql store', () => {
         _id: "${config.store._id}"
         website: "${newWebsite}"
         wangwang: "98992"
-        storeScreenShotImage: "https://image"
+        storeScreenShotImage: "https://www.baidu.com/img/baidu_jgylogo3.gif"
         address: "shanghai chongyang road"
         contactPhone: "9090"
       ) {

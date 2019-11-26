@@ -40,6 +40,8 @@ type Task {
   storeid: String
   userid: String
 
+  message: String
+
   createdAt: Float
   updatedAt: Float
 }
@@ -50,6 +52,7 @@ enum TaskStatus {
   DEFAULT
   CONFIRMED
   CHECKED
+  BAD
   AUTO_CHECKED
 }
 
