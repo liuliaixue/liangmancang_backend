@@ -9,6 +9,7 @@ import reason from './reason';
 import message from './message';
 import role from './role';
 import qiniu from './qiniu';
+import aliOss from './aliOss';
 import logger from '../tools/logger';
 import notcie from './notice';
 
@@ -49,5 +50,6 @@ export default safeMerge([
   reason,
   message,
   qiniu,
-  notcie
+  notcie,
+  aliOss
 ]);

@@ -24,7 +24,14 @@ const envVarsSchema = Joi.object({
   MONGO_HOST: Joi.string()
     .required()
     .description('Mongo DB host url'),
-  MONGO_PORT: Joi.number().default(27017)
+  MONGO_PORT: Joi.number().default(27017),
+
+  ALI_ACCESSKEY_ID: Joi.string().required(),
+  ALI_ACCESSKEY_SECRET: Joi.string().required(),
+  ALI_ROLEARN: Joi.string().required(),
+  ALI_OSS_REGION: Joi.string().required(),
+  ALI_OSS_BUCKET: Joi.string().required(),
+  ALI_OSS_PREFIX: Joi.string().required()
 })
   .unknown()
   .required();
@@ -46,7 +53,14 @@ const config = {
   mongo: {
     host: envVars.MONGO_HOST,
     port: envVars.MONGO_PORT
-  }
+  },
+
+  ALI_ACCESSKEY_ID: envVars.ALI_ACCESSKEY_ID,
+  ALI_ACCESSKEY_SECRET: envVars.ALI_ACCESSKEY_SECRET,
+  ALI_ROLEARN: envVars.ALI_ROLEARN,
+  ALI_OSS_REGION: envVars.ALI_OSS_REGION,
+  ALI_OSS_BUCKET: envVars.ALI_OSS_BUCKET,
+  ALI_OSS_PREFIX: envVars.ALI_OSS_PREFIX
 };
 
 export default config;

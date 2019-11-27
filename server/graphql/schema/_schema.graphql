@@ -86,6 +86,7 @@ type Query {
 
 type Mutation {
   uploadFileToken(filename: String): uploadFileTokenReturn
+  ossUploadToken(filename: String): ossUploadTokenReturn
 
   updateUserInfo(
     qq: String
@@ -252,4 +253,16 @@ type Mutation {
 type uploadFileTokenReturn {
   key: String
   uploadToken: String
+}
+
+# oss upload token
+type ossUploadTokenReturn {
+  region: String
+  bucket: String
+  key: String
+  url: String
+
+  accessKeyId: String
+  accessKeySecret: String
+  stsToken: String
 }
