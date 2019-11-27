@@ -8,12 +8,22 @@ import Task, { Status } from '../models/task.model';
 import { aclCheck } from '../controllers/role.controller';
 import Err from '../tools/error';
 import { Status as OrderStatus } from '../models/order.model';
+import storeCtrl from '../controllers/store.controller';
 
 export default {
   task: async (obj: any, req: IReq) => {
     logger.info({ _from: 'task', _by: req.user.id, ...obj });
 
     const task = await taskCtrl.findById(obj._id);
+
+    return task;
+  },
+  taskWithStore: async (obj: any, req: IReq) => {
+    logger.info({ _from: 'taskWithStore', _by: req.user.id, ...obj });
+
+    const task = await taskCtrl.findById(obj._id);
+    const taskStore = await storeCtrl.findById(task.storeid);
+    (task as any).store = taskStore;
 
     return task;
   },

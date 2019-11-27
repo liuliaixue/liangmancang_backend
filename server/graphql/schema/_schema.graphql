@@ -21,6 +21,7 @@ type Query {
 
   task(_id: String!): Task
   taskList(skip: Int!, limit: Int!, status: TaskStatus): TaskList
+  taskWithStore(_id: String!): TaskWithStore
   taskWithStoreList(
     skip: Int!
     limit: Int!
