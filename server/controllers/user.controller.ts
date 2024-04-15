@@ -46,7 +46,7 @@ async function newUser(user: IUser) {
 
   //craete new user
   user.hashedPassword = bcrypt.hashSync(user.password, 10);
-  delete user.password;
+  user.password = '';
   user.createdAt = now.getTime();
   user.updatedAt = now.getTime();
   user.code = shortid.generate();

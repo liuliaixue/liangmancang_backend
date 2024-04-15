@@ -175,7 +175,7 @@ const TaskSchema = new Schema(
   }
 );
 
-const Task: Model<ITask> = model('Task', TaskSchema);
+const Task = model('Task', TaskSchema);
 
 export default Task;
 export { Status };

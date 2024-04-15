@@ -60,7 +60,7 @@ const aclCheck = async (user: IUser, api: string) => {
 
   if (check && check.roles && check.roles.length) {
     const promises = check.roles.map(
-      role =>
+      (role:any) =>
         new Promise<IRole>(async (r, e) => {
           try {
             const roleInfo = await Role.findOne({ name: role });
@@ -99,11 +99,7 @@ const getUserAclList = async (user: IUser) => {
         new Promise<IRole>(async (r, e) => {
           try {
             const roleInfo = await Role.findOne({ name: role });
-            if (!roleInfo) {
-              r();
-            } else {
-              r(roleInfo);
-            }
+            r(roleInfo)
           } catch (error) {
             e(error);
           }

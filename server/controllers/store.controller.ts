@@ -1,4 +1,4 @@
-import Joi from 'joi';
+import Joi, { string } from 'joi';
 import Store, { IStore, Status } from '../models/store.model';
 
 const storeSchema = Joi.object({
@@ -16,7 +16,7 @@ const storeSchema = Joi.object({
   status: Joi.string(),
 
   createdAt: Joi.number(),
-  updatedAt: Joi.number()
+  updatedAt: Joi.number(),
 });
 
 const insert = async (store: IStore) => {
@@ -47,8 +47,11 @@ const find = async (query = { skip: 0, limit: 10 }) => {
 
 const findAll = async (query = { userid: '' }) => {
   const { userid } = query;
-  const filter = { userid };
-  if (!userid) delete filter.userid;
+
+  const filter: { userid?: string } = {};
+  if (userid) {
+    filter.userid = userid;
+  }
   const storeList = await Store.find(filter);
   return storeList;
 };
@@ -68,8 +71,8 @@ const updateInfo = async (_id: string, updateObj: IStore) => {
       $set: {
         ...updateObj,
         status: Status.DEFAULT,
-        updatedAt: new Date().getTime()
-      }
+        updatedAt: new Date().getTime(),
+      },
     },
     { new: true }
   );
@@ -88,8 +91,8 @@ const updateStatus = async (_id: string, status: Status, message: string) => {
       $set: {
         status,
         message,
-        updatedAt: new Date().getTime()
-      }
+        updatedAt: new Date().getTime(),
+      },
     },
     { new: true }
   );
@@ -108,5 +111,5 @@ export default {
   findAll,
   findById,
   updateInfo,
-  updateStatus
+  updateStatus,
 };

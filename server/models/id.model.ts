@@ -23,6 +23,7 @@ const IDSchema: Schema = new Schema({
   });
 
 
-const ID: Model<IID> = model('ID', IDSchema);
+// const ID: Model<IID> = model('ID', IDSchema);
+const ID = model('ID', IDSchema);
 
 export default ID

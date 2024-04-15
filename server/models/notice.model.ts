@@ -1,8 +1,8 @@
-import { Schema, Model, model, Document } from 'mongoose';
+import { Schema, Model, model, Document } from "mongoose";
 
 enum Status {
-  DEFAULT = 'DEFAULT',
-  OK = 'OK'
+  DEFAULT = "DEFAULT",
+  OK = "OK",
 }
 
 export interface INotice extends Document {
@@ -19,37 +19,38 @@ const NoticeSchema: Schema = new Schema(
   {
     title: {
       type: String,
-      required: true
+      required: true,
     },
     type: {
       type: String,
-      required: false
+      required: false,
     },
     content: {
       type: String,
-      required: false
+      required: false,
     },
 
     status: {
       type: String,
-      required: false
+      required: false,
     },
 
     createdAt: {
       type: Number,
-      default: 0
+      default: 0,
     },
     updatedAt: {
       type: Number,
-      default: 0
-    }
+      default: 0,
+    },
   },
   {
-    versionKey: false
+    versionKey: false,
   }
 );
 
-const Notice: Model<INotice> = model('Notice', NoticeSchema);
+// const Notice: Model<INotice> = model('Notice', NoticeSchema);
+const Notice = model("Notice", NoticeSchema);
 
 export default Notice;
 export { Status };

@@ -58,6 +58,6 @@ const RuleSchema = new Schema({
   });
 
 
-const Rule: Model<IRule> = model('Rule', RuleSchema);
+const Rule = model('Rule', RuleSchema);
 
 export default Rule 

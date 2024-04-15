@@ -121,7 +121,7 @@ const UserSchema: Schema = new Schema(
 //   next();
 // });
 
-const User: Model<IUser> = model('User', UserSchema);
+const User = model('User', UserSchema);
 
 export default User;
 export { Status };

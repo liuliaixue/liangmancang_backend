@@ -30,6 +30,7 @@ const CheckInSchema: Schema = new Schema(
   }
 );
 
-const Role: Model<IRole> = model('Role', CheckInSchema);
+// const Role: Model<IRole> = model('Role', CheckInSchema);
+const Role = model('Role', CheckInSchema);
 
 export default Role;

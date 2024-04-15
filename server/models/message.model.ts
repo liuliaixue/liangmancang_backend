@@ -31,6 +31,7 @@ const MessageSchema = new Schema(
   }
 );
 
-const Message: Model<IMessage> = model('Message', MessageSchema);
+// const Message: Model<IMessage> = model('Message', MessageSchema);
+const Message = model('Message', MessageSchema);
 
 export default Message;

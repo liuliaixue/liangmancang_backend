@@ -94,7 +94,7 @@ const chatList = async (query: IListQuery) => {
       skip,
       skip + limit > chatRoomList.length ? chatRoomList.length : skip + limit
     )
-    .map(async chatroom => {
+    .map(async (chatroom: any) => {
       const filter = { chatroom };
       const messageList = await Message.find(filter)
         .skip(0)

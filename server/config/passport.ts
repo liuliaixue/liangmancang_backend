@@ -27,8 +27,8 @@ const verifyUser = async function(
     req.user = user;
 
     next();
-  } catch (e) {
-    res.status(500).end(e.message);
+  } catch (err:any) {
+    res.status(500).end(err.message);
     next();
   }
 };

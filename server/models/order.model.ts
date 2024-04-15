@@ -76,7 +76,8 @@ const OrderSchema = new Schema(
   }
 );
 
-const Order: Model<IOrder> = model('Order', OrderSchema);
+// const Order: Model<IOrder> = model('Order', OrderSchema);
+const Order = model('Order', OrderSchema);
 
 export default Order;
 export { Status, Type };

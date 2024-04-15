@@ -516,7 +516,7 @@ const findWithStore = async (query: ITaskQuery = { skip: 0, limit: 10 }) => {
   let list = await Task.find(filter)
     .skip(skip)
     .limit(limit);
-  const promises = list.map(async _task => {
+  const promises = list.map(async (_task:any) => {
     const store = await Store.findById(_task.storeid);
     // _task.store= store
     (_task as any).store = store;

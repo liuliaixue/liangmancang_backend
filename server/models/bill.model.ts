@@ -61,7 +61,8 @@ const BillSchema: Schema = new Schema(
   }
 );
 
-const Bill: Model<IBill> = model('Bill', BillSchema);
+// const Bill: Model<IBill> = model('Bill', BillSchema);
+const Bill = model('Bill', BillSchema);
 
 export default Bill;
 export { Type, Status };

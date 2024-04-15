@@ -76,7 +76,7 @@ const StoreSchema = new Schema(
   }
 );
 
-const Store: Model<IStore> = model('Store', StoreSchema);
+const Store = model('Store', StoreSchema);
 
 export default Store;
 export { Status };

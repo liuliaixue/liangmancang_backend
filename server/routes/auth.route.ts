@@ -1,23 +1,23 @@
-import express from 'express';
-import userCtrl from '../controllers/user.controller';
-import authCtrl from '../controllers/auth.controller';
-import config from '../config/config';
-import passport, { IReq } from '../config/passport';
-import logger from '../tools/logger';
-import { getUserAclList } from '../controllers/role.controller';
+import express from "express";
+import userCtrl from "../controllers/user.controller";
+import authCtrl from "../controllers/auth.controller";
+import config from "../config/config";
+import passport, { IReq } from "../config/passport";
+import logger from "../tools/logger";
+import { getUserAclList } from "../controllers/role.controller";
 
 const router = express.Router();
 
-router.post('/register', register);
-router.post('/login', login);
-router.post('/adminlogin', adminLogin);
+router.post("/register", register);
+router.post("/login", login);
+router.post("/adminlogin", adminLogin);
 
 async function register(
   req: any,
   res: express.Response,
   next: express.NextFunction
 ) {
-  logger.info({ _from: '/register', ...req.body });
+  logger.info({ _from: "/register", ...req.body });
 
   try {
     if (req.body.inviterCode) {
@@ -26,15 +26,23 @@ async function register(
       req.body.inviter = inviterUser.id;
     }
     delete req.body.inviterCode;
+    if (
+      !req.body.username ||
+      !req.body.password ||
+      req.body.password.length < 6
+    ) {
+      throw new Error(`invalid username or password`);
+    }
     let user = await userCtrl.newUser(req.body);
-    user = user.toObject();
-    delete user.hashedPassword;
+    let savedUser = await userCtrl.findById(user._id);
+
+    savedUser.hashedPassword = "";
 
     req.user = user;
-    let token = authCtrl.generateToken(user);
+    let token = authCtrl.generateToken(savedUser);
     res.json({ user, token });
-  } catch (err) {
-    logger.error({ _from: 'error', message: err.message });
+  } catch (err: any) {
+    logger.error({ _from: "error", message: err.message });
     next(err);
   }
 }
@@ -44,13 +52,13 @@ async function login(
   res: express.Response,
   next: express.NextFunction
 ) {
-  logger.info({ _from: '/login', ...req.body });
+  logger.info({ _from: "/login", ...req.body });
   try {
     let user = await userCtrl.login(req.body);
     let token = authCtrl.generateToken(user);
     res.json({ user, token });
-  } catch (err) {
-    logger.error({ _from: 'error', message: err.message });
+  } catch (err: any) {
+    logger.error({ _from: "error", message: err.message });
     next(err);
   }
 }
@@ -60,7 +68,7 @@ async function adminLogin(
   res: express.Response,
   next: express.NextFunction
 ) {
-  logger.info({ _from: '/adminlogin', ...req.body });
+  logger.info({ _from: "/adminlogin", ...req.body });
 
   try {
     let user = await userCtrl.adminLogin(req.body);
@@ -69,10 +77,10 @@ async function adminLogin(
     res.json({
       user,
       token,
-      acls
+      acls,
     });
-  } catch (err) {
-    logger.error({ _from: 'error', message: err.message });
+  } catch (err: any) {
+    logger.error({ _from: "error", message: err && err.message });
     next(err);
   }
 }

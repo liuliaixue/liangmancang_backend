@@ -3,7 +3,7 @@
 # before you start
 
 1. create default rule in mongo
-1. if need, create root/admin user
+1. if needed, create root/admin user
 
 # start server and test
 

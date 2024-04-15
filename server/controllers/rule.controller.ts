@@ -3,7 +3,7 @@ import logger from '../tools/logger';
 import { ITask } from '../models/task.model';
 import { Type as OrderType, IOrder } from '../models/order.model';
 
-let currentRule: IRule = new Rule({
+let currentRule  = {
   buyerPercentage: 0.55,
   platformPercentage: 0.45,
 
@@ -26,7 +26,7 @@ let currentRule: IRule = new Rule({
 
   createdAt: 0,
   updatedAt: 0
-});
+};
 const getCurrentRule = async () => {
   return currentRule;
 };
